@@ -1,3 +1,4 @@
+<!-- ... existing code ... -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -115,6 +116,34 @@
 
         .touch-action-btn:active {
             transform: scale(0.92);
+        }
+
+        /* شاشة تخصيص التحكم السوداء النقية (أسلوب ببجي) */
+        .customizer-black-backdrop {
+            background-color: #000000;
+            background-image:
+                linear-gradient(rgba(56, 189, 248, 0.10) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.10) 1px, transparent 1px);
+            background-size: 36px 36px;
+        }
+
+        .custom-proxy-item {
+            position: fixed;
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+            transform-origin: center center;
+            transition: box-shadow 0.15s ease, outline-color 0.15s ease;
+        }
+
+        .custom-proxy-item:active {
+            cursor: grabbing;
+        }
+
+        .custom-proxy-selected {
+            outline: 2.5px dashed #38bdf8;
+            outline-offset: 6px;
+            box-shadow: 0 0 28px rgba(56, 189, 248, 0.65);
         }
     </style>
 </head>
@@ -288,8 +317,13 @@
                         <span class="px-3 py-1 rounded-lg bg-slate-900 text-sky-300 font-mono font-bold">1 / 2 / 3</span>
                     </div>
                 </div>
-                <div class="glass-card p-4 rounded-2xl text-xs sm:text-sm text-emerald-200 leading-relaxed">
-                    📱 <strong>تحكم الجوال:</strong> عند الدخول من الجوال أو الشاشات اللمسية تظهر تلقائياً عصا حركة يسارية 360°، وعصا تصويب يمينية، وأزرار رمي، تخفي، سحب طلق، وتبديل أسلحة دون أي نصوص برمجية.
+                <div class="glass-card p-4 rounded-2xl text-xs sm:text-sm text-emerald-200 leading-relaxed flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        📱 <strong>تحكم الجوال:</strong> يمكنك ترتيب أزرار وعصي التحكم بحرية وتغيير حجمها وإخفائها كما تحب.
+                    </div>
+                    <button onclick="openControlCustomizer()" class="menu-btn shrink-0 px-5 py-3 rounded-2xl bg-gradient-to-l from-sky-500 to-emerald-500 hover:from-sky-400 hover:to-emerald-400 text-slate-950 font-black text-sm shadow-lg">
+                        🎮 تخصيص التحكم
+                    </button>
                 </div>
             </div>
         </div>
@@ -341,24 +375,24 @@
                     </p>
                 </button>
 
-                <button onclick="startExamMode()" class="glass-card p-5 rounded-2xl text-right space-y-2 border border-amber-500/35">
+                <button onclick="openWeaponSelect('exam')" class="glass-card p-5 rounded-2xl text-right space-y-2 border border-amber-500/45">
                     <div class="text-2xl">⏱️</div>
                     <div class="text-lg font-black text-amber-300">التدريب بالاختبارات</div>
                     <p class="text-xs text-slate-300 leading-relaxed">
-                        اختبار زمني لمدة 45 ثانية لإصابة الأهداف الثابتة والمتحركة وحساب نسبة الدقة والتقييم.
+                        اختبار زمني لمدة 45 ثانية لإصابة الأهداف الثابتة والمتحركة خلف السواتر وحساب الدقة والرتبة (S / A / B / C).
                     </p>
                 </button>
             </div>
         </div>
     </section>
 
-    <!-- قائمة المراحل (5 مراحل) -->
+    <!-- قائمة المراحل (جميع المراحل 1 إلى 5 مفتوحة) -->
     <section id="stagesMenuScreen" class="hidden fixed inset-0 z-30 flex flex-col items-center justify-center p-4 bg-tactical-grid overflow-y-auto">
-        <div class="w-full max-w-2xl glass-panel rounded-3xl p-6 sm:p-7 space-y-5">
+        <div class="w-full max-w-3xl glass-panel rounded-3xl p-6 sm:p-7 space-y-5">
             <div class="flex items-center justify-between">
                 <div>
-                    <h2 class="text-2xl font-black text-white">⚔️ اختيار المرحلة</h2>
-                    <p class="text-xs text-slate-400">دم اللاعب 500 في جميع المراحل</p>
+                    <h2 class="text-2xl font-black text-white">⚔️ اختيار المرحلة (مفتوحة بالكامل)</h2>
+                    <p class="text-xs text-slate-400">دم اللاعب 500 في جميع المراحل — استخدم السواتر للاختباء والهجوم</p>
                 </div>
                 <button onclick="navigateTo('playMenuScreen')" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200">
                     رجوع
@@ -369,46 +403,46 @@
                 <button onclick="selectStage(1)" class="glass-card p-4 rounded-2xl text-right space-y-1.5 border border-sky-400/50">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-black px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300">المرحلة 1</span>
-                        <span class="text-xs text-emerald-400 font-bold">متاحة</span>
+                        <span class="text-xs text-emerald-400 font-bold">مفتوحة</span>
                     </div>
                     <div class="font-black text-white text-base">المواجهة الأولى</div>
-                    <div class="text-xs text-slate-300">خصمان (دم كل منهما 200) في أرض حربية</div>
+                    <div class="text-xs text-slate-300">خصمان تكتيكيان (دم كل منهما 200) في ساحة حرب</div>
                 </button>
 
-                <button onclick="selectStage(2)" class="glass-card p-4 rounded-2xl text-right space-y-1.5 border border-slate-600/50">
+                <button onclick="selectStage(2)" class="glass-card p-4 rounded-2xl text-right space-y-1.5 border border-emerald-400/45">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-black px-2.5 py-0.5 rounded-full bg-slate-700 text-slate-300">المرحلة 2</span>
-                        <span class="text-xs text-sky-300 font-bold">3 أعداء</span>
+                        <span class="text-xs font-black px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300">المرحلة 2</span>
+                        <span class="text-xs text-emerald-400 font-bold">مفتوحة</span>
                     </div>
-                    <div class="font-black text-white text-base">ميدان السواتر</div>
-                    <div class="text-xs text-slate-400">3 أعداء بمناورات وتغطية متقدمة</div>
+                    <div class="font-black text-white text-base">كمين الخنادق</div>
+                    <div class="text-xs text-slate-300">3 جنود مدرعين (دم 240) مع سواتر ومناورة سريعة</div>
                 </button>
 
-                <button onclick="selectStage(3)" class="glass-card p-4 rounded-2xl text-right space-y-1.5 border border-slate-600/50">
+                <button onclick="selectStage(3)" class="glass-card p-4 rounded-2xl text-right space-y-1.5 border border-amber-400/45">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-black px-2.5 py-0.5 rounded-full bg-slate-700 text-slate-300">المرحلة 3</span>
-                        <span class="text-xs text-amber-300 font-bold">4 أعداء</span>
+                        <span class="text-xs font-black px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300">المرحلة 3</span>
+                        <span class="text-xs text-emerald-400 font-bold">مفتوحة</span>
                     </div>
-                    <div class="font-black text-white text-base">خط النار</div>
-                    <div class="text-xs text-slate-400">4 أعداء بدقة أعلى وممرات متعددة</div>
+                    <div class="font-black text-white text-base">خط النار المتقدم</div>
+                    <div class="text-xs text-slate-300">4 مقاتلين نخبة (دم 280) بنيران كثيفة</div>
                 </button>
 
-                <button onclick="selectStage(4)" class="glass-card p-4 rounded-2xl text-right space-y-1.5 border border-slate-600/50">
+                <button onclick="selectStage(4)" class="glass-card p-4 rounded-2xl text-right space-y-1.5 border border-orange-400/45">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-black px-2.5 py-0.5 rounded-full bg-slate-700 text-slate-300">المرحلة 4</span>
-                        <span class="text-xs text-orange-300 font-bold">5 أعداء</span>
+                        <span class="text-xs font-black px-2.5 py-0.5 rounded-full bg-orange-500/20 text-orange-300">المرحلة 4</span>
+                        <span class="text-xs text-emerald-400 font-bold">مفتوحة</span>
                     </div>
-                    <div class="font-black text-white text-base">حصار المجمع</div>
-                    <div class="text-xs text-slate-400">5 أعداء قبل مواجهة الزعيم الأخير</div>
+                    <div class="font-black text-white text-base">حصار القاعدة</div>
+                    <div class="text-xs text-slate-300">5 مقاتلين (دم 320) في ميدان واسع متعدد السواتر</div>
                 </button>
 
-                <button onclick="selectStage(5)" class="glass-card p-4 rounded-2xl text-right space-y-1.5 border border-rose-500/45 sm:col-span-2 md:col-span-2">
+                <button onclick="selectStage(5)" class="glass-card p-4 rounded-2xl text-right space-y-1.5 border border-rose-500/60 sm:col-span-2 md:col-span-2 bg-rose-950/20">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-black px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300">المرحلة 5 — الزعيم</span>
-                        <span class="text-xs text-rose-400 font-bold">Boss (1500 HP)</span>
+                        <span class="text-xs font-black px-2.5 py-0.5 rounded-full bg-rose-500/25 text-rose-300">المرحلة 5 • الزعيم</span>
+                        <span class="text-xs text-amber-300 font-black">مفتوحة 🔥</span>
                     </div>
-                    <div class="font-black text-white text-base">معركة القائد المدرع</div>
-                    <div class="text-xs text-slate-300">واجه الزعيم المدرع بدم 1500 مع حراس مساندين</div>
+                    <div class="font-black text-white text-base">المعركة الحاسمة — القائد المدرع</div>
+                    <div class="text-xs text-slate-300">مواجهة الزعيم المدرع (دم 1500) مع حارسين مسلحين</div>
                 </button>
             </div>
         </div>
@@ -493,7 +527,7 @@
                 </div>
 
                 <button id="hudMobileToggleBtn" onclick="toggleMobileControlsManual()" class="glass-panel px-3 py-2 rounded-xl text-xs font-black text-sky-300 hover:text-white border border-sky-500/40">
-                    📱 لمس: تلقائي
+                    📱 تحكم الجوال: تلقائي
                 </button>
 
                 <button onclick="exitGameplay()" class="glass-panel hover:bg-rose-600 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-rose-300 hover:text-white border border-rose-500/40">
@@ -523,52 +557,45 @@
         </div>
 
         <!-- تحكم الجوال واللمس الكامل (عصا حركة 360° + عصا تصويب 360° + أزرار رمي وتخفي وتلقيم وتبديل سلاح) -->
-        <div id="mobileControlsLayer" class="hidden fixed inset-x-0 bottom-0 z-30 p-3 sm:p-5 pointer-events-none select-none">
-            <div class="flex items-end justify-between w-full gap-2">
-                <!-- يسار: عصا الحركة 360 درجة -->
-                <div class="flex flex-col items-center gap-1.5 pointer-events-auto">
-                    <div id="moveJoystick" class="joystick-base">
-                        <div id="moveJoystickKnob" class="joystick-knob"></div>
-                    </div>
-                    <span class="text-[11px] font-bold text-sky-200 bg-slate-950/80 px-2.5 py-0.5 rounded-full border border-sky-500/30">
-                        حركة
-                    </span>
-                </div>
-
-                <!-- وسط أسفل: أزرار التخفي وسحب الطلق وتبديل الأسلحة -->
-                <div class="flex flex-col items-center gap-1.5 pointer-events-auto mb-10 sm:mb-0">
-                    <div id="mobileWeaponSwitchRow" class="hidden items-center gap-1 bg-slate-950/80 p-1 rounded-xl border border-slate-700">
-                        <button id="mWepM4" onclick="switchWeaponInTraining('m4')" class="touch-action-btn px-2 py-1 rounded-lg text-[11px] font-black bg-sky-600 text-white">M4</button>
-                        <button id="mWepSniper" onclick="switchWeaponInTraining('sniper')" class="touch-action-btn px-2 py-1 rounded-lg text-[11px] font-black bg-slate-800 text-slate-300">SNIPER</button>
-                        <button id="mWepRpg" onclick="switchWeaponInTraining('rpg')" class="touch-action-btn px-2 py-1 rounded-lg text-[11px] font-black bg-slate-800 text-slate-300">RPG</button>
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                        <button id="mobileCrouchBtn" onclick="toggleCrouchTouch()" class="touch-action-btn px-3 py-2.5 rounded-xl bg-amber-500/25 border border-amber-400/60 text-amber-200 font-black text-xs">
-                            🛡️ تخفي
-                        </button>
-                        <button onclick="triggerReload()" class="touch-action-btn px-3 py-2.5 rounded-xl bg-emerald-500/25 border border-emerald-400/60 text-emerald-200 font-black text-xs">
-                            🔄 سحب طلق
-                        </button>
-                    </div>
-                </div>
-
-                <!-- يمين: عصا التصويب 360 درجة + زر الرمي -->
-                <div class="flex items-end gap-2.5 pointer-events-auto">
-                    <div class="flex flex-col items-center gap-1.5">
-                        <div id="aimJoystick" class="joystick-base border-rose-400/50">
-                            <div id="aimJoystickKnob" class="joystick-knob" style="background: radial-gradient(circle at 35% 30%, #fda4af, #e11d48 70%, #9f1239); box-shadow: 0 6px 15px rgba(225, 29, 72, 0.55);"></div>
-                        </div>
-                        <span class="text-[11px] font-bold text-rose-200 bg-slate-950/80 px-2.5 py-0.5 rounded-full border border-rose-500/30">
-                            تصويب
-                        </span>
-                    </div>
-
-                    <button id="mobileFireBtn" class="touch-action-btn w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-rose-500 to-red-700 border-2 border-rose-200/80 text-white font-black text-sm shadow-2xl flex flex-col items-center justify-center">
-                        <span>🔥</span>
-                        <span class="text-[11px]">رمي</span>
-                    </button>
-                </div>
+        <div id="mobileControlsLayer" class="hidden fixed inset-0 z-30 pointer-events-none select-none">
+            <!-- عصا الحركة 360 درجة -->
+            <div id="moveJoystick" class="joystick-base pointer-events-auto" style="position: fixed; left: 24px; bottom: 28px;">
+                <div id="moveJoystickKnob" class="joystick-knob"></div>
+                <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[11px] font-bold text-sky-200 bg-slate-950/85 px-2.5 py-0.5 rounded-full border border-sky-500/30 whitespace-nowrap pointer-events-none">
+                    التحرك
+                </span>
             </div>
+
+            <!-- شريط تبديل الأسلحة (التدريب الحر) -->
+            <div id="mobileWeaponSwitchRow" class="hidden items-center gap-1 bg-slate-950/85 p-1.5 rounded-xl border border-slate-700 pointer-events-auto" style="position: fixed; left: 50%; bottom: 86px; transform: translateX(-50%);">
+                <button id="mWepM4" onclick="switchWeaponInTraining('m4')" class="touch-action-btn px-2.5 py-1 rounded-lg text-[11px] font-black bg-sky-600 text-white">M4</button>
+                <button id="mWepSniper" onclick="switchWeaponInTraining('sniper')" class="touch-action-btn px-2.5 py-1 rounded-lg text-[11px] font-black bg-slate-800 text-slate-300">SNIPER</button>
+                <button id="mWepRpg" onclick="switchWeaponInTraining('rpg')" class="touch-action-btn px-2.5 py-1 rounded-lg text-[11px] font-black bg-slate-800 text-slate-300">RPG</button>
+            </div>
+
+            <!-- زر التخفي -->
+            <button id="mobileCrouchBtn" onclick="toggleCrouchTouch()" class="touch-action-btn px-3.5 py-2.5 rounded-xl bg-amber-500/25 border border-amber-400/60 text-amber-200 font-black text-xs pointer-events-auto" style="position: fixed; left: 42%; bottom: 32px;">
+                🛡️ تخفي
+            </button>
+
+            <!-- زر سحب الطلق -->
+            <button id="mobileReloadBtn" onclick="triggerReload()" class="touch-action-btn px-3.5 py-2.5 rounded-xl bg-emerald-500/25 border border-emerald-400/60 text-emerald-200 font-black text-xs pointer-events-auto" style="position: fixed; left: 53%; bottom: 32px;">
+                🔄 سحب طلق
+            </button>
+
+            <!-- عصا التصويب 360 درجة -->
+            <div id="aimJoystick" class="joystick-base border-rose-400/50 pointer-events-auto" style="position: fixed; right: 112px; bottom: 28px;">
+                <div id="aimJoystickKnob" class="joystick-knob" style="background: radial-gradient(circle at 35% 30%, #fda4af, #e11d48 70%, #9f1239); box-shadow: 0 6px 15px rgba(225, 29, 72, 0.55);"></div>
+                <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[11px] font-bold text-rose-200 bg-slate-950/85 px-2.5 py-0.5 rounded-full border border-rose-500/30 whitespace-nowrap pointer-events-none">
+                    التصويب
+                </span>
+            </div>
+
+            <!-- زر الرمي -->
+            <button id="mobileFireBtn" class="touch-action-btn w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-rose-500 to-red-700 border-2 border-rose-200/80 text-white font-black text-sm shadow-2xl flex flex-col items-center justify-center pointer-events-auto" style="position: fixed; right: 20px; bottom: 36px;">
+                <span>🔥</span>
+                <span class="text-[11px]">رمي</span>
+            </button>
         </div>
 
         <!-- نافذة نهاية الجولة (فوز / خسارة / نتيجة الاختبار) -->
@@ -590,7 +617,91 @@
         </div>
     </div>
 
+    <!-- شاشة تخصيص التحكم السوداء النقية (Full-screen overlay z-index: 9999) -->
+    <div id="hudCustomizerOverlay" style="display: none; z-index: 9999;" class="fixed inset-0 customizer-black-backdrop select-none overflow-hidden">
+        <!-- شريط التعديل العلوي وزر الحفظ -->
+        <div class="fixed top-3 inset-x-3 z-[10000] glass-panel rounded-2xl p-3 sm:p-4 border border-sky-400/60 shadow-2xl">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                <div class="flex flex-wrap items-center gap-3 sm:gap-4">
+                    <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-1 rounded-lg bg-sky-500/25 text-sky-300 text-xs font-black">العنصر المحدد:</span>
+                        <span id="customSelectedLabel" class="text-sm font-black text-white">التحرك (عصا الحركة)</span>
+                    </div>
+
+                    <!-- الإخفاء (0 إلى 100%) -->
+                    <div class="flex items-center gap-2 bg-slate-900/95 px-3 py-1.5 rounded-xl border border-slate-700">
+                        <label for="customHideRange" class="text-xs font-extrabold text-amber-300 whitespace-nowrap">
+                            الإخفاء: <span id="customHideValue">0</span>%
+                        </label>
+                        <input id="customHideRange" type="range" min="0" max="100" value="0" oninput="onCustomizerHideChange(this.value)" class="w-24 sm:w-28 cursor-pointer">
+                    </div>
+
+                    <!-- الحجم (50 إلى 150%) -->
+                    <div class="flex items-center gap-2 bg-slate-900/95 px-3 py-1.5 rounded-xl border border-slate-700">
+                        <label for="customScaleRange" class="text-xs font-extrabold text-sky-300 whitespace-nowrap">
+                            الحجم: <span id="customScaleValue">100</span>%
+                        </label>
+                        <input id="customScaleRange" type="range" min="50" max="150" value="100" oninput="onCustomizerScaleChange(this.value)" class="w-24 sm:w-28 cursor-pointer">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-2.5">
+                    <button onclick="resetCustomHudLayout()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-extrabold border border-slate-600">
+                        إعادة ضبط
+                    </button>
+                    <button onclick="saveCustomHudLayout()" class="menu-btn px-6 py-2.5 rounded-xl bg-gradient-to-l from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white text-xs sm:text-sm font-black shadow-lg">
+                        ✓ حفظ
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- حاوية عناصر التحكم التفاعلية القابلة للسحب داخل الشاشة السوداء -->
+        <div id="customizerStageArea" class="fixed inset-0"></div>
+
+        <div class="fixed bottom-3 left-1/2 -translate-x-1/2 text-[11px] sm:text-xs text-slate-300 bg-slate-950/90 px-4 py-1.5 rounded-full border border-slate-800 pointer-events-none whitespace-nowrap">
+            اسحب أي زر أو عصا لتغيير مكانه، واضبط الإخفاء والحجم من الأعلى ثم اضغط حفظ
+        </div>
+    </div>
+
     <script>
+        // تعريف الأسلحة وإحصائياتها الدقيقة
+        const WEAPONS = {
+            m4: {
+                key: 'm4',
+                name: 'أم فور (M4)',
+                magSize: 30,
+                damage: 5,
+                fireDelayMs: 100,
+                reloadTimeMs: 1400,
+                bulletSpeed: 920,
+                auto: true,
+                color: '#38bdf8'
+            },
+            sniper: {
+                key: 'sniper',
+                name: 'سنايبر (Sniper)',
+                magSize: 5,
+                damage: 100,
+                fireDelayMs: 3000,
+                reloadTimeMs: 2200,
+                bulletSpeed: 1450,
+                auto: false,
+                color: '#34d399'
+            },
+            rpg: {
+                key: 'rpg',
+                name: 'آر بي جي (RPG)',
+                magSize: 1,
+                damage: 300,
+                fireDelayMs: 10000,
+                reloadTimeMs: 10000,
+                bulletSpeed: 640,
+                auto: false,
+                color: '#fbbf24'
+            }
+        };
+
         // محرك الصوت التوليدي البسيط (بدون ملفات صوت خارجية)
         class SoundEngine {
             constructor() {
@@ -712,57 +823,61 @@
                     osc.stop(now + 0.48);
                 } catch (_) {}
             }
+
+            playHit(killed = false) {
+                if (this.muted || this.volume <= 0) return;
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const now = this.ctx.currentTime;
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(killed ? 820 : 520, now);
+                    osc.frequency.exponentialRampToValueAtTime(killed ? 1100 : 300, now + 0.08);
+                    gain.gain.setValueAtTime(this.volume * 0.16, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.095);
+                } catch (_) {}
+            }
         }
 
         const sound = new SoundEngine();
 
-        // تعريف الأسلحة حسب المواصفات المطلوبة
-        const WEAPONS = {
-            m4: {
-                key: 'm4',
-                name: 'أم فور (M4)',
-                magSize: 30,
-                damage: 5,
-                fireDelayMs: 100, // 0.1 ثانية
-                reloadTimeMs: 1100,
-                bulletSpeed: 920,
-                auto: true,
-                color: '#38bdf8'
-            },
-            sniper: {
-                key: 'sniper',
-                name: 'سنايبر (Sniper)',
-                magSize: 5,
-                damage: 100,
-                fireDelayMs: 3000, // 3 ثوانٍ
-                reloadTimeMs: 1500,
-                bulletSpeed: 1450,
-                auto: false,
-                color: '#34d399'
-            },
-            rpg: {
-                key: 'rpg',
-                name: 'آر بي جي (RPG)',
-                magSize: 1,
-                damage: 300,
-                fireDelayMs: 10000, // 10 ثوانٍ
-                reloadTimeMs: 1400,
-                bulletSpeed: 640,
-                explosionRadius: 120,
-                auto: false,
-                color: '#fbbf24'
-            }
-        };
-
-        // إعدادات العرض والتحكم
+        // إعدادات العرض والتحكم مع الحفظ الفوري في localStorage
+        const MOBILE_MODE_STORAGE_KEY = 'war_simple_abbas_mobile_controls_mode_v2';
         let targetFpsLimit = 0;
         let showFps = false;
         let resolutionScale = 'auto';
-        let mobileControlsMode = 'auto';
+        let mobileControlsMode = 'auto'; // 'auto' | 'on' | 'off'
+
+        function loadMobileControlsPreference() {
+            try {
+                const saved = localStorage.getItem(MOBILE_MODE_STORAGE_KEY);
+                if (saved === 'on' || saved === 'off' || saved === 'auto') {
+                    mobileControlsMode = saved;
+                }
+            } catch (_) {}
+        }
+
+        function saveMobileControlsPreference() {
+            try {
+                localStorage.setItem(MOBILE_MODE_STORAGE_KEY, mobileControlsMode);
+            } catch (_) {}
+        }
 
         const isTouchDevice = () => {
             return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || window.innerWidth <= 820;
         };
+
+        function isMobileControlsVisibleNow() {
+            if (mobileControlsMode === 'off') return false;
+            if (mobileControlsMode === 'on') return true;
+            return isTouchDevice();
+        }
 
         function showToast(msg) {
             const el = document.getElementById('toastMessage');
@@ -781,14 +896,25 @@
             const hudBtn = document.getElementById('hudMobileToggleBtn');
             const bottomStats = document.getElementById('hudBottomStats');
 
-            const shouldShow = (mobileControlsMode === 'on') || (mobileControlsMode === 'auto' && isTouchDevice());
+            const controlsEnabled = isMobileControlsVisibleNow();
+            const shouldShowInGame = controlsEnabled && gameRunning;
 
             if (layer) {
-                if (shouldShow && gameRunning) layer.classList.remove('hidden');
-                else layer.classList.add('hidden');
+                if (shouldShowInGame) {
+                    layer.classList.remove('hidden');
+                    layer.style.display = 'block';
+                } else {
+                    layer.classList.add('hidden');
+                    layer.style.display = 'none';
+                    touchState.joyX = 0;
+                    touchState.joyY = 0;
+                    touchState.aimActive = false;
+                    touchState.fireHeld = false;
+                }
             }
+
             if (bottomStats) {
-                if (shouldShow && gameRunning) {
+                if (shouldShowInGame) {
                     bottomStats.classList.remove('bottom-4');
                     bottomStats.classList.add('bottom-32', 'sm:bottom-36');
                 } else {
@@ -796,17 +922,27 @@
                     bottomStats.classList.add('bottom-4');
                 }
             }
+
             if (toggleInput) {
-                toggleInput.checked = shouldShow;
+                toggleInput.checked = controlsEnabled;
             }
+
             if (hudBtn) {
-                if (mobileControlsMode === 'auto') hudBtn.innerText = '📱 لمس: تلقائي';
-                else if (mobileControlsMode === 'on') hudBtn.innerText = '📱 لمس: مفعل';
-                else hudBtn.innerText = '📱 لمس: مخفي';
+                if (mobileControlsMode === 'off') {
+                    hudBtn.innerText = '📱 تحكم الجوال: مخفي';
+                    hudBtn.className = 'glass-panel px-3 py-2 rounded-xl text-xs font-black text-slate-400 hover:text-white border border-slate-600/50';
+                } else if (mobileControlsMode === 'on') {
+                    hudBtn.innerText = '📱 تحكم الجوال: ظاهر';
+                    hudBtn.className = 'glass-panel px-3 py-2 rounded-xl text-xs font-black text-emerald-300 hover:text-white border border-emerald-500/40';
+                } else {
+                    hudBtn.innerText = '📱 تحكم الجوال: تلقائي';
+                    hudBtn.className = 'glass-panel px-3 py-2 rounded-xl text-xs font-black text-sky-300 hover:text-white border border-sky-500/40';
+                }
             }
+
             const wRow = document.getElementById('mobileWeaponSwitchRow');
             if (wRow) {
-                if (currentMode === 'training') {
+                if (currentMode === 'training' && shouldShowInGame) {
                     wRow.classList.remove('hidden');
                     wRow.classList.add('flex');
                 } else {
@@ -814,20 +950,29 @@
                     wRow.classList.remove('flex');
                 }
             }
+
+            applyCustomHudStyles();
         }
 
         function updateMobileControlsPreference() {
             const checked = document.getElementById('mobileControlsToggle').checked;
             mobileControlsMode = checked ? 'on' : 'off';
+            saveMobileControlsPreference();
             sound.playUIClick(true);
             syncMobileControlsUI();
+            showToast(checked ? 'تم تفعيل أزرار تحكم الجوال' : 'تم إخفاء أزرار تحكم الجوال بالكامل');
         }
 
         function toggleMobileControlsManual() {
             sound.playUIClick(true);
-            if (mobileControlsMode === 'auto') mobileControlsMode = 'on';
-            else if (mobileControlsMode === 'on') mobileControlsMode = 'off';
-            else mobileControlsMode = 'auto';
+            if (isMobileControlsVisibleNow()) {
+                mobileControlsMode = 'off';
+                showToast('تم إخفاء تحكم الجوال');
+            } else {
+                mobileControlsMode = 'on';
+                showToast('تم إظهار تحكم الجوال');
+            }
+            saveMobileControlsPreference();
             syncMobileControlsUI();
         }
 
@@ -843,14 +988,340 @@
             'gameContainer'
         ];
 
+        // نظام تخصيص تحكم الجوال (نسب مئوية متجاوبة + شاشة سوداء نقية + حفظ دائم)
+        const HUD_STORAGE_KEY = 'war_simple_abbas_hud_pct_v2';
+
+        const HUD_ITEMS = [
+            { id: 'moveJoystick', label: 'التحرك (عصا الحركة)', xPct: 4, yPct: 72, scale: 100, hide: 0 },
+            { id: 'aimJoystick', label: 'التصويب (عصا التصويب)', xPct: 70, yPct: 72, scale: 100, hide: 0 },
+            { id: 'mobileFireBtn', label: 'الرمي (زر إطلاق النار)', xPct: 87, yPct: 75, scale: 100, hide: 0 },
+            { id: 'mobileCrouchBtn', label: 'التخفي / الانحناء', xPct: 36, yPct: 84, scale: 100, hide: 0 },
+            { id: 'mobileReloadBtn', label: 'سحب الطلق', xPct: 50, yPct: 84, scale: 100, hide: 0 },
+            { id: 'mobileWeaponSwitchRow', label: 'تبديل الأسلحة', xPct: 40, yPct: 72, scale: 100, hide: 0 }
+        ];
+
+        let customHudConfig = {};
+        let hudEditMode = false;
+        let selectedHudId = 'moveJoystick';
+        let draggingProxyId = null;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+
+        function getDefaultHudConfig() {
+            const cfg = {};
+            HUD_ITEMS.forEach(item => {
+                cfg[item.id] = {
+                    xPct: item.xPct,
+                    yPct: item.yPct,
+                    scale: item.scale,
+                    hide: item.hide
+                };
+            });
+            return cfg;
+        }
+
+        function loadCustomHudConfig() {
+            const defaults = getDefaultHudConfig();
+            try {
+                const raw = localStorage.getItem(HUD_STORAGE_KEY);
+                if (!raw) {
+                    customHudConfig = defaults;
+                    return;
+                }
+                const parsed = JSON.parse(raw);
+                HUD_ITEMS.forEach(item => {
+                    const saved = parsed[item.id];
+                    customHudConfig[item.id] = {
+                        xPct: typeof saved?.xPct === 'number' ? Math.max(0, Math.min(92, saved.xPct)) : defaults[item.id].xPct,
+                        yPct: typeof saved?.yPct === 'number' ? Math.max(12, Math.min(92, saved.yPct)) : defaults[item.id].yPct,
+                        scale: typeof saved?.scale === 'number' ? Math.max(50, Math.min(150, saved.scale)) : 100,
+                        hide: typeof saved?.hide === 'number' ? Math.max(0, Math.min(100, saved.hide)) : 0
+                    };
+                });
+            } catch (_) {
+                customHudConfig = defaults;
+            }
+        }
+
+        function applyCustomHudStyles() {
+            const controlsAllowed = isMobileControlsVisibleNow();
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+
+            HUD_ITEMS.forEach(item => {
+                const el = document.getElementById(item.id);
+                const entry = customHudConfig[item.id];
+                if (!el || !entry) return;
+
+                if (!controlsAllowed) {
+                    el.style.display = 'none';
+                    el.style.pointerEvents = 'none';
+                    return;
+                }
+
+                if (item.id === 'mobileWeaponSwitchRow' && currentMode !== 'training') {
+                    el.style.display = 'none';
+                    el.style.pointerEvents = 'none';
+                    return;
+                }
+
+                const leftPx = Math.round((entry.xPct / 100) * vw);
+                const topPx = Math.round((entry.yPct / 100) * vh);
+                const scaleFactor = (entry.scale || 100) / 100;
+                const hidePct = entry.hide || 0;
+                const opacityVal = Math.max(0, Math.min(1, 1 - hidePct / 100));
+
+                el.style.position = 'fixed';
+                el.style.left = leftPx + 'px';
+                el.style.top = topPx + 'px';
+                el.style.right = 'auto';
+                el.style.bottom = 'auto';
+                el.style.transform = `scale(${scaleFactor})`;
+                el.style.transformOrigin = 'center center';
+                el.style.display = item.id === 'mobileWeaponSwitchRow' ? 'flex' : 'block';
+
+                if (hidePct >= 100) {
+                    el.style.opacity = '0';
+                    el.style.pointerEvents = 'none';
+                } else {
+                    el.style.opacity = opacityVal.toString();
+                    el.style.pointerEvents = 'auto';
+                }
+            });
+        }
+
+        function createProxyControlElement(item) {
+            const wrapper = document.createElement('div');
+            wrapper.id = 'proxy_' + item.id;
+            wrapper.dataset.hudId = item.id;
+            wrapper.className = 'custom-proxy-item';
+
+            if (item.id === 'moveJoystick') {
+                wrapper.innerHTML = `
+                    <div class="joystick-base border-sky-400">
+                        <div class="joystick-knob"></div>
+                        <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[11px] font-black text-sky-200 bg-slate-900 px-2.5 py-0.5 rounded-full border border-sky-400/50 whitespace-nowrap">
+                            التحرك
+                        </span>
+                    </div>
+                `;
+            } else if (item.id === 'aimJoystick') {
+                wrapper.innerHTML = `
+                    <div class="joystick-base border-rose-400">
+                        <div class="joystick-knob" style="background: radial-gradient(circle at 35% 30%, #fda4af, #e11d48 70%, #9f1239);"></div>
+                        <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[11px] font-black text-rose-200 bg-slate-900 px-2.5 py-0.5 rounded-full border border-rose-400/50 whitespace-nowrap">
+                            التصويب
+                        </span>
+                    </div>
+                `;
+            } else if (item.id === 'mobileFireBtn') {
+                wrapper.innerHTML = `
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-rose-500 to-red-700 border-2 border-white text-white font-black text-sm shadow-2xl flex flex-col items-center justify-center">
+                        <span>🔥</span>
+                        <span class="text-[11px]">رمي</span>
+                    </div>
+                `;
+            } else if (item.id === 'mobileCrouchBtn') {
+                wrapper.innerHTML = `
+                    <div class="px-4 py-2.5 rounded-xl bg-amber-500/30 border-2 border-amber-400 text-amber-200 font-black text-xs whitespace-nowrap shadow-lg">
+                        🛡️ تخفي
+                    </div>
+                `;
+            } else if (item.id === 'mobileReloadBtn') {
+                wrapper.innerHTML = `
+                    <div class="px-4 py-2.5 rounded-xl bg-emerald-500/30 border-2 border-emerald-400 text-emerald-200 font-black text-xs whitespace-nowrap shadow-lg">
+                        🔄 سحب طلق
+                    </div>
+                `;
+            } else if (item.id === 'mobileWeaponSwitchRow') {
+                wrapper.innerHTML = `
+                    <div class="flex items-center gap-1.5 bg-slate-900 p-2 rounded-xl border-2 border-sky-400/70 shadow-lg">
+                        <span class="px-2.5 py-1 rounded-lg text-[11px] font-black bg-sky-600 text-white">M4</span>
+                        <span class="px-2.5 py-1 rounded-lg text-[11px] font-black bg-slate-800 text-slate-200">SNIPER</span>
+                        <span class="px-2.5 py-1 rounded-lg text-[11px] font-black bg-slate-800 text-slate-200">RPG</span>
+                    </div>
+                `;
+            }
+
+            wrapper.addEventListener('pointerdown', e => {
+                e.preventDefault();
+                e.stopPropagation();
+                selectHudItemForEdit(item.id);
+                draggingProxyId = item.id;
+                const rect = wrapper.getBoundingClientRect();
+                dragOffsetX = e.clientX - rect.left;
+                dragOffsetY = e.clientY - rect.top;
+                try { wrapper.setPointerCapture(e.pointerId); } catch (_) {}
+            });
+
+            return wrapper;
+        }
+
+        function renderCustomizerProxies() {
+            const stage = document.getElementById('customizerStageArea');
+            if (!stage) return;
+            stage.innerHTML = '';
+
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+
+            HUD_ITEMS.forEach(item => {
+                const entry = customHudConfig[item.id];
+                const el = createProxyControlElement(item);
+                const leftPx = Math.round((entry.xPct / 100) * vw);
+                const topPx = Math.round((entry.yPct / 100) * vh);
+                const scaleFactor = (entry.scale || 100) / 100;
+                const hidePct = entry.hide || 0;
+                const visualOpacity = hidePct >= 100 ? 0.22 : Math.max(0.25, 1 - hidePct / 100);
+
+                el.style.left = leftPx + 'px';
+                el.style.top = topPx + 'px';
+                el.style.transform = `scale(${scaleFactor})`;
+                el.style.opacity = visualOpacity.toString();
+
+                if (selectedHudId === item.id) {
+                    el.classList.add('custom-proxy-selected');
+                }
+                stage.appendChild(el);
+            });
+        }
+
+        function updateSingleProxyVisual(id) {
+            const el = document.getElementById('proxy_' + id);
+            const entry = customHudConfig[id];
+            if (!el || !entry) return;
+
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            el.style.left = Math.round((entry.xPct / 100) * vw) + 'px';
+            el.style.top = Math.round((entry.yPct / 100) * vh) + 'px';
+            el.style.transform = `scale(${(entry.scale || 100) / 100})`;
+            const hidePct = entry.hide || 0;
+            el.style.opacity = (hidePct >= 100 ? 0.22 : Math.max(0.25, 1 - hidePct / 100)).toString();
+
+            document.querySelectorAll('.custom-proxy-item').forEach(node => {
+                if (node.dataset.hudId === selectedHudId) node.classList.add('custom-proxy-selected');
+                else node.classList.remove('custom-proxy-selected');
+            });
+        }
+
+        function selectHudItemForEdit(id) {
+            selectedHudId = id;
+            const item = HUD_ITEMS.find(i => i.id === id);
+            const entry = customHudConfig[id] || { scale: 100, hide: 0 };
+
+            const labelEl = document.getElementById('customSelectedLabel');
+            const hideSlider = document.getElementById('customHideRange');
+            const hideVal = document.getElementById('customHideValue');
+            const scaleSlider = document.getElementById('customScaleRange');
+            const scaleVal = document.getElementById('customScaleValue');
+
+            if (labelEl && item) labelEl.innerText = item.label;
+            if (hideSlider) hideSlider.value = entry.hide;
+            if (hideVal) hideVal.innerText = entry.hide;
+            if (scaleSlider) scaleSlider.value = entry.scale;
+            if (scaleVal) scaleVal.innerText = entry.scale;
+
+            updateSingleProxyVisual(id);
+        }
+
+        function onCustomizerHideChange(val) {
+            const num = Math.max(0, Math.min(100, parseInt(val, 10) || 0));
+            if (!customHudConfig[selectedHudId]) return;
+            customHudConfig[selectedHudId].hide = num;
+            const lbl = document.getElementById('customHideValue');
+            if (lbl) lbl.innerText = num;
+            updateSingleProxyVisual(selectedHudId);
+        }
+
+        function onCustomizerScaleChange(val) {
+            const num = Math.max(50, Math.min(150, parseInt(val, 10) || 100));
+            if (!customHudConfig[selectedHudId]) return;
+            customHudConfig[selectedHudId].scale = num;
+            const lbl = document.getElementById('customScaleValue');
+            if (lbl) lbl.innerText = num;
+            updateSingleProxyVisual(selectedHudId);
+        }
+
+        function openControlCustomizer() {
+            sound.playUIClick(true);
+            hudEditMode = true;
+
+            const overlay = document.getElementById('hudCustomizerOverlay');
+            if (overlay) {
+                overlay.classList.remove('hidden');
+                overlay.style.display = 'block';
+                overlay.style.pointerEvents = 'auto';
+            }
+
+            renderCustomizerProxies();
+            selectHudItemForEdit(selectedHudId || 'moveJoystick');
+        }
+
+        function resetCustomHudLayout() {
+            sound.playUIClick(true);
+            customHudConfig = getDefaultHudConfig();
+            renderCustomizerProxies();
+            selectHudItemForEdit(selectedHudId);
+            showToast('تمت إعادة ضبط أزرار التحكم للوضع الافتراضي');
+        }
+
+        function saveCustomHudLayout() {
+            sound.playUIClick(false);
+            try {
+                localStorage.setItem(HUD_STORAGE_KEY, JSON.stringify(customHudConfig));
+            } catch (_) {}
+
+            hudEditMode = false;
+            draggingProxyId = null;
+
+            const overlay = document.getElementById('hudCustomizerOverlay');
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+
+            applyCustomHudStyles();
+            syncMobileControlsUI();
+            showToast('تم حفظ مواقع وأحجام التحكم بنجاح');
+        }
+
+        function initHudDragListeners() {
+            window.addEventListener('pointermove', e => {
+                if (!hudEditMode || !draggingProxyId) return;
+                const entry = customHudConfig[draggingProxyId];
+                if (!entry) return;
+                const vw = Math.max(1, window.innerWidth);
+                const vh = Math.max(1, window.innerHeight);
+                const newLeft = Math.max(4, Math.min(vw - 56, e.clientX - dragOffsetX));
+                const newTop = Math.max(84, Math.min(vh - 56, e.clientY - dragOffsetY));
+                entry.xPct = Number(((newLeft / vw) * 100).toFixed(2));
+                entry.yPct = Number(((newTop / vh) * 100).toFixed(2));
+                updateSingleProxyVisual(draggingProxyId);
+            });
+
+            const stopDrag = () => {
+                draggingProxyId = null;
+            };
+            window.addEventListener('pointerup', stopDrag);
+            window.addEventListener('pointercancel', stopDrag);
+        }
+
         function navigateTo(screenId) {
             ALL_SCREENS.forEach(id => {
                 const el = document.getElementById(id);
-                if (el) el.classList.add('hidden');
+                if (!el) return;
+                if (id === screenId) {
+                    el.classList.remove('hidden');
+                    el.style.pointerEvents = 'auto';
+                } else {
+                    el.classList.add('hidden');
+                    el.style.pointerEvents = 'none';
+                }
             });
-            const target = document.getElementById(screenId);
-            if (target) target.classList.remove('hidden');
+
+            gameRunning = (screenId === 'gameContainer');
             syncMobileControlsUI();
+            applyCustomHudStyles();
         }
 
         function openPlayMenu() {
@@ -962,16 +1433,19 @@
             if (mode === 'training') {
                 titleEl.innerText = 'التدريب الحر — اختر سلاحك';
                 subEl.innerText = 'ستنزل في أرض خضراء ويمكنك تبديل الأسلحة بأي وقت';
+            } else if (mode === 'exam') {
+                titleEl.innerText = 'التدريب بالاختبارات — اختر سلاحك';
+                subEl.innerText = 'اختبار 45 ثانية لإصابة الأهداف الثابتة والمتحركة بأعلى دقة';
             } else {
                 titleEl.innerText = 'المرحلة ' + currentStageNum + ' — اختر سلاحك';
-                subEl.innerText = 'دمك 500 — استعد لمواجهة الخصوم';
+                subEl.innerText = 'دمك 500 — استعد لمواجهة الخصوم والاحتماء خلف السواتر';
             }
             navigateTo('weaponSelectScreen');
         }
 
         function backFromWeaponSelect() {
             sound.playUIClick(true);
-            if (currentMode === 'training') navigateTo('trainingMenuScreen');
+            if (currentMode === 'training' || currentMode === 'exam') navigateTo('trainingMenuScreen');
             else navigateTo('stagesMenuScreen');
         }
 
@@ -982,10 +1456,7 @@
         }
 
         function startExamMode() {
-            sound.playUIClick(true);
-            currentMode = 'exam';
-            selectedWeaponKey = 'm4';
-            launchGameplay();
+            openWeaponSelect('exam');
         }
 
         function confirmWeaponAndStart(wKey) {
@@ -1012,21 +1483,25 @@
             }
         }
 
-        // محرك اللعبة والكانفاس
+        // محرك اللعبة والكانفاس (كاميرا علوية استراتيجية واسعة 2.5D)
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        let worldWidth = 1700;
-        let worldHeight = 1200;
-        let camera = { x: 0, y: 0 };
+        let worldWidth = 1900;
+        let worldHeight = 1350;
+        let camera = { x: 0, y: 0, zoom: 0.88 };
+        let screenShake = 0;
+        let muzzleFlashes = [];
+        let decals = [];
 
         let player = {
             x: 400,
             y: 600,
-            radius: 18,
+            radius: 19,
             hp: 500,
             maxHp: 500,
             aimAngle: 0,
+            walkCycle: 0,
             crouching: false,
             jumpZ: 0,
             jumpVel: 0,
@@ -1063,6 +1538,7 @@
             canvas.width = Math.max(1, Math.floor(w * scale));
             canvas.height = Math.max(1, Math.floor(h * scale));
             ctx.setTransform(scale, 0, 0, scale, 0, 0);
+            if (hudEditMode) renderCustomizerProxies();
             syncMobileControlsUI();
         }
 
@@ -1075,10 +1551,11 @@
             player = {
                 x: 340,
                 y: worldHeight / 2,
-                radius: 18,
+                radius: 19,
                 hp: 500,
                 maxHp: 500,
                 aimAngle: 0,
+                walkCycle: 0,
                 crouching: false,
                 jumpZ: 0,
                 jumpVel: 0,
@@ -1093,6 +1570,9 @@
             enemies = [];
             targets = [];
             particles = [];
+            muzzleFlashes = [];
+            decals = [];
+            screenShake = 0;
 
             const badge = document.getElementById('hudModeBadge');
             const qWeapons = document.getElementById('hudQuickWeapons');
@@ -1105,31 +1585,36 @@
                 healthBox.classList.remove('hidden');
                 extraStatus.classList.add('hidden');
                 obstacles = [
-                    { x: 640, y: 420, w: 150, h: 42, low: true },
-                    { x: 920, y: 680, w: 170, h: 42, low: true },
-                    { x: 1180, y: 360, w: 60, h: 180, low: false }
+                    { x: 560, y: 380, w: 150, h: 44, low: true },
+                    { x: 560, y: 840, w: 150, h: 44, low: true },
+                    { x: 920, y: 610, w: 170, h: 46, low: true },
+                    { x: 1240, y: 350, w: 66, h: 210, low: false },
+                    { x: 1240, y: 760, w: 66, h: 210, low: false }
                 ];
                 updateQuickWeaponButtons();
             } else if (currentMode === 'exam') {
-                badge.innerText = 'التدريب بالاختبارات';
+                badge.innerText = 'التدريب بالاختبارات (45 ثانية)';
                 qWeapons.classList.add('hidden');
                 healthBox.classList.add('hidden');
                 extraStatus.classList.remove('hidden');
                 examState = { timeLeft: 45, shotsFired: 0, shotsHit: 0, score: 0 };
                 obstacles = [
-                    { x: 600, y: 460, w: 120, h: 36, low: true },
-                    { x: 880, y: 640, w: 120, h: 36, low: true }
+                    { x: 540, y: 420, w: 140, h: 40, low: true },
+                    { x: 540, y: 820, w: 140, h: 40, low: true },
+                    { x: 860, y: 620, w: 130, h: 40, low: true }
                 ];
                 spawnExamTargets();
             } else {
-                badge.innerText = 'المرحلة ' + currentStageNum;
+                badge.innerText = currentStageNum === 5 ? 'المرحلة 5 — مواجهة الزعيم' : 'المرحلة ' + currentStageNum;
                 qWeapons.classList.add('hidden');
                 healthBox.classList.remove('hidden');
                 extraStatus.classList.add('hidden');
                 obstacles = [
-                    { x: 580, y: 360, w: 140, h: 44, low: true },
-                    { x: 840, y: 660, w: 160, h: 44, low: true },
-                    { x: 1080, y: 430, w: 54, h: 210, low: false }
+                    { x: 540, y: 340, w: 150, h: 46, low: true },
+                    { x: 540, y: 920, w: 150, h: 46, low: true },
+                    { x: 860, y: 620, w: 170, h: 48, low: true },
+                    { x: 1120, y: 360, w: 62, h: 220, low: false },
+                    { x: 1120, y: 770, w: 62, h: 220, low: false }
                 ];
                 spawnStageEnemies(currentStageNum);
             }
@@ -1142,38 +1627,37 @@
 
         function spawnExamTargets() {
             targets = [
-                { x: 760, y: 320, baseY: 320, r: 24, vx: 0, vy: 0, alive: true, respawnAt: 0 },
-                { x: 1050, y: 520, baseY: 520, r: 24, vx: 0, vy: 95, alive: true, respawnAt: 0 },
-                { x: 1280, y: 740, baseY: 740, r: 24, vx: 0, vy: -110, alive: true, respawnAt: 0 },
-                { x: 960, y: 860, baseY: 860, r: 24, vx: 0, vy: 0, alive: true, respawnAt: 0 }
+                { x: 780, y: 280, baseY: 280, r: 26, vx: 0, vy: 0, alive: true, respawnAt: 0, points: 100 },
+                { x: 1080, y: 480, baseY: 480, r: 25, vx: 0, vy: 120, alive: true, respawnAt: 0, points: 150 },
+                { x: 1360, y: 720, baseY: 720, r: 24, vx: 0, vy: -145, alive: true, respawnAt: 0, points: 150 },
+                { x: 980, y: 960, baseY: 960, r: 26, vx: 0, vy: 0, alive: true, respawnAt: 0, points: 100 },
+                { x: 1520, y: 420, baseY: 420, r: 22, vx: 0, vy: 170, alive: true, respawnAt: 0, points: 200 }
             ];
         }
 
         function spawnStageEnemies(stageNum) {
             if (stageNum === 1) {
-                // خصمان بدم 200 لكل منهما
                 enemies = [
-                    { x: 1180, y: 430, radius: 18, hp: 200, maxHp: 200, speed: 95, fireCooldown: 1400, lastAttack: 0, damage: 12, isBoss: false, moveDir: 1 },
-                    { x: 1260, y: 760, radius: 18, hp: 200, maxHp: 200, speed: 95, fireCooldown: 1500, lastAttack: 0, damage: 12, isBoss: false, moveDir: -1 }
+                    { x: 1280, y: 430, radius: 19, hp: 200, maxHp: 200, speed: 105, fireCooldown: 1350, lastAttack: 0, damage: 12, isBoss: false, moveDir: 1, aimAngle: Math.PI, walkCycle: 0 },
+                    { x: 1340, y: 860, radius: 19, hp: 200, maxHp: 200, speed: 105, fireCooldown: 1450, lastAttack: 0, damage: 12, isBoss: false, moveDir: -1, aimAngle: Math.PI, walkCycle: 0 }
                 ];
             } else if (stageNum === 2) {
                 for (let i = 0; i < 3; i++) {
-                    enemies.push({ x: 1120 + i * 110, y: 320 + i * 220, radius: 18, hp: 240, maxHp: 240, speed: 120, fireCooldown: 1150, lastAttack: 0, damage: 16, isBoss: false, moveDir: i % 2 === 0 ? 1 : -1 });
+                    enemies.push({ x: 1240 + i * 110, y: 320 + i * 320, radius: 19, hp: 240, maxHp: 240, speed: 125, fireCooldown: 1100, lastAttack: 0, damage: 16, isBoss: false, moveDir: i % 2 === 0 ? 1 : -1, aimAngle: Math.PI, walkCycle: 0 });
                 }
             } else if (stageNum === 3) {
                 for (let i = 0; i < 4; i++) {
-                    enemies.push({ x: 1100 + (i % 2) * 160, y: 260 + i * 190, radius: 18, hp: 280, maxHp: 280, speed: 140, fireCooldown: 950, lastAttack: 0, damage: 20, isBoss: false, moveDir: i % 2 === 0 ? 1 : -1 });
+                    enemies.push({ x: 1220 + (i % 2) * 180, y: 260 + i * 250, radius: 19, hp: 280, maxHp: 280, speed: 142, fireCooldown: 920, lastAttack: 0, damage: 20, isBoss: false, moveDir: i % 2 === 0 ? 1 : -1, aimAngle: Math.PI, walkCycle: 0 });
                 }
             } else if (stageNum === 4) {
                 for (let i = 0; i < 5; i++) {
-                    enemies.push({ x: 1080 + (i % 2) * 190, y: 230 + i * 175, radius: 19, hp: 320, maxHp: 320, speed: 155, fireCooldown: 850, lastAttack: 0, damage: 24, isBoss: false, moveDir: i % 2 === 0 ? 1 : -1 });
+                    enemies.push({ x: 1200 + (i % 2) * 210, y: 220 + i * 215, radius: 20, hp: 320, maxHp: 320, speed: 158, fireCooldown: 820, lastAttack: 0, damage: 24, isBoss: false, moveDir: i % 2 === 0 ? 1 : -1, aimAngle: Math.PI, walkCycle: 0 });
                 }
             } else {
-                // المرحلة 5: زعيم بدم 1500 وحارسين
                 enemies = [
-                    { x: 1320, y: worldHeight / 2, radius: 34, hp: 1500, maxHp: 1500, speed: 125, fireCooldown: 750, lastAttack: 0, damage: 35, isBoss: true, moveDir: 1 },
-                    { x: 1140, y: 340, radius: 18, hp: 250, maxHp: 250, speed: 135, fireCooldown: 1050, lastAttack: 0, damage: 18, isBoss: false, moveDir: 1 },
-                    { x: 1140, y: 860, radius: 18, hp: 250, maxHp: 250, speed: 135, fireCooldown: 1050, lastAttack: 0, damage: 18, isBoss: false, moveDir: -1 }
+                    { x: 1480, y: worldHeight / 2, radius: 36, hp: 1500, maxHp: 1500, speed: 130, fireCooldown: 720, lastAttack: 0, damage: 35, isBoss: true, moveDir: 1, aimAngle: Math.PI, walkCycle: 0 },
+                    { x: 1260, y: 340, radius: 19, hp: 260, maxHp: 260, speed: 140, fireCooldown: 1000, lastAttack: 0, damage: 18, isBoss: false, moveDir: 1, aimAngle: Math.PI, walkCycle: 0 },
+                    { x: 1260, y: 990, radius: 19, hp: 260, maxHp: 260, speed: 140, fireCooldown: 1000, lastAttack: 0, damage: 18, isBoss: false, moveDir: -1, aimAngle: Math.PI, walkCycle: 0 }
                 ];
             }
         }
@@ -1235,10 +1719,20 @@
             if (currentMode === 'exam') examState.shotsFired += 1;
 
             sound.playShoot(player.weapon.key);
+            screenShake = Math.max(screenShake, player.weapon.key === 'rpg' ? 9 : (player.weapon.key === 'sniper' ? 5 : 2));
 
-            const muzzleDist = player.radius + 14;
+            const muzzleDist = player.radius + 18;
             const bx = player.x + Math.cos(player.aimAngle) * muzzleDist;
             const by = player.y + Math.sin(player.aimAngle) * muzzleDist;
+
+            muzzleFlashes.push({
+                x: bx,
+                y: by,
+                angle: player.aimAngle,
+                life: 0.065,
+                size: player.weapon.key === 'rpg' ? 22 : (player.weapon.key === 'sniper' ? 18 : 12),
+                color: player.weapon.key === 'rpg' ? '#fb923c' : '#fde047'
+            });
 
             bullets.push({
                 x: bx,
@@ -1248,7 +1742,7 @@
                 damage: player.weapon.damage,
                 fromPlayer: true,
                 isRpg: player.weapon.key === 'rpg',
-                radius: player.weapon.key === 'rpg' ? 6 : 3.5,
+                radius: player.weapon.key === 'rpg' ? 6.5 : 3.5,
                 color: player.weapon.color
             });
 
@@ -1258,19 +1752,41 @@
             updateHUD();
         }
 
-        function spawnExplosion(x, y, radius, damage, fromPlayer) {
-            sound.playExplosion();
-            for (let i = 0; i < 24; i++) {
-                const ang = (Math.PI * 2 * i) / 24 + Math.random() * 0.25;
-                const spd = 80 + Math.random() * 240;
+        function spawnHitBlood(x, y, count = 7) {
+            decals.push({ x, y, r: 8 + Math.random() * 10, alpha: 0.45 });
+            if (decals.length > 45) decals.shift();
+            for (let i = 0; i < count; i++) {
+                const ang = Math.random() * Math.PI * 2;
+                const spd = 45 + Math.random() * 130;
                 particles.push({
                     x, y,
                     vx: Math.cos(ang) * spd,
                     vy: Math.sin(ang) * spd,
-                    life: 0.45 + Math.random() * 0.25,
-                    maxLife: 0.7,
-                    color: i % 2 === 0 ? '#f97316' : '#facc15',
-                    size: 5 + Math.random() * 5
+                    life: 0.3 + Math.random() * 0.2,
+                    maxLife: 0.5,
+                    color: i % 2 === 0 ? '#dc2626' : '#991b1b',
+                    size: 3 + Math.random() * 3.5
+                });
+            }
+        }
+
+        function spawnExplosion(x, y, radius, damage, fromPlayer) {
+            sound.playExplosion();
+            screenShake = Math.max(screenShake, 16);
+            decals.push({ x, y, r: 34, alpha: 0.35, scorch: true });
+            if (decals.length > 45) decals.shift();
+
+            for (let i = 0; i < 28; i++) {
+                const ang = (Math.PI * 2 * i) / 28 + Math.random() * 0.25;
+                const spd = 90 + Math.random() * 260;
+                particles.push({
+                    x, y,
+                    vx: Math.cos(ang) * spd,
+                    vy: Math.sin(ang) * spd,
+                    life: 0.45 + Math.random() * 0.28,
+                    maxLife: 0.73,
+                    color: i % 3 === 0 ? '#f97316' : (i % 3 === 1 ? '#facc15' : '#475569'),
+                    size: 5 + Math.random() * 6
                 });
             }
 
@@ -1278,20 +1794,22 @@
                 enemies.forEach(en => {
                     if (en.hp > 0 && Math.hypot(en.x - x, en.y - y) <= radius + en.radius) {
                         en.hp = Math.max(0, en.hp - damage);
+                        spawnHitBlood(en.x, en.y, 10);
                     }
                 });
                 targets.forEach(t => {
                     if (t.alive && Math.hypot(t.x - x, t.y - y) <= radius + t.r) {
                         t.alive = false;
-                        t.respawnAt = performance.now() + 1800;
+                        t.respawnAt = performance.now() + 1600;
                         examState.shotsHit += 1;
-                        examState.score += 100;
+                        examState.score += (t.points || 100);
                     }
                 });
             } else {
                 if (Math.hypot(player.x - x, player.y - y) <= radius + player.radius && player.jumpZ <= 4) {
                     const dmgFactor = player.crouching ? 0.5 : 1;
                     player.hp = Math.max(0, player.hp - Math.round(damage * dmgFactor));
+                    spawnHitBlood(player.x, player.y, 8);
                 }
             }
         }
@@ -1413,6 +1931,7 @@
 
             if (moveBase && moveKnob) {
                 moveBase.addEventListener('touchstart', e => {
+                    if (hudEditMode) return;
                     e.preventDefault();
                     sound.init();
                     const t = e.changedTouches[0];
@@ -1421,6 +1940,7 @@
                 }, { passive: false });
 
                 moveBase.addEventListener('touchmove', e => {
+                    if (hudEditMode) return;
                     e.preventDefault();
                     for (let i = 0; i < e.changedTouches.length; i++) {
                         if (e.changedTouches[i].identifier === moveId) {
@@ -1461,6 +1981,7 @@
 
             if (aimBase && aimKnob) {
                 aimBase.addEventListener('touchstart', e => {
+                    if (hudEditMode) return;
                     e.preventDefault();
                     sound.init();
                     const t = e.changedTouches[0];
@@ -1470,6 +1991,7 @@
                 }, { passive: false });
 
                 aimBase.addEventListener('touchmove', e => {
+                    if (hudEditMode) return;
                     e.preventDefault();
                     for (let i = 0; i < e.changedTouches.length; i++) {
                         if (e.changedTouches[i].identifier === aimId) {
@@ -1511,6 +2033,7 @@
 
             if (fireBtn) {
                 fireBtn.addEventListener('touchstart', e => {
+                    if (hudEditMode) return;
                     e.preventDefault();
                     sound.init();
                     touchState.fireHeld = true;
@@ -1570,7 +2093,11 @@
                 iy /= mag;
             }
 
-            const speed = player.crouching ? 130 : 230;
+            if (mag > 0.1) {
+                player.walkCycle += dt * (player.crouching ? 7 : 12) * mag;
+            }
+
+            const speed = player.crouching ? 140 : 245;
             const nextX = Math.max(player.radius, Math.min(worldWidth - player.radius, player.x + ix * speed * dt));
             const nextY = Math.max(player.radius, Math.min(worldHeight - player.radius, player.y + iy * speed * dt));
 
@@ -1586,19 +2113,33 @@
                 }
             }
 
-            // التصويب عبر عصا الجوال أو مؤشر الماوس
+            // كاميرا علوية واسعة تمنح رؤية واضحة للسواتر والأعداء من الأعلى
+            camera.zoom = window.innerWidth < 768 ? 0.78 : 0.9;
+            const viewW = window.innerWidth / camera.zoom;
+            const viewH = window.innerHeight / camera.zoom;
+
+            // التصويب عبر عصا الجوال أو مؤشر الماوس مع مراعاة تكبير الكاميرا العلوية
             if (touchState.aimActive && Math.hypot(touchState.aimX, touchState.aimY) > 0.14) {
                 player.aimAngle = Math.atan2(touchState.aimY, touchState.aimX);
             } else if (!isTouchDevice() || mobileControlsMode === 'off') {
-                const worldMouseX = mouse.x + camera.x;
-                const worldMouseY = mouse.y + camera.y;
+                const worldMouseX = (mouse.x / camera.zoom) + camera.x;
+                const worldMouseY = (mouse.y / camera.zoom) + camera.y;
                 player.aimAngle = Math.atan2(worldMouseY - player.y, worldMouseX - player.x);
             } else if (mag > 0.14) {
                 player.aimAngle = Math.atan2(iy, ix);
             }
 
-            camera.x = Math.max(0, Math.min(worldWidth - window.innerWidth, player.x - window.innerWidth / 2));
-            camera.y = Math.max(0, Math.min(worldHeight - window.innerHeight, player.y - window.innerHeight / 2));
+            camera.x = Math.max(0, Math.min(Math.max(0, worldWidth - viewW), player.x - viewW / 2));
+            camera.y = Math.max(0, Math.min(Math.max(0, worldHeight - viewH), player.y - viewH / 2));
+
+            if (screenShake > 0) {
+                screenShake = Math.max(0, screenShake - dt * 36);
+            }
+
+            for (let i = muzzleFlashes.length - 1; i >= 0; i--) {
+                muzzleFlashes[i].life -= dt;
+                if (muzzleFlashes[i].life <= 0) muzzleFlashes.splice(i, 1);
+            }
 
             // تحديث المقذوفات
             for (let i = bullets.length - 1; i >= 0; i--) {
@@ -1627,9 +2168,11 @@
                         const en = enemies[eIdx];
                         if (en.hp > 0 && Math.hypot(b.x - en.x, b.y - en.y) <= en.radius + b.radius) {
                             if (b.isRpg) {
-                                spawnExplosion(b.x, b.y, 120, b.damage, true);
+                                spawnExplosion(b.x, b.y, 125, b.damage, true);
                             } else {
                                 en.hp = Math.max(0, en.hp - b.damage);
+                                spawnHitBlood(b.x, b.y, 6);
+                                sound.playHit(en.hp <= 0);
                             }
                             consumed = true;
                             break;
@@ -1641,12 +2184,18 @@
                             const t = targets[tIdx];
                             if (t.alive && Math.hypot(b.x - t.x, b.y - t.y) <= t.r + b.radius) {
                                 if (b.isRpg) {
-                                    spawnExplosion(b.x, b.y, 120, b.damage, true);
+                                    spawnExplosion(b.x, b.y, 125, b.damage, true);
                                 } else {
                                     t.alive = false;
-                                    t.respawnAt = now + 1800;
+                                    t.respawnAt = now + 1600;
                                     examState.shotsHit += 1;
-                                    examState.score += 100;
+                                    examState.score += (t.points || 100);
+                                    sound.playHit(true);
+                                    for (let p = 0; p < 10; p++) {
+                                        const a = Math.random() * Math.PI * 2;
+                                        const s = 60 + Math.random() * 140;
+                                        particles.push({ x: t.x, y: t.y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: 0.35, maxLife: 0.35, color: '#fbbf24', size: 4 });
+                                    }
                                 }
                                 consumed = true;
                                 break;
@@ -1662,6 +2211,7 @@
                     if (Math.hypot(b.x - player.x, b.y - player.y) <= player.radius + b.radius && player.jumpZ <= 4) {
                         const dmg = player.crouching ? Math.ceil(b.damage * 0.5) : b.damage;
                         player.hp = Math.max(0, player.hp - dmg);
+                        spawnHitBlood(player.x, player.y, 5);
                         bullets.splice(i, 1);
                         updateHUD();
                         if (player.hp <= 0) {
@@ -1683,28 +2233,32 @@
                     const dy = player.y - en.y;
                     const dist = Math.hypot(dx, dy) || 1;
                     const ang = Math.atan2(dy, dx);
+                    en.aimAngle = ang;
+                    en.walkCycle = (en.walkCycle || 0) + dt * 9;
 
-                    // حركة مناورة بسيطة للأعداء
                     const perpX = -Math.sin(ang) * en.moveDir;
                     const perpY = Math.cos(ang) * en.moveDir;
-                    const approach = dist > 260 ? 0.65 : 0.1;
-                    const moveX = en.x + (dx / dist * approach + perpX * 0.5) * en.speed * dt;
-                    const moveY = en.y + (dy / dist * approach + perpY * 0.5) * en.speed * dt;
+                    const approach = dist > 280 ? 0.68 : 0.12;
+                    const moveX = en.x + (dx / dist * approach + perpX * 0.52) * en.speed * dt;
+                    const moveY = en.y + (dy / dist * approach + perpY * 0.52) * en.speed * dt;
 
                     if (!collidesObstacle(moveX, en.y, en.radius, false)) en.x = moveX;
                     if (!collidesObstacle(en.x, moveY, en.radius, false)) en.y = moveY;
 
-                    if (now - en.lastAttack >= en.fireCooldown && dist < 760) {
+                    if (now - en.lastAttack >= en.fireCooldown && dist < 820) {
                         en.lastAttack = now;
+                        const mx = en.x + Math.cos(ang) * (en.radius + 14);
+                        const my = en.y + Math.sin(ang) * (en.radius + 14);
+                        muzzleFlashes.push({ x: mx, y: my, angle: ang, life: 0.055, size: en.isBoss ? 18 : 11, color: '#fb7185' });
                         bullets.push({
-                            x: en.x + Math.cos(ang) * (en.radius + 8),
-                            y: en.y + Math.sin(ang) * (en.radius + 8),
-                            vx: Math.cos(ang) * 440,
-                            vy: Math.sin(ang) * 440,
+                            x: mx,
+                            y: my,
+                            vx: Math.cos(ang) * (en.isBoss ? 520 : 460),
+                            vy: Math.sin(ang) * (en.isBoss ? 520 : 460),
                             damage: en.damage,
                             fromPlayer: false,
                             isRpg: false,
-                            radius: 4,
+                            radius: en.isBoss ? 5 : 4,
                             color: '#f87171'
                         });
                     }
@@ -1726,13 +2280,14 @@
                     }
                     if (t.alive && t.vy !== 0) {
                         t.y += t.vy * dt;
-                        if (Math.abs(t.y - t.baseY) > 130) t.vy *= -1;
+                        if (Math.abs(t.y - t.baseY) > 150) t.vy *= -1;
                     }
                 });
                 updateHUD();
                 if (examState.timeLeft <= 0) {
                     const acc = examState.shotsFired > 0 ? Math.round((examState.shotsHit / examState.shotsFired) * 100) : 0;
-                    showEndModal(true, 'انتهى الاختبار!!', `النقاط: ${examState.score} — الدقة: ${acc}%`);
+                    const rank = examState.score >= 1600 && acc >= 65 ? 'S' : (examState.score >= 1100 ? 'A' : (examState.score >= 600 ? 'B' : 'C'));
+                    showEndModal(true, `انتهى الاختبار — الرتبة (${rank})`, `النقاط: ${examState.score} | الإصابات: ${examState.shotsHit} | الدقة: ${acc}%`);
                     return;
                 }
             }
@@ -1747,19 +2302,148 @@
             }
         }
 
+        // رسم مقاتل تكتيكي واقعي بمنظور علوي 2.5D (ظل، أرجل متحركة، أكتاف، درع صدر، خوذة، وسلاح مفصل)
+        function drawTacticalSoldier(x, y, radius, angle, options) {
+            const {
+                isPlayer = false,
+                isBoss = false,
+                crouching = false,
+                jumpZ = 0,
+                walkCycle = 0,
+                weaponKey = 'm4'
+            } = options;
+
+            const scale = isBoss ? 1.75 : (crouching ? 0.88 : 1);
+            const drawY = y - jumpZ;
+
+            // ظل واقعي ناعم على الأرض
+            ctx.save();
+            ctx.beginPath();
+            ctx.ellipse(x + 4, y + 7, radius * (jumpZ > 0 ? 0.85 : 1.05), radius * 0.72, 0, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(2, 6, 23, 0.45)';
+            ctx.fill();
+            ctx.restore();
+
+            ctx.save();
+            ctx.translate(x, drawY);
+            ctx.rotate(angle);
+            ctx.scale(scale, scale);
+
+            // حركة الأقدام أثناء الركض
+            const stride = Math.sin(walkCycle) * 6;
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath();
+            ctx.ellipse(stride, -8, 6.5, 4, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(-stride, 8, 6.5, 4, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // الأكتاف والجذع المدرع
+            const vestColor = isPlayer ? '#1e3a8a' : (isBoss ? '#450a0a' : '#7f1d1d');
+            const shoulderColor = isPlayer ? '#2563eb' : (isBoss ? '#991b1b' : '#b91c1c');
+            const trimColor = isPlayer ? '#60a5fa' : (isBoss ? '#fbbf24' : '#f87171');
+
+            ctx.fillStyle = shoulderColor;
+            ctx.strokeStyle = '#0f172a';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(-10, -17, 20, 34, 8);
+            ctx.fill();
+            ctx.stroke();
+
+            // سترة تكتيكية في المنتصف
+            ctx.fillStyle = vestColor;
+            ctx.beginPath();
+            ctx.roundRect(-8, -12, 17, 24, 5);
+            ctx.fill();
+
+            ctx.strokeStyle = trimColor;
+            ctx.lineWidth = 1.4;
+            ctx.strokeRect(-5, -9, 11, 18);
+
+            // السلاح والذراعان الممتدتان للأمام
+            ctx.fillStyle = '#1e293b';
+            ctx.strokeStyle = '#020617';
+            ctx.lineWidth = 1.6;
+            if (weaponKey === 'sniper') {
+                ctx.fillRect(4, -2.5, 34, 5);
+                ctx.fillStyle = '#334155';
+                ctx.fillRect(10, -4, 12, 8);
+            } else if (weaponKey === 'rpg') {
+                ctx.fillStyle = '#365314';
+                ctx.fillRect(-4, -4, 36, 8);
+                ctx.fillStyle = '#d97706';
+                ctx.beginPath();
+                ctx.moveTo(32, -5.5);
+                ctx.lineTo(41, 0);
+                ctx.lineTo(32, 5.5);
+                ctx.closePath();
+                ctx.fill();
+            } else {
+                ctx.fillRect(5, -2.5, 25, 5);
+                ctx.fillStyle = '#475569';
+                ctx.fillRect(11, -3.5, 9, 7);
+            }
+
+            // اليدان القابضتان على السلاح
+            ctx.fillStyle = isPlayer ? '#93c5fd' : '#fca5a5';
+            ctx.beginPath();
+            ctx.arc(12, 4, 3.6, 0, Math.PI * 2);
+            ctx.arc(20, -2, 3.4, 0, Math.PI * 2);
+            ctx.fill();
+
+            // الخوذة التكتيكية العلوية والنظارة
+            const helmetGrad = ctx.createRadialGradient(-2, -2, 2, 0, 0, 12);
+            if (isPlayer) {
+                helmetGrad.addColorStop(0, '#38bdf8');
+                helmetGrad.addColorStop(0.7, '#0369a1');
+                helmetGrad.addColorStop(1, '#0c4a6e');
+            } else if (isBoss) {
+                helmetGrad.addColorStop(0, '#fbbf24');
+                helmetGrad.addColorStop(0.65, '#b45309');
+                helmetGrad.addColorStop(1, '#451a03');
+            } else {
+                helmetGrad.addColorStop(0, '#f87171');
+                helmetGrad.addColorStop(0.7, '#991b1b');
+                helmetGrad.addColorStop(1, '#450a0a');
+            }
+
+            ctx.fillStyle = helmetGrad;
+            ctx.beginPath();
+            ctx.arc(0, 0, 11.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#0f172a';
+            ctx.stroke();
+
+            // نظارة الرؤية الأمامية
+            ctx.fillStyle = isPlayer ? '#e0f2fe' : '#fef08a';
+            ctx.beginPath();
+            ctx.roundRect(6, -6, 4.5, 12, 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
         function drawGame() {
             const w = window.innerWidth;
             const h = window.innerHeight;
             ctx.clearRect(0, 0, w, h);
 
-            ctx.save();
-            ctx.translate(-camera.x, -camera.y);
+            const shakeX = screenShake > 0 ? (Math.random() - 0.5) * screenShake : 0;
+            const shakeY = screenShake > 0 ? (Math.random() - 0.5) * screenShake : 0;
 
-            // أرضية التدريب الحر خضراء، وأرضية المراحل/الاختبار حربية داكنة
-            ctx.fillStyle = currentMode === 'training' ? '#14532d' : '#1e293b';
+            ctx.save();
+            ctx.scale(camera.zoom, camera.zoom);
+            ctx.translate(-camera.x + shakeX, -camera.y + shakeY);
+
+            // أرضية التدريب الحر خضراء عشبية، وأرضية المراحل/الاختبار حربية تكتيكية
+            ctx.fillStyle = currentMode === 'training' ? '#14532d' : '#182232';
             ctx.fillRect(0, 0, worldWidth, worldHeight);
 
-            ctx.strokeStyle = currentMode === 'training' ? 'rgba(134, 239, 172, 0.10)' : 'rgba(148, 163, 184, 0.08)';
+            // شبكة أرضية تكتيكية لإبراز الحركة من الأعلى
+            ctx.strokeStyle = currentMode === 'training' ? 'rgba(134, 239, 172, 0.11)' : 'rgba(148, 163, 184, 0.08)';
             ctx.lineWidth = 1;
             for (let gx = 0; gx <= worldWidth; gx += 64) {
                 ctx.beginPath();
@@ -1774,77 +2458,112 @@
                 ctx.stroke();
             }
 
-            // العوائق والسواتر
-            obstacles.forEach(ob => {
-                ctx.fillStyle = ob.low ? '#475569' : '#334155';
-                ctx.fillRect(ob.x, ob.y, ob.w, ob.h);
-                ctx.strokeStyle = ob.low ? '#94a3b8' : '#64748b';
-                ctx.lineWidth = 2;
-                ctx.strokeRect(ob.x, ob.y, ob.w, ob.h);
+            // آثار المعركة على الأرض
+            decals.forEach(d => {
+                ctx.beginPath();
+                ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+                ctx.fillStyle = d.scorch ? `rgba(15, 23, 42, ${d.alpha})` : `rgba(127, 29, 29, ${d.alpha})`;
+                ctx.fill();
             });
 
-            // أهداف الاختبار
+            // السواتر والجدران بعمق 2.5D للاختباء خلفها
+            obstacles.forEach(ob => {
+                // ظل الساتر
+                ctx.fillStyle = 'rgba(2, 6, 23, 0.45)';
+                ctx.fillRect(ob.x + 7, ob.y + 9, ob.w, ob.h);
+
+                // واجهة الساتر الأمامية
+                ctx.fillStyle = ob.low ? '#334155' : '#1e293b';
+                ctx.fillRect(ob.x, ob.y, ob.w, ob.h);
+
+                // السطح العلوي 2.5D
+                const topOffset = ob.low ? 6 : 12;
+                ctx.fillStyle = ob.low ? '#64748b' : '#475569';
+                ctx.fillRect(ob.x, ob.y - topOffset, ob.w, ob.h);
+
+                ctx.strokeStyle = ob.low ? '#94a3b8' : '#cbd5e1';
+                ctx.lineWidth = 1.5;
+                ctx.strokeRect(ob.x, ob.y - topOffset, ob.w, ob.h);
+
+                if (ob.low) {
+                    ctx.fillStyle = 'rgba(250, 204, 21, 0.25)';
+                    ctx.fillRect(ob.x + 6, ob.y - topOffset + 3, ob.w - 12, 4);
+                }
+            });
+
+            // أهداف التدريب بالاختبارات
             targets.forEach(t => {
                 if (!t.alive) return;
+                ctx.beginPath();
+                ctx.arc(t.x + 3, t.y + 5, t.r, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(2, 6, 23, 0.4)';
+                ctx.fill();
+
                 ctx.beginPath();
                 ctx.arc(t.x, t.y, t.r, 0, Math.PI * 2);
                 ctx.fillStyle = '#f59e0b';
                 ctx.fill();
-                ctx.beginPath();
-                ctx.arc(t.x, t.y, t.r * 0.45, 0, Math.PI * 2);
-                ctx.fillStyle = '#ef4444';
-                ctx.fill();
-            });
-
-            // الأعداء
-            enemies.forEach(en => {
-                if (en.hp <= 0) return;
-                ctx.beginPath();
-                ctx.arc(en.x, en.y, en.radius, 0, Math.PI * 2);
-                ctx.fillStyle = en.isBoss ? '#991b1b' : '#dc2626';
-                ctx.fill();
-                ctx.lineWidth = 3;
-                ctx.strokeStyle = en.isBoss ? '#fbbf24' : '#fca5a5';
+                ctx.lineWidth = 2.5;
+                ctx.strokeStyle = '#fef3c7';
                 ctx.stroke();
 
-                // شريط دم العدو
-                const bw = en.isBoss ? 76 : 44;
-                const bh = 6;
-                const hpRatio = Math.max(0, en.hp / en.maxHp);
-                ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-                ctx.fillRect(en.x - bw / 2, en.y - en.radius - 16, bw, bh);
+                ctx.beginPath();
+                ctx.arc(t.x, t.y, t.r * 0.62, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.arc(t.x, t.y, t.r * 0.32, 0, Math.PI * 2);
                 ctx.fillStyle = '#ef4444';
-                ctx.fillRect(en.x - bw / 2, en.y - en.radius - 16, bw * hpRatio, bh);
+                ctx.fill();
             });
 
-            // اللاعب
-            const py = player.y - player.jumpZ;
-            const pr = player.crouching ? player.radius * 0.82 : player.radius;
+            // الأعداء بتفاصيل تكتيكية واقعية
+            enemies.forEach(en => {
+                if (en.hp <= 0) return;
+                drawTacticalSoldier(en.x, en.y, en.radius, en.aimAngle || Math.PI, {
+                    isPlayer: false,
+                    isBoss: en.isBoss,
+                    walkCycle: en.walkCycle || 0,
+                    weaponKey: en.isBoss ? 'rpg' : 'm4'
+                });
 
-            if (player.jumpZ > 0) {
+                // شريط دم العدو
+                const bw = en.isBoss ? 86 : 48;
+                const bh = 6;
+                const hpRatio = Math.max(0, en.hp / en.maxHp);
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+                ctx.fillRect(en.x - bw / 2, en.y - en.radius - 20, bw, bh);
+                ctx.fillStyle = en.isBoss ? '#f59e0b' : '#ef4444';
+                ctx.fillRect(en.x - bw / 2, en.y - en.radius - 20, bw * hpRatio, bh);
+            });
+
+            // اللاعب بتفاصيل تكتيكية واقعية
+            drawTacticalSoldier(player.x, player.y, player.radius, player.aimAngle, {
+                isPlayer: true,
+                crouching: player.crouching,
+                jumpZ: player.jumpZ,
+                walkCycle: player.walkCycle,
+                weaponKey: player.weapon.key
+            });
+
+            // وميض إطلاق النار
+            muzzleFlashes.forEach(mf => {
+                ctx.save();
+                ctx.translate(mf.x, mf.y);
+                ctx.rotate(mf.angle);
                 ctx.beginPath();
-                ctx.ellipse(player.x, player.y + 6, pr * 0.9, pr * 0.55, 0, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+                ctx.moveTo(0, 0);
+                ctx.lineTo(mf.size, -mf.size * 0.45);
+                ctx.lineTo(mf.size * 0.75, 0);
+                ctx.lineTo(mf.size, mf.size * 0.45);
+                ctx.closePath();
+                ctx.fillStyle = mf.color;
                 ctx.fill();
-            }
+                ctx.restore();
+            });
 
-            ctx.beginPath();
-            ctx.arc(player.x, py, pr, 0, Math.PI * 2);
-            ctx.fillStyle = player.crouching ? '#0284c7' : '#38bdf8';
-            ctx.fill();
-            ctx.lineWidth = 3;
-            ctx.strokeStyle = '#e0f2fe';
-            ctx.stroke();
-
-            // فوهة السلاح
-            ctx.beginPath();
-            ctx.moveTo(player.x, py);
-            ctx.lineTo(player.x + Math.cos(player.aimAngle) * (pr + 16), py + Math.sin(player.aimAngle) * (pr + 16));
-            ctx.lineWidth = 5;
-            ctx.strokeStyle = '#f8fafc';
-            ctx.stroke();
-
-            // الطلقات
+            // الطلقات مع أثر ضوئي
             bullets.forEach(b => {
                 ctx.beginPath();
                 ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
@@ -1894,12 +2613,14 @@
 
         window.addEventListener('resize', resizeCanvas);
         window.onload = function () {
+            loadMobileControlsPreference();
+            loadCustomHudConfig();
             resizeCanvas();
             initMobileTouchListeners();
+            initHudDragListeners();
             syncMobileControlsUI();
             requestAnimationFrame(mainLoop);
         };
     </script>
 </body>
 </html>
-<!-- ... existing code ... -->
