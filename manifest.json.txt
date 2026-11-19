@@ -1,0 +1,18 @@
+{
+  "name": "War Simple Abbas",
+  "short_name": "War Simple Abbas",
+  "description": "لعبة تصويب تكتيكية بمنظور علوي مع تحكم للجوال ومراحل متعددة",
+  "start_url": "./index.html",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#060911",
+  "theme_color": "#0284c7",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
