@@ -1,0 +1,459 @@
+<!-- ... existing code ... -->
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+            touch-action: none;
+        }
+        input[type="range"] {
+            accent-color: #38bdf8;
+        }
+        /* عصا التحكم الافتراضية للجوال */
+        .joystick-base {
+            position: relative;
+            width: 126px;
+            height: 126px;
+            border-radius: 9999px;
+            background: rgba(15, 23, 42, 0.58);
+            border: 2px solid rgba(56, 189, 248, 0.45);
+            box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.55), 0 10px 25px rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(8px);
+            touch-action: none;
+        }
+        .joystick-knob {
+            position: absolute;
+            width: 52px;
+            height: 52px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 9999px;
+            background: radial-gradient(circle at 35% 30%, #7dd3fc, #0284c7 70%, #0369a1);
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 6px 15px rgba(2, 132, 199, 0.6);
+            pointer-events: none;
+        }
+        .touch-action-btn {
+            touch-action: none;
+            backdrop-filter: blur(8px);
+            transition: transform 0.08s ease, background-color 0.12s ease;
+        }
+        .touch-action-btn:active {
+            transform: scale(0.92);
+        }
+    </style>
+</head>
+<!-- ... existing code ... -->
+                    <div class="glass-card p-5 rounded-2xl flex items-center justify-between">
+                        <div>
+                            <div class="font-bold text-white text-lg">إظهار عداد الفريمات (FPS)</div>
+                            <div class="text-xs text-slate-400">عرض سرعة الإطارات في زاوية الشاشة</div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="showFpsToggle" onchange="updateDisplaySettings()" class="sr-only peer">
+                            <div class="w-14 h-7 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:right-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-sky-500"></div>
+                        </label>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl flex items-center justify-between">
+                        <div>
+                            <div class="font-bold text-white text-lg">أزرار تحكم الجوال واللمس (Mobile HUD)</div>
+                            <div class="text-xs text-slate-400">إظهار أو إخفاء عصا الحركة وأزرار اللمس للشاشات اللمسية</div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="mobileControlsToggle" onchange="updateMobileControlsPreference()" class="sr-only peer">
+                            <div class="w-14 h-7 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:right-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-emerald-500"></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- تبويب 2: الصوت -->
+<!-- ... existing code ... -->
+            <!-- معلومات المرحلة وأزرار التحكم السريعة -->
+            <div class="flex items-center gap-2.5 pointer-events-auto">
+                <div id="hudModeBadge" class="glass-panel px-4 py-2.5 rounded-xl text-sm font-black text-amber-300">
+                    التدريب الحر
+                </div>
+
+                <!-- أزرار تبديل الأسلحة السريعة أثناء التدريب الحر -->
+                <div id="hudQuickWeapons" class="hidden glass-panel p-1.5 rounded-xl flex items-center gap-1">
+                    <button onclick="switchWeaponInTraining('m4')" id="qBtnM4" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-sky-600 text-white">1: M4</button>
+                    <button onclick="switchWeaponInTraining('sniper')" id="qBtnSniper" class="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-300 hover:bg-slate-800">2: Sniper</button>
+                    <button onclick="switchWeaponInTraining('rpg')" id="qBtnRpg" class="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-300 hover:bg-slate-800">3: RPG</button>
+                </div>
+
+                <!-- زر تبديل تحكم الجوال مباشرة أثناء اللعب -->
+                <button id="hudMobileToggleBtn" onclick="toggleMobileControlsManual()" class="glass-panel px-3 py-2.5 rounded-xl text-xs font-black text-sky-300 hover:text-white border border-sky-500/40 transition">
+                    📱 لمس: تلقائي
+                </button>
+
+                <button onclick="exitGameplay()" class="glass-panel hover:bg-rose-600 px-4 py-2.5 rounded-xl text-sm font-bold text-rose-300 hover:text-white border border-rose-500/40 transition">
+                    خروج ✕
+                </button>
+            </div>
+        </div>
+
+        <!-- مؤشر سحب الطلق / إعادة التلقيم -->
+        <div id="reloadIndicator" class="hidden fixed bottom-24 left-1/2 -translate-x-1/2 glass-panel px-6 py-2.5 rounded-full flex items-center gap-3 pointer-events-none">
+            <div class="w-4 h-4 border-2 border-sky-400 border-t-transparent rounded-full animate-spin"></div>
+            <span id="reloadText" class="text-sm font-bold text-white">جاري إعادة التلقيم...</span>
+        </div>
+
+        <!-- تحكم متكامل للهواتف والأجهزة اللوحية (عصا حركة 360° + تصويب باللمس + أزرار القتال) -->
+        <div id="mobileControlsLayer" class="hidden fixed inset-x-0 bottom-0 z-30 p-4 sm:p-6 pointer-events-none select-none">
+            <div class="flex items-end justify-between w-full gap-3">
+                <!-- يسار الشاشة: عصا الحركة التناظرية 360 درجة -->
+                <div class="flex flex-col items-center gap-2 pointer-events-auto">
+                    <div id="moveJoystick" class="joystick-base">
+                        <div id="moveJoystickKnob" class="joystick-knob"></div>
+                    </div>
+                    <span class="text-[11px] font-bold text-sky-300/90 bg-slate-950/70 px-2.5 py-0.5 rounded-full border border-sky-500/30">
+                        حركة 360°
+                    </span>
+                </div>
+
+                <!-- وسط أسفل: أزرار التخفي، التلقيم، وتبديل السلاح (في التدريب الحر) -->
+                <div class="flex flex-col items-center gap-2 pointer-events-auto">
+                    <div id="mobileWeaponSwitchRow" class="hidden items-center gap-1.5 bg-slate-950/75 p-1.5 rounded-2xl border border-slate-700/80">
+                        <button id="mWepM4" onclick="switchWeaponInTraining('m4')" class="touch-action-btn px-2.5 py-1.5 rounded-xl text-xs font-black bg-sky-600 text-white">M4</button>
+                        <button id="mWepSniper" onclick="switchWeaponInTraining('sniper')" class="touch-action-btn px-2.5 py-1.5 rounded-xl text-xs font-black bg-slate-800 text-slate-300">SNIPER</button>
+                        <button id="mWepRpg" onclick="switchWeaponInTraining('rpg')" class="touch-action-btn px-2.5 py-1.5 rounded-xl text-xs font-black bg-slate-800 text-slate-300">RPG</button>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button id="mobileCrouchBtn" onclick="toggleCrouchTouch()" class="touch-action-btn px-4 py-3 rounded-2xl bg-amber-500/25 border border-amber-400/60 text-amber-200 font-black text-xs shadow-lg">
+                            🛡️ تخفي (C)
+                        </button>
+                        <button onclick="triggerReload()" class="touch-action-btn px-4 py-3 rounded-2xl bg-emerald-500/25 border border-emerald-400/60 text-emerald-200 font-black text-xs shadow-lg">
+                            🔄 سحب طلق
+                        </button>
+                    </div>
+                </div>
+
+                <!-- يمين الشاشة: عصا تصويب حرة 360° + زر إطلاق النار الكبير -->
+                <div class="flex items-end gap-3 pointer-events-auto">
+                    <div class="flex flex-col items-center gap-2">
+                        <div id="aimJoystick" class="joystick-base border-rose-400/45">
+                            <div id="aimJoystickKnob" class="joystick-knob" style="background: radial-gradient(circle at 35% 30%, #fda4af, #e11d48 70%, #9f1239); box-shadow: 0 6px 15px rgba(225, 29, 72, 0.55);"></div>
+                        </div>
+                        <span class="text-[11px] font-bold text-rose-300/90 bg-slate-950/70 px-2.5 py-0.5 rounded-full border border-rose-500/30">
+                            تصويب 🎯
+                        </span>
+                    </div>
+
+                    <button id="mobileFireBtn" class="touch-action-btn w-20 h-20 rounded-full bg-gradient-to-br from-rose-500 to-red-700 border-2 border-rose-200/80 text-white font-black text-base shadow-2xl flex flex-col items-center justify-center">
+                        <span>🔥</span>
+                        <span class="text-xs mt-0.5">رمي</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- ... existing code ... -->
+        let targetFpsLimit = 0;
+        let showFps = false;
+        let resolutionScale = 'auto';
+        // وضع تحكم الجوال: 'auto' (تلقائي للأجهزة اللمسية)، 'on' (إجباري مفعل)، 'off' (مخفي)
+        let mobileControlsMode = 'auto';
+
+        const isTouchDevice = () => {
+            return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || window.innerWidth <= 768;
+        };
+
+        function syncMobileControlsUI() {
+            const layer = document.getElementById('mobileControlsLayer');
+            const toggleInput = document.getElementById('mobileControlsToggle');
+            const hudBtn = document.getElementById('hudMobileToggleBtn');
+
+            const shouldShow = (mobileControlsMode === 'on') || (mobileControlsMode === 'auto' && isTouchDevice());
+
+            if (layer) {
+                if (shouldShow && gameRunning) layer.classList.remove('hidden');
+                else layer.classList.add('hidden');
+            }
+            if (toggleInput) {
+                toggleInput.checked = shouldShow;
+            }
+            if (hudBtn) {
+                if (mobileControlsMode === 'auto') hudBtn.innerText = '📱 لمس: تلقائي';
+                else if (mobileControlsMode === 'on') hudBtn.innerText = '📱 لمس: مفعل';
+                else hudBtn.innerText = '📱 لمس: مخفي';
+            }
+
+            const wRow = document.getElementById('mobileWeaponSwitchRow');
+            if (wRow) {
+                if (currentMode === 'training') {
+                    wRow.classList.remove('hidden');
+                    wRow.classList.add('flex');
+                } else {
+                    wRow.classList.add('hidden');
+                    wRow.classList.remove('flex');
+                }
+            }
+        }
+
+        function updateMobileControlsPreference() {
+            const checked = document.getElementById('mobileControlsToggle').checked;
+            mobileControlsMode = checked ? 'on' : 'off';
+            sound.playUIClick(true);
+            syncMobileControlsUI();
+        }
+
+        function toggleMobileControlsManual() {
+            sound.playUIClick(true);
+            if (mobileControlsMode === 'auto') mobileControlsMode = 'on';
+            else if (mobileControlsMode === 'on') mobileControlsMode = 'off';
+            else mobileControlsMode = 'auto';
+            syncMobileControlsUI();
+        }
+<!-- ... existing code ... -->
+            resizeCanvas();
+            initLevel();
+            gameRunning = true;
+            gamePaused = false;
+            syncMobileControlsUI();
+        }
+
+        function switchWeaponInTraining(wKey) {
+            if (currentMode !== 'training') return;
+            sound.playReload();
+            selectedWeaponKey = wKey;
+            const wStats = WEAPONS[wKey];
+            player.weapon = wStats;
+            player.ammo = wStats.magSize;
+            player.reloading = false;
+            player.lastShotTime = -99999;
+            document.getElementById('reloadIndicator').classList.add('hidden');
+            updateQuickWeaponButtons();
+            updateHUD();
+        }
+
+        function updateQuickWeaponButtons() {
+            ['m4', 'sniper', 'rpg'].forEach(k => {
+                const btn = document.getElementById('qBtn' + k.charAt(0).toUpperCase() + k.slice(1));
+                if (btn) {
+                    if (k === selectedWeaponKey) {
+                        btn.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-sky-600 text-white shadow';
+                    } else {
+                        btn.className = 'px-2.5 py-1 rounded-lg text-xs font-bold text-slate-300 hover:bg-slate-800';
+                    }
+                }
+                const mBtn = document.getElementById('mWep' + k.charAt(0).toUpperCase() + k.slice(1));
+                if (mBtn) {
+                    if (k === selectedWeaponKey) {
+                        mBtn.className = 'touch-action-btn px-2.5 py-1.5 rounded-xl text-xs font-black bg-sky-600 text-white shadow';
+                    } else {
+                        mBtn.className = 'touch-action-btn px-2.5 py-1.5 rounded-xl text-xs font-black bg-slate-800 text-slate-300';
+                    }
+                }
+            });
+        }
+<!-- ... existing code ... -->
+        function exitGameplay() {
+            gameRunning = false;
+            document.getElementById('reloadIndicator').classList.add('hidden');
+            syncMobileControlsUI();
+            if (currentMode === 'training' || currentMode === 'exam') {
+                navigateTo('trainingMenuScreen');
+            } else {
+                navigateTo('stagesMenuScreen');
+            }
+        }
+<!-- ... existing code ... -->
+        // مدخلات التحكم
+        const keys = {};
+        const touchKeys = {
+            up: false, down: false, left: false, right: false,
+            crouch: false, joyX: 0, joyY: 0,
+            aimActive: false, aimX: 0, aimY: 0, fireHeld: false
+        };
+        const mouse = { x: 0, y: 0, worldX: 0, worldY: 0, down: false };
+<!-- ... existing code ... -->
+        function toggleCrouchTouch() {
+            touchKeys.crouch = !touchKeys.crouch;
+            const btn = document.getElementById('mobileCrouchBtn');
+            if (btn) {
+                if (touchKeys.crouch) {
+                    btn.className = 'touch-action-btn px-4 py-3 rounded-2xl bg-amber-500 text-slate-950 border border-amber-200 font-black text-xs shadow-lg';
+                    btn.innerText = '🛡️ متخفٍ (مفعل)';
+                } else {
+                    btn.className = 'touch-action-btn px-4 py-3 rounded-2xl bg-amber-500/25 border border-amber-400/60 text-amber-200 font-black text-xs shadow-lg';
+                    btn.innerText = '🛡️ تخفي (C)';
+                }
+            }
+        }
+
+        // إعداد عصا الحركة، عصا التصويب، وزر الرمي لشاشات الجوال
+        function initMobileTouchListeners() {
+            const moveBase = document.getElementById('moveJoystick');
+            const moveKnob = document.getElementById('moveJoystickKnob');
+            const aimBase = document.getElementById('aimJoystick');
+            const aimKnob = document.getElementById('aimJoystickKnob');
+            const fireBtn = document.getElementById('mobileFireBtn');
+
+            let moveTouchId = null;
+            let aimTouchId = null;
+            const maxRadius = 38;
+
+            if (moveBase && moveKnob) {
+                moveBase.addEventListener('touchstart', e => {
+                    e.preventDefault();
+                    sound.init();
+                    const t = e.changedTouches[0];
+                    moveTouchId = t.identifier;
+                    updateMoveStick(t.clientX, t.clientY);
+                }, { passive: false });
+
+                moveBase.addEventListener('touchmove', e => {
+                    e.preventDefault();
+                    for (let i = 0; i < e.changedTouches.length; i++) {
+                        const t = e.changedTouches[i];
+                        if (t.identifier === moveTouchId) {
+                            updateMoveStick(t.clientX, t.clientY);
+                        }
+                    }
+                }, { passive: false });
+
+                const resetMove = e => {
+                    for (let i = 0; i < e.changedTouches.length; i++) {
+                        if (e.changedTouches[i].identifier === moveTouchId) {
+                            moveTouchId = null;
+                            touchKeys.joyX = 0;
+                            touchKeys.joyY = 0;
+                            moveKnob.style.transform = 'translate(-50%, -50%)';
+                        }
+                    }
+                };
+                moveBase.addEventListener('touchend', resetMove);
+                moveBase.addEventListener('touchcancel', resetMove);
+
+                function updateMoveStick(clientX, clientY) {
+                    const rect = moveBase.getBoundingClientRect();
+                    const cx = rect.left + rect.width / 2;
+                    const cy = rect.top + rect.height / 2;
+                    let dx = clientX - cx;
+                    let dy = clientY - cy;
+                    const dist = Math.hypot(dx, dy);
+                    if (dist > maxRadius) {
+                        dx = (dx / dist) * maxRadius;
+                        dy = (dy / dist) * maxRadius;
+                    }
+                    moveKnob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+                    touchKeys.joyX = dx / maxRadius;
+                    touchKeys.joyY = dy / maxRadius;
+                }
+            }
+
+            if (aimBase && aimKnob) {
+                aimBase.addEventListener('touchstart', e => {
+                    e.preventDefault();
+                    sound.init();
+                    const t = e.changedTouches[0];
+                    aimTouchId = t.identifier;
+                    touchKeys.aimActive = true;
+                    updateAimStick(t.clientX, t.clientY);
+                }, { passive: false });
+
+                aimBase.addEventListener('touchmove', e => {
+                    e.preventDefault();
+                    for (let i = 0; i < e.changedTouches.length; i++) {
+                        const t = e.changedTouches[i];
+                        if (t.identifier === aimTouchId) {
+                            updateAimStick(t.clientX, t.clientY);
+                        }
+                    }
+                }, { passive: false });
+
+                const resetAim = e => {
+                    for (let i = 0; i < e.changedTouches.length; i++) {
+                        if (e.changedTouches[i].identifier === aimTouchId) {
+                            aimTouchId = null;
+                            touchKeys.aimActive = false;
+                            aimKnob.style.transform = 'translate(-50%, -50%)';
+                        }
+                    }
+                };
+                aimBase.addEventListener('touchend', resetAim);
+                aimBase.addEventListener('touchcancel', resetAim);
+
+                function updateAimStick(clientX, clientY) {
+                    const rect = aimBase.getBoundingClientRect();
+                    const cx = rect.left + rect.width / 2;
+                    const cy = rect.top + rect.height / 2;
+                    let dx = clientX - cx;
+                    let dy = clientY - cy;
+                    const dist = Math.hypot(dx, dy);
+                    if (dist > maxRadius) {
+                        dx = (dx / dist) * maxRadius;
+                        dy = (dy / dist) * maxRadius;
+                    }
+                    aimKnob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+                    if (dist > 6) {
+                        touchKeys.aimX = dx / maxRadius;
+                        touchKeys.aimY = dy / maxRadius;
+                    }
+                }
+            }
+
+            if (fireBtn) {
+                fireBtn.addEventListener('touchstart', e => {
+                    e.preventDefault();
+                    sound.init();
+                    touchKeys.fireHeld = true;
+                    if (gameRunning && !gamePaused) tryShoot();
+                }, { passive: false });
+
+                const stopFire = e => {
+                    e.preventDefault();
+                    touchKeys.fireHeld = false;
+                };
+                fireBtn.addEventListener('touchend', stopFire, { passive: false });
+                fireBtn.addEventListener('touchcancel', stopFire, { passive: false });
+            }
+        }
+<!-- ... existing code ... -->
+            // الرمي المستمر لرشاش M4 (بالماوس أو زر لمس الجوال)
+            if ((mouse.down || touchKeys.fireHeld) && player.weapon.auto && !player.reloading) {
+                tryShoot();
+            }
+
+            // حركة اللاعب في 8 اتجاهات + عصا التحريك التناظرية للجوال (360°)
+            let ix = 0, iy = 0;
+            if (keys['KeyA'] || keys['ArrowLeft'] || touchKeys.left) ix -= 1;
+            if (keys['KeyD'] || keys['ArrowRight'] || touchKeys.right) ix += 1;
+            if (keys['KeyW'] || keys['ArrowUp'] || touchKeys.up) iy -= 1;
+            if (keys['KeyS'] || keys['ArrowDown'] || touchKeys.down) iy += 1;
+
+            if (Math.hypot(touchKeys.joyX, touchKeys.joyY) > 0.12) {
+                ix = touchKeys.joyX;
+                iy = touchKeys.joyY;
+            }</
+
+            const moveMag = Math.hypot(ix, iy);
+            if (moveMag > 1) {
+                ix /= moveMag;
+                iy /= moveMag;
+            }
+<!-- ... existing code ... -->
+            // زاوية التصويب: عصا التصويب على الجوال أو مؤشر الماوس على الكمبيوتر
+            if (touchKeys.aimActive && Math.hypot(touchKeys.aimX, touchKeys.aimY) > 0.15) {
+                player.aimAngle = Math.atan2(touchKeys.aimY, touchKeys.aimX);
+            } else if (!isTouchDevice() || mobileControlsMode === 'off') {
+                mouse.worldX = mouse.x + camera.x;
+                mouse.worldY = mouse.y + camera.y;
+                player.aimAngle = Math.atan2(mouse.worldY - player.y, mouse.worldX - player.x);
+            } else if (moveMag > 0.15) {
+                // اتجاه تلقائي سلس مع الحركة إذا لم يلمس عصا التصويب بعد
+                player.aimAngle = Math.atan2(iy, ix);
+            }
+<!-- ... existing code ... -->
+        window.onload = function () {
+            resizeCanvas();
+            initMobileTouchListeners();
+            syncMobileControlsUI();
+            requestAnimationFrame(mainLoop);
+        };
+    </script>
+</body>
+html>
