@@ -1,4 +1,74 @@
-<!-- ... existing code ... -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>War Simple Abbas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800;900&display=swap');
+
+        * {
+            font-family: 'Cairo', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #060911;
+            color: #f8fafc;
+            touch-action: none;
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.78);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.62);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            transition: all 0.2s ease;
+        }
+
+        .glass-card:hover:not(:disabled) {
+            transform: translateY(-2px);
+            border-color: rgba(56, 189, 248, 0.55);
+            background: rgba(30, 41, 59, 0.85);
+        }
+
+        .menu-btn {
+            transition: transform 0.15s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+
+        .menu-btn:hover:not(:disabled) {
+            transform: translateY(-2px) scale(1.015);
+        }
+
+        .menu-btn:active:not(:disabled) {
+            transform: translateY(1px) scale(0.99);
+        }
+
+        .bg-tactical-grid {
+            background-color: #060911;
+            background-image:
+                radial-gradient(circle at 50% 25%, rgba(14, 165, 233, 0.16), transparent 55%),
+                radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.10), transparent 50%),
+                linear-gradient(rgba(148, 163, 184, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(148, 163, 184, 0.05) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 44px 44px, 44px 44px;
+        }
+
         canvas {
             display: block;
             width: 100%;
@@ -6,171 +76,725 @@
             cursor: crosshair;
             touch-action: none;
         }
+
         input[type="range"] {
             accent-color: #38bdf8;
         }
-        /* عصا التحكم الافتراضية للجوال */
+
         .joystick-base {
             position: relative;
-            width: 126px;
-            height: 126px;
+            width: 124px;
+            height: 124px;
             border-radius: 9999px;
-            background: rgba(15, 23, 42, 0.58);
-            border: 2px solid rgba(56, 189, 248, 0.45);
-            box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.55), 0 10px 25px rgba(0, 0, 0, 0.45);
+            background: rgba(15, 23, 42, 0.62);
+            border: 2px solid rgba(56, 189, 248, 0.5);
+            box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.6), 0 10px 25px rgba(0, 0, 0, 0.45);
             backdrop-filter: blur(8px);
             touch-action: none;
         }
+
         .joystick-knob {
             position: absolute;
-            width: 52px;
-            height: 52px;
+            width: 50px;
+            height: 50px;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
             border-radius: 9999px;
             background: radial-gradient(circle at 35% 30%, #7dd3fc, #0284c7 70%, #0369a1);
-            border: 2px solid rgba(255, 255, 255, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.75);
             box-shadow: 0 6px 15px rgba(2, 132, 199, 0.6);
             pointer-events: none;
         }
+
         .touch-action-btn {
             touch-action: none;
             backdrop-filter: blur(8px);
             transition: transform 0.08s ease, background-color 0.12s ease;
         }
+
         .touch-action-btn:active {
             transform: scale(0.92);
         }
     </style>
 </head>
-<!-- ... existing code ... -->
-                    <div class="glass-card p-5 rounded-2xl flex items-center justify-between">
-                        <div>
-                            <div class="font-bold text-white text-lg">إظهار عداد الفريمات (FPS)</div>
-                            <div class="text-xs text-slate-400">عرض سرعة الإطارات في زاوية الشاشة</div>
-                        </div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="showFpsToggle" onchange="updateDisplaySettings()" class="sr-only peer">
-                            <div class="w-14 h-7 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:right-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-sky-500"></div>
-                        </label>
-                    </div>
+<body class="bg-tactical-grid text-slate-100">
+    <!-- رسالة تنبيه داخلية بديلة عن alert/confirm -->
+    <div id="toastMessage" class="hidden fixed top-5 left-1/2 -translate-x-1/2 z-50 glass-panel px-6 py-3 rounded-2xl border border-sky-400/50 text-sm font-bold text-sky-200 shadow-2xl">
+        رسالة تنبيه
+    </div>
 
-                    <div class="glass-card p-5 rounded-2xl flex items-center justify-between">
-                        <div>
-                            <div class="font-bold text-white text-lg">أزرار تحكم الجوال واللمس (Mobile HUD)</div>
-                            <div class="text-xs text-slate-400">إظهار أو إخفاء عصا الحركة وأزرار اللمس للشاشات اللمسية</div>
-                        </div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="mobileControlsToggle" onchange="updateMobileControlsPreference()" class="sr-only peer">
-                            <div class="w-14 h-7 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:right-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-emerald-500"></div>
-                        </label>
+    <!-- القائمة الرئيسية: ترتيب عمودي (الأعلى: اللعب، الوسط: الإعدادات، الأسفل: الخروج) -->
+    <section id="mainMenuScreen" class="fixed inset-0 z-30 flex flex-col items-center justify-center p-4 bg-tactical-grid">
+        <div class="w-full max-w-md glass-panel rounded-3xl p-7 sm:p-8 flex flex-col items-center gap-6">
+            <div class="text-center space-y-1.5">
+                <span class="inline-block px-3.5 py-1 rounded-full text-xs font-extrabold bg-sky-500/15 text-sky-300 border border-sky-400/30">
+                    منظور علوي تكتيكي • 2.5D
+                </span>
+                <h1 class="text-3xl sm:text-4xl font-black tracking-wide text-white">War Simple Abbas</h1>
+                <p class="text-xs sm:text-sm text-slate-400">مناورة وتصويب تكتيكي — يدعم الكمبيوتر والجوال</p>
+            </div>
+
+            <div class="w-full flex flex-col gap-3.5">
+                <!-- الأعلى: اللعب -->
+                <button onclick="openPlayMenu()" class="menu-btn w-full py-4 px-6 rounded-2xl bg-gradient-to-l from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-black text-xl shadow-lg shadow-sky-900/50 flex items-center justify-center gap-3">
+                    <span>🎯</span>
+                    <span>اللعب</span>
+                </button>
+
+                <!-- الوسط: الإعدادات -->
+                <button onclick="openSettingsMenu()" class="menu-btn w-full py-4 px-6 rounded-2xl bg-slate-800/90 hover:bg-slate-700 text-slate-100 font-extrabold text-lg border border-slate-600/60 flex items-center justify-center gap-3">
+                    <span>⚙️</span>
+                    <span>الإعدادات</span>
+                </button>
+
+                <!-- الأسفل: الخروج -->
+                <button onclick="exitMainMenu()" class="menu-btn w-full py-3.5 px-6 rounded-2xl bg-rose-950/60 hover:bg-rose-900/75 text-rose-200 font-bold text-base border border-rose-500/35 flex items-center justify-center gap-3">
+                    <span>🚪</span>
+                    <span>الخروج</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- شاشة الخروج من القائمة الرئيسية -->
+    <section id="exitScreen" class="hidden fixed inset-0 z-30 flex flex-col items-center justify-center p-4 bg-tactical-grid">
+        <div class="w-full max-w-md glass-panel rounded-3xl p-7 text-center space-y-5">
+            <div class="text-4xl">🛡️</div>
+            <h2 class="text-2xl font-black text-white">تم إيقاف جلسة اللعب</h2>
+            <p class="text-sm text-slate-300 leading-relaxed">
+                يمكنك العودة في أي وقت إلى القائمة الرئيسية لبدء التدريب أو خوض المراحل في <span class="text-sky-300 font-bold">War Simple Abbas</span>.
+            </p>
+            <button onclick="navigateTo('mainMenuScreen')" class="menu-btn w-full py-3.5 rounded-2xl bg-sky-600 hover:bg-sky-500 text-white font-black text-lg">
+                العودة إلى القائمة الرئيسية
+            </button>
+        </div>
+    </section>
+
+    <!-- قائمة الإعدادات بـ 4 تبويبات علوية -->
+    <section id="settingsMenuScreen" class="hidden fixed inset-0 z-30 flex flex-col items-center justify-center p-3 sm:p-6 bg-tactical-grid overflow-y-auto">
+        <div class="w-full max-w-3xl glass-panel rounded-3xl p-5 sm:p-7 space-y-6">
+            <div class="flex items-center justify-between border-b border-slate-700/70 pb-4">
+                <h2 class="text-2xl font-black text-white">⚙️ الإعدادات</h2>
+                <span class="text-xs text-slate-400">War Simple Abbas</span>
+            </div>
+
+            <!-- التبويبات الأربعة العلوية -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <button id="tabBtnDisplay" onclick="switchSettingsTab('display')" class="py-3 px-3 rounded-2xl font-extrabold text-sm bg-sky-600 text-white shadow">
+                    العرض
+                </button>
+                <button id="tabBtnSound" onclick="switchSettingsTab('sound')" class="py-3 px-3 rounded-2xl font-extrabold text-sm bg-slate-800 text-slate-300 hover:bg-slate-700">
+                    الصوت
+                </button>
+                <button id="tabBtnControls" onclick="switchSettingsTab('controls')" class="py-3 px-3 rounded-2xl font-extrabold text-sm bg-slate-800 text-slate-300 hover:bg-slate-700">
+                    التحكم
+                </button>
+                <button onclick="exitSettingsMenu()" class="py-3 px-3 rounded-2xl font-extrabold text-sm bg-rose-950/70 text-rose-200 hover:bg-rose-900 border border-rose-500/40">
+                    الخروج من الإعدادات
+                </button>
+            </div>
+
+            <!-- تبويب 1: العرض -->
+            <div id="settingsTabDisplay" class="space-y-4">
+                <div class="glass-card p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <div class="font-bold text-white text-base">جودة الدقة (Resolution Scale)</div>
+                        <div class="text-xs text-slate-400">موازنة وضوح الصورة مع سرعة الأداء على الأجهزة</div>
                     </div>
+                    <select id="resolutionSelect" onchange="updateDisplaySettings()" class="bg-slate-900 border border-slate-600 text-white rounded-xl px-4 py-2.5 text-sm font-bold">
+                        <option value="auto">تلقائي (موصى به)</option>
+                        <option value="high">عالية (100%)</option>
+                        <option value="medium">متوسطة (75%)</option>
+                    </select>
                 </div>
 
-                <!-- تبويب 2: الصوت -->
-<!-- ... existing code ... -->
-            <!-- معلومات المرحلة وأزرار التحكم السريعة -->
-            <div class="flex items-center gap-2.5 pointer-events-auto">
-                <div id="hudModeBadge" class="glass-panel px-4 py-2.5 rounded-xl text-sm font-black text-amber-300">
+                <div class="glass-card p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <div class="font-bold text-white text-base">حد الفريمات (FPS Limit)</div>
+                        <div class="text-xs text-slate-400">تحديد أقصى معدل إطارات في الثانية</div>
+                    </div>
+                    <select id="fpsLimitSelect" onchange="updateDisplaySettings()" class="bg-slate-900 border border-slate-600 text-white rounded-xl px-4 py-2.5 text-sm font-bold">
+                        <option value="0">غير محدود (أقصى أداء)</option>
+                        <option value="60">60 FPS</option>
+                        <option value="30">30 FPS (توفير البطارية)</option>
+                    </select>
+                </div>
+
+                <div class="glass-card p-4 sm:p-5 rounded-2xl flex items-center justify-between">
+                    <div>
+                        <div class="font-bold text-white text-base">إظهار عداد الفريمات (FPS)</div>
+                        <div class="text-xs text-slate-400">عرض سرعة الإطارات أثناء اللعب</div>
+                    </div>
+                    <input type="checkbox" id="showFpsToggle" onchange="updateDisplaySettings()" class="w-5 h-5 accent-sky-500 cursor-pointer">
+                </div>
+
+                <div class="glass-card p-4 sm:p-5 rounded-2xl flex items-center justify-between">
+                    <div>
+                        <div class="font-bold text-white text-base">أزرار تحكم الجوال (Mobile Touch)</div>
+                        <div class="text-xs text-slate-400">إظهار عصا الحركة والتصويب وأزرار اللمس على الجوال</div>
+                    </div>
+                    <input type="checkbox" id="mobileControlsToggle" onchange="updateMobileControlsPreference()" class="w-5 h-5 accent-emerald-500 cursor-pointer">
+                </div>
+            </div>
+
+            <!-- تبويب 2: الصوت -->
+            <div id="settingsTabSound" class="hidden space-y-4">
+                <div class="glass-card p-5 rounded-2xl space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="font-bold text-white text-base">مستوى الصوت العام</div>
+                            <div class="text-xs text-slate-400">التحكم بأصوات القوائم، الطلقات، الانفجارات، والتلقيم</div>
+                        </div>
+                        <span id="volumeValueLabel" class="text-lg font-black text-sky-400">70%</span>
+                    </div>
+                    <input id="masterVolumeSlider" type="range" min="0" max="100" value="70" oninput="updateVolumeSettings()" class="w-full cursor-pointer">
+                    <div class="flex flex-wrap items-center gap-3 pt-1">
+                        <button onclick="testSoundEffect()" class="px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-sm font-bold">
+                            🔊 اختبار الصوت
+                        </button>
+                        <button onclick="toggleMuteAudio()" id="muteBtn" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-bold border border-slate-600">
+                            كتم الصوت
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- تبويب 3: التحكم -->
+            <div id="settingsTabControls" class="hidden space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                    <div class="glass-card p-4 rounded-2xl flex justify-between items-center">
+                        <span class="text-slate-300 font-bold">الحركة والركض</span>
+                        <span class="px-3 py-1 rounded-lg bg-slate-900 text-sky-300 font-mono font-bold">WASD / الأسهم</span>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl flex justify-between items-center">
+                        <span class="text-slate-300 font-bold">التصويب وإطلاق النار</span>
+                        <span class="px-3 py-1 rounded-lg bg-slate-900 text-sky-300 font-mono font-bold">الماوس / كليك أيسر</span>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl flex justify-between items-center">
+                        <span class="text-slate-300 font-bold">القفز</span>
+                        <span class="px-3 py-1 rounded-lg bg-slate-900 text-sky-300 font-mono font-bold">Space</span>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl flex justify-between items-center">
+                        <span class="text-slate-300 font-bold">الانحناء والتخفي</span>
+                        <span class="px-3 py-1 rounded-lg bg-slate-900 text-sky-300 font-mono font-bold">C / Ctrl</span>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl flex justify-between items-center">
+                        <span class="text-slate-300 font-bold">سحب الطلق / إعادة التلقيم</span>
+                        <span class="px-3 py-1 rounded-lg bg-slate-900 text-sky-300 font-mono font-bold">R</span>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl flex justify-between items-center">
+                        <span class="text-slate-300 font-bold">تبديل الأسلحة (التدريب الحر)</span>
+                        <span class="px-3 py-1 rounded-lg bg-slate-900 text-sky-300 font-mono font-bold">1 / 2 / 3</span>
+                    </div>
+                </div>
+                <div class="glass-card p-4 rounded-2xl text-xs sm:text-sm text-emerald-200 leading-relaxed">
+                    📱 <strong>تحكم الجوال:</strong> عند الدخول من الجوال أو الشاشات اللمسية تظهر تلقائياً عصا حركة يسارية 360°، وعصا تصويب يمينية، وأزرار رمي، تخفي، سحب طلق، وتبديل أسلحة دون أي نصوص برمجية.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- قائمة اللعب بـ 3 تبويبات: التدريب، اللعب، الخروج من اللعب -->
+    <section id="playMenuScreen" class="hidden fixed inset-0 z-30 flex flex-col items-center justify-center p-4 bg-tactical-grid">
+        <div class="w-full max-w-md glass-panel rounded-3xl p-7 space-y-6">
+            <div class="text-center space-y-1">
+                <h2 class="text-2xl font-black text-white">قائمة اللعب</h2>
+                <p class="text-xs text-slate-400">اختر وضع التدريب أو الدخول إلى المراحل</p>
+            </div>
+
+            <div class="flex flex-col gap-3.5">
+                <button onclick="openTrainingMenu()" class="menu-btn w-full py-4 px-5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-lg flex items-center justify-center gap-3 shadow-lg">
+                    <span>🎯</span>
+                    <span>التدريب</span>
+                </button>
+
+                <button onclick="openStagesMenu()" class="menu-btn w-full py-4 px-5 rounded-2xl bg-sky-600 hover:bg-sky-500 text-white font-black text-lg flex items-center justify-center gap-3 shadow-lg">
+                    <span>⚔️</span>
+                    <span>اللعب</span>
+                </button>
+
+                <button onclick="exitPlayMenu()" class="menu-btn w-full py-3.5 px-5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-rose-300 font-extrabold text-base border border-rose-500/30 flex items-center justify-center gap-2">
+                    <span>↩️</span>
+                    <span>الخروج من اللعب</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- قائمة التدريب: التدريب الحر والتدريب بالاختبارات -->
+    <section id="trainingMenuScreen" class="hidden fixed inset-0 z-30 flex flex-col items-center justify-center p-4 bg-tactical-grid">
+        <div class="w-full max-w-lg glass-panel rounded-3xl p-6 sm:p-7 space-y-5">
+            <div class="flex items-center justify-between">
+                <h2 class="text-2xl font-black text-white">🎯 التدريب</h2>
+                <button onclick="navigateTo('playMenuScreen')" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200">
+                    رجوع
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button onclick="openWeaponSelect('training')" class="glass-card p-5 rounded-2xl text-right space-y-2 border border-emerald-500/35">
+                    <div class="text-2xl">🌿</div>
+                    <div class="text-lg font-black text-emerald-300">التدريب الحر</div>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        أرض خضراء للتدرب على الرمي، سحب الطلق، القفز، الركض، والانحناء مع أم فور، سنايبر، وآر بي جي.
+                    </p>
+                </button>
+
+                <button onclick="startExamMode()" class="glass-card p-5 rounded-2xl text-right space-y-2 border border-amber-500/35">
+                    <div class="text-2xl">⏱️</div>
+                    <div class="text-lg font-black text-amber-300">التدريب بالاختبارات</div>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        اختبار زمني لمدة 45 ثانية لإصابة الأهداف الثابتة والمتحركة وحساب نسبة الدقة والتقييم.
+                    </p>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- قائمة المراحل (5 مراحل) -->
+    <section id="stagesMenuScreen" class="hidden fixed inset-0 z-30 flex flex-col items-center justify-center p-4 bg-tactical-grid overflow-y-auto">
+        <div class="w-full max-w-2xl glass-panel rounded-3xl p-6 sm:p-7 space-y-5">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-black text-white">⚔️ اختيار المرحلة</h2>
+                    <p class="text-xs text-slate-400">دم اللاعب 500 في جميع المراحل</p>
+                </div>
+                <button onclick="navigateTo('playMenuScreen')" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200">
+                    رجوع
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
+                <button onclick="selectStage(1)" class="glass-card p-4 rounded-2xl text-right space-y-1.5 border border-sky-400/50">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-black px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300">المرحلة 1</span>
+                        <span class="text-xs text-emerald-400 font-bold">متاحة</span>
+                    </div>
+                    <div class="font-black text-white text-base">المواجهة الأولى</div>
+                    <div class="text-xs text-slate-300">خصمان (دم كل منهما 200) في أرض حربية</div>
+                </button>
+
+                <button onclick="selectStage(2)" class="glass-card p-4 rounded-2xl text-right space-y-1.5 border border-slate-600/50">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-black px-2.5 py-0.5 rounded-full bg-slate-700 text-slate-300">المرحلة 2</span>
+                        <span class="text-xs text-sky-300 font-bold">3 أعداء</span>
+                    </div>
+                    <div class="font-black text-white text-base">ميدان السواتر</div>
+                    <div class="text-xs text-slate-400">3 أعداء بمناورات وتغطية متقدمة</div>
+                </button>
+
+                <button onclick="selectStage(3)" class="glass-card p-4 rounded-2xl text-right space-y-1.5 border border-slate-600/50">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-black px-2.5 py-0.5 rounded-full bg-slate-700 text-slate-300">المرحلة 3</span>
+                        <span class="text-xs text-amber-300 font-bold">4 أعداء</span>
+                    </div>
+                    <div class="font-black text-white text-base">خط النار</div>
+                    <div class="text-xs text-slate-400">4 أعداء بدقة أعلى وممرات متعددة</div>
+                </button>
+
+                <button onclick="selectStage(4)" class="glass-card p-4 rounded-2xl text-right space-y-1.5 border border-slate-600/50">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-black px-2.5 py-0.5 rounded-full bg-slate-700 text-slate-300">المرحلة 4</span>
+                        <span class="text-xs text-orange-300 font-bold">5 أعداء</span>
+                    </div>
+                    <div class="font-black text-white text-base">حصار المجمع</div>
+                    <div class="text-xs text-slate-400">5 أعداء قبل مواجهة الزعيم الأخير</div>
+                </button>
+
+                <button onclick="selectStage(5)" class="glass-card p-4 rounded-2xl text-right space-y-1.5 border border-rose-500/45 sm:col-span-2 md:col-span-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-black px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300">المرحلة 5 — الزعيم</span>
+                        <span class="text-xs text-rose-400 font-bold">Boss (1500 HP)</span>
+                    </div>
+                    <div class="font-black text-white text-base">معركة القائد المدرع</div>
+                    <div class="text-xs text-slate-300">واجه الزعيم المدرع بدم 1500 مع حراس مساندين</div>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- شاشة اختيار السلاح (أم فور، سنايبر، آر بي جي) -->
+    <section id="weaponSelectScreen" class="hidden fixed inset-0 z-30 flex flex-col items-center justify-center p-4 bg-tactical-grid overflow-y-auto">
+        <div class="w-full max-w-3xl glass-panel rounded-3xl p-6 sm:p-7 space-y-5">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 id="weaponScreenTitle" class="text-2xl font-black text-white">اختر سلاحك</h2>
+                    <p id="weaponScreenSubtitle" class="text-xs text-slate-400">حدد السلاح قبل النزول إلى الميدان</p>
+                </div>
+                <button onclick="backFromWeaponSelect()" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200">
+                    رجوع
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button onclick="confirmWeaponAndStart('m4')" class="glass-card p-5 rounded-2xl text-right space-y-2.5 border border-sky-500/35">
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl">🔫</span>
+                        <span class="text-xs font-black px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300">رشاش هجومي</span>
+                    </div>
+                    <div class="text-xl font-black text-white">أم فور (M4)</div>
+                    <div class="text-xs text-slate-300 space-y-1">
+                        <div>• المخزن: <strong class="text-white">30 طلقة</strong></div>
+                        <div>• الضرر: <strong class="text-sky-300">5</strong> لكل طلقة</div>
+                        <div>• التأخير بين الطلقات: <strong class="text-amber-300">0.1 ثانية</strong></div>
+                    </div>
+                </button>
+
+                <button onclick="confirmWeaponAndStart('sniper')" class="glass-card p-5 rounded-2xl text-right space-y-2.5 border border-emerald-500/35">
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl">🎯</span>
+                        <span class="text-xs font-black px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300">قناص بعيد</span>
+                    </div>
+                    <div class="text-xl font-black text-white">سنايبر (Sniper)</div>
+                    <div class="text-xs text-slate-300 space-y-1">
+                        <div>• المخزن: <strong class="text-white">5 طلقات</strong></div>
+                        <div>• الضرر: <strong class="text-emerald-300">100</strong> لكل طلقة</div>
+                        <div>• التأخير بين الطلقات: <strong class="text-amber-300">3 ثوانٍ</strong></div>
+                    </div>
+                </button>
+
+                <button onclick="confirmWeaponAndStart('rpg')" class="glass-card p-5 rounded-2xl text-right space-y-2.5 border border-amber-500/35">
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl">🚀</span>
+                        <span class="text-xs font-black px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300">قاذف صواريخ</span>
+                    </div>
+                    <div class="text-xl font-black text-white">آر بي جي (RPG)</div>
+                    <div class="text-xs text-slate-300 space-y-1">
+                        <div>• الضرر: <strong class="text-amber-300">300</strong> انفجار واسع</div>
+                        <div>• التأخير بين الطلقات: <strong class="text-rose-300">10 ثوانٍ</strong></div>
+                        <div>• فعّال جداً ضد المجموعات والزعيم</div>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- واجهة اللعب الرئيسية والكانفاس -->
+    <div id="gameContainer" class="hidden fixed inset-0 z-20">
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- شريط المعلومات العلوي -->
+        <div class="fixed top-3 inset-x-3 z-30 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+            <div class="flex items-center gap-2 pointer-events-auto">
+                <div id="hudModeBadge" class="glass-panel px-3.5 py-2 rounded-xl text-xs sm:text-sm font-black text-amber-300">
                     التدريب الحر
                 </div>
+                <div id="hudFpsBadge" class="hidden glass-panel px-3 py-2 rounded-xl text-xs font-mono font-bold text-emerald-300">
+                    FPS: 60
+                </div>
+            </div>
 
-                <!-- أزرار تبديل الأسلحة السريعة أثناء التدريب الحر -->
-                <div id="hudQuickWeapons" class="hidden glass-panel p-1.5 rounded-xl flex items-center gap-1">
+            <div class="flex items-center gap-2 pointer-events-auto">
+                <div id="hudQuickWeapons" class="hidden glass-panel p-1 rounded-xl flex items-center gap-1">
                     <button onclick="switchWeaponInTraining('m4')" id="qBtnM4" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-sky-600 text-white">1: M4</button>
                     <button onclick="switchWeaponInTraining('sniper')" id="qBtnSniper" class="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-300 hover:bg-slate-800">2: Sniper</button>
                     <button onclick="switchWeaponInTraining('rpg')" id="qBtnRpg" class="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-300 hover:bg-slate-800">3: RPG</button>
                 </div>
 
-                <!-- زر تبديل تحكم الجوال مباشرة أثناء اللعب -->
-                <button id="hudMobileToggleBtn" onclick="toggleMobileControlsManual()" class="glass-panel px-3 py-2.5 rounded-xl text-xs font-black text-sky-300 hover:text-white border border-sky-500/40 transition">
+                <button id="hudMobileToggleBtn" onclick="toggleMobileControlsManual()" class="glass-panel px-3 py-2 rounded-xl text-xs font-black text-sky-300 hover:text-white border border-sky-500/40">
                     📱 لمس: تلقائي
                 </button>
 
-                <button onclick="exitGameplay()" class="glass-panel hover:bg-rose-600 px-4 py-2.5 rounded-xl text-sm font-bold text-rose-300 hover:text-white border border-rose-500/40 transition">
+                <button onclick="exitGameplay()" class="glass-panel hover:bg-rose-600 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-rose-300 hover:text-white border border-rose-500/40">
                     خروج ✕
                 </button>
             </div>
         </div>
 
-        <!-- مؤشر سحب الطلق / إعادة التلقيم -->
-        <div id="reloadIndicator" class="hidden fixed bottom-24 left-1/2 -translate-x-1/2 glass-panel px-6 py-2.5 rounded-full flex items-center gap-3 pointer-events-none">
-            <div class="w-4 h-4 border-2 border-sky-400 border-t-transparent rounded-full animate-spin"></div>
-            <span id="reloadText" class="text-sm font-bold text-white">جاري إعادة التلقيم...</span>
+        <!-- شريط الدم والذخيرة في الأسفل (أعلى من أزرار الجوال عند ظهورها) -->
+        <div id="hudBottomStats" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-20 glass-panel px-4 py-2.5 rounded-2xl flex items-center gap-4 text-xs sm:text-sm font-bold pointer-events-none">
+            <div id="hudHealthBox" class="flex items-center gap-2">
+                <span class="text-rose-400">❤️ الدم:</span>
+                <span id="hudHealthText" class="text-white font-black">500 / 500</span>
+            </div>
+            <div class="h-4 w-px bg-slate-700"></div>
+            <div class="flex items-center gap-2">
+                <span id="hudWeaponName" class="text-sky-300 font-black">M4</span>
+                <span id="hudAmmoText" class="text-amber-300 font-mono">30 / 30</span>
+            </div>
+            <div id="hudStatusExtra" class="hidden text-emerald-300 font-black"></div>
         </div>
 
-        <!-- تحكم متكامل للهواتف والأجهزة اللوحية (عصا حركة 360° + تصويب باللمس + أزرار القتال) -->
-        <div id="mobileControlsLayer" class="hidden fixed inset-x-0 bottom-0 z-30 p-4 sm:p-6 pointer-events-none select-none">
-            <div class="flex items-end justify-between w-full gap-3">
-                <!-- يسار الشاشة: عصا الحركة التناظرية 360 درجة -->
-                <div class="flex flex-col items-center gap-2 pointer-events-auto">
+        <!-- مؤشر سحب الطلق / إعادة التلقيم -->
+        <div id="reloadIndicator" class="hidden fixed top-16 left-1/2 -translate-x-1/2 z-30 glass-panel px-5 py-2 rounded-full flex items-center gap-2.5 pointer-events-none">
+            <div class="w-4 h-4 border-2 border-sky-400 border-t-transparent rounded-full animate-spin"></div>
+            <span id="reloadText" class="text-xs sm:text-sm font-bold text-white">جاري سحب الطلق...</span>
+        </div>
+
+        <!-- تحكم الجوال واللمس الكامل (عصا حركة 360° + عصا تصويب 360° + أزرار رمي وتخفي وتلقيم وتبديل سلاح) -->
+        <div id="mobileControlsLayer" class="hidden fixed inset-x-0 bottom-0 z-30 p-3 sm:p-5 pointer-events-none select-none">
+            <div class="flex items-end justify-between w-full gap-2">
+                <!-- يسار: عصا الحركة 360 درجة -->
+                <div class="flex flex-col items-center gap-1.5 pointer-events-auto">
                     <div id="moveJoystick" class="joystick-base">
                         <div id="moveJoystickKnob" class="joystick-knob"></div>
                     </div>
-                    <span class="text-[11px] font-bold text-sky-300/90 bg-slate-950/70 px-2.5 py-0.5 rounded-full border border-sky-500/30">
-                        حركة 360°
+                    <span class="text-[11px] font-bold text-sky-200 bg-slate-950/80 px-2.5 py-0.5 rounded-full border border-sky-500/30">
+                        حركة
                     </span>
                 </div>
 
-                <!-- وسط أسفل: أزرار التخفي، التلقيم، وتبديل السلاح (في التدريب الحر) -->
-                <div class="flex flex-col items-center gap-2 pointer-events-auto">
-                    <div id="mobileWeaponSwitchRow" class="hidden items-center gap-1.5 bg-slate-950/75 p-1.5 rounded-2xl border border-slate-700/80">
-                        <button id="mWepM4" onclick="switchWeaponInTraining('m4')" class="touch-action-btn px-2.5 py-1.5 rounded-xl text-xs font-black bg-sky-600 text-white">M4</button>
-                        <button id="mWepSniper" onclick="switchWeaponInTraining('sniper')" class="touch-action-btn px-2.5 py-1.5 rounded-xl text-xs font-black bg-slate-800 text-slate-300">SNIPER</button>
-                        <button id="mWepRpg" onclick="switchWeaponInTraining('rpg')" class="touch-action-btn px-2.5 py-1.5 rounded-xl text-xs font-black bg-slate-800 text-slate-300">RPG</button>
+                <!-- وسط أسفل: أزرار التخفي وسحب الطلق وتبديل الأسلحة -->
+                <div class="flex flex-col items-center gap-1.5 pointer-events-auto mb-10 sm:mb-0">
+                    <div id="mobileWeaponSwitchRow" class="hidden items-center gap-1 bg-slate-950/80 p-1 rounded-xl border border-slate-700">
+                        <button id="mWepM4" onclick="switchWeaponInTraining('m4')" class="touch-action-btn px-2 py-1 rounded-lg text-[11px] font-black bg-sky-600 text-white">M4</button>
+                        <button id="mWepSniper" onclick="switchWeaponInTraining('sniper')" class="touch-action-btn px-2 py-1 rounded-lg text-[11px] font-black bg-slate-800 text-slate-300">SNIPER</button>
+                        <button id="mWepRpg" onclick="switchWeaponInTraining('rpg')" class="touch-action-btn px-2 py-1 rounded-lg text-[11px] font-black bg-slate-800 text-slate-300">RPG</button>
                     </div>
-
-                    <div class="flex items-center gap-2">
-                        <button id="mobileCrouchBtn" onclick="toggleCrouchTouch()" class="touch-action-btn px-4 py-3 rounded-2xl bg-amber-500/25 border border-amber-400/60 text-amber-200 font-black text-xs shadow-lg">
-                            🛡️ تخفي (C)
+                    <div class="flex items-center gap-1.5">
+                        <button id="mobileCrouchBtn" onclick="toggleCrouchTouch()" class="touch-action-btn px-3 py-2.5 rounded-xl bg-amber-500/25 border border-amber-400/60 text-amber-200 font-black text-xs">
+                            🛡️ تخفي
                         </button>
-                        <button onclick="triggerReload()" class="touch-action-btn px-4 py-3 rounded-2xl bg-emerald-500/25 border border-emerald-400/60 text-emerald-200 font-black text-xs shadow-lg">
+                        <button onclick="triggerReload()" class="touch-action-btn px-3 py-2.5 rounded-xl bg-emerald-500/25 border border-emerald-400/60 text-emerald-200 font-black text-xs">
                             🔄 سحب طلق
                         </button>
                     </div>
                 </div>
 
-                <!-- يمين الشاشة: عصا تصويب حرة 360° + زر إطلاق النار الكبير -->
-                <div class="flex items-end gap-3 pointer-events-auto">
-                    <div class="flex flex-col items-center gap-2">
-                        <div id="aimJoystick" class="joystick-base border-rose-400/45">
+                <!-- يمين: عصا التصويب 360 درجة + زر الرمي -->
+                <div class="flex items-end gap-2.5 pointer-events-auto">
+                    <div class="flex flex-col items-center gap-1.5">
+                        <div id="aimJoystick" class="joystick-base border-rose-400/50">
                             <div id="aimJoystickKnob" class="joystick-knob" style="background: radial-gradient(circle at 35% 30%, #fda4af, #e11d48 70%, #9f1239); box-shadow: 0 6px 15px rgba(225, 29, 72, 0.55);"></div>
                         </div>
-                        <span class="text-[11px] font-bold text-rose-300/90 bg-slate-950/70 px-2.5 py-0.5 rounded-full border border-rose-500/30">
-                            تصويب 🎯
+                        <span class="text-[11px] font-bold text-rose-200 bg-slate-950/80 px-2.5 py-0.5 rounded-full border border-rose-500/30">
+                            تصويب
                         </span>
                     </div>
 
-                    <button id="mobileFireBtn" class="touch-action-btn w-20 h-20 rounded-full bg-gradient-to-br from-rose-500 to-red-700 border-2 border-rose-200/80 text-white font-black text-base shadow-2xl flex flex-col items-center justify-center">
+                    <button id="mobileFireBtn" class="touch-action-btn w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-rose-500 to-red-700 border-2 border-rose-200/80 text-white font-black text-sm shadow-2xl flex flex-col items-center justify-center">
                         <span>🔥</span>
-                        <span class="text-xs mt-0.5">رمي</span>
+                        <span class="text-[11px]">رمي</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- نافذة نهاية الجولة (فوز / خسارة / نتيجة الاختبار) -->
+        <div id="endModal" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+            <div class="w-full max-w-md glass-panel rounded-3xl p-7 text-center space-y-5 border border-slate-600/60">
+                <div id="endIcon" class="text-5xl">🏆</div>
+                <h2 id="endTitle" class="text-3xl font-black text-emerald-400">لقد فزت!!</h2>
+                <p id="endSummary" class="text-sm text-slate-300 leading-relaxed">تم القضاء على جميع الأعداء بنجاح.</p>
+
+                <div class="flex items-center justify-center gap-3 pt-2">
+                    <button onclick="retryCurrentMode()" class="menu-btn flex-1 py-3.5 px-5 rounded-2xl bg-sky-600 hover:bg-sky-500 text-white font-black text-base">
+                        الإعادة
+                    </button>
+                    <button onclick="exitGameplay()" class="menu-btn flex-1 py-3.5 px-5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-rose-200 font-black text-base border border-rose-500/40">
+                        الخروج
                     </button>
                 </div>
             </div>
         </div>
     </div>
-<!-- ... existing code ... -->
+
+    <script>
+        // محرك الصوت التوليدي البسيط (بدون ملفات صوت خارجية)
+        class SoundEngine {
+            constructor() {
+                this.ctx = null;
+                this.volume = 0.7;
+                this.muted = false;
+            }
+
+            init() {
+                try {
+                    if (!this.ctx) {
+                        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                        if (AudioCtx) this.ctx = new AudioCtx();
+                    }
+                    if (this.ctx && this.ctx.state === 'suspended') {
+                        this.ctx.resume();
+                    }
+                } catch (_) {}
+            }
+
+            playUIClick(soft = true) {
+                if (this.muted || this.volume <= 0) return;
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const now = this.ctx.currentTime;
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(soft ? 540 : 680, now);
+                    osc.frequency.exponentialRampToValueAtTime(soft ? 320 : 420, now + 0.065);
+                    gain.gain.setValueAtTime(this.volume * (soft ? 0.12 : 0.18), now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.075);
+                } catch (_) {}
+            }
+
+            playShoot(weaponKey) {
+                if (this.muted || this.volume <= 0) return;
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const now = this.ctx.currentTime;
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    if (weaponKey === 'sniper') {
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(240, now);
+                        osc.frequency.exponentialRampToValueAtTime(42, now + 0.22);
+                        gain.gain.setValueAtTime(this.volume * 0.28, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+                        osc.connect(gain);
+                        gain.connect(this.ctx.destination);
+                        osc.start(now);
+                        osc.stop(now + 0.25);
+                    } else if (weaponKey === 'rpg') {
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(150, now);
+                        osc.frequency.exponentialRampToValueAtTime(35, now + 0.35);
+                        gain.gain.setValueAtTime(this.volume * 0.32, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.36);
+                        osc.connect(gain);
+                        gain.connect(this.ctx.destination);
+                        osc.start(now);
+                        osc.stop(now + 0.37);
+                    } else {
+                        osc.type = 'square';
+                        osc.frequency.setValueAtTime(340, now);
+                        osc.frequency.exponentialRampToValueAtTime(95, now + 0.07);
+                        gain.gain.setValueAtTime(this.volume * 0.14, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.075);
+                        osc.connect(gain);
+                        gain.connect(this.ctx.destination);
+                        osc.start(now);
+                        osc.stop(now + 0.08);
+                    }
+                } catch (_) {}
+            }
+
+            playReload() {
+                if (this.muted || this.volume <= 0) return;
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const now = this.ctx.currentTime;
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(420, now);
+                    osc.frequency.setValueAtTime(620, now + 0.09);
+                    gain.gain.setValueAtTime(this.volume * 0.14, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.19);
+                } catch (_) {}
+            }
+
+            playExplosion() {
+                if (this.muted || this.volume <= 0) return;
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const now = this.ctx.currentTime;
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(110, now);
+                    osc.frequency.exponentialRampToValueAtTime(24, now + 0.45);
+                    gain.gain.setValueAtTime(this.volume * 0.35, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.46);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.48);
+                } catch (_) {}
+            }
+        }
+
+        const sound = new SoundEngine();
+
+        // تعريف الأسلحة حسب المواصفات المطلوبة
+        const WEAPONS = {
+            m4: {
+                key: 'm4',
+                name: 'أم فور (M4)',
+                magSize: 30,
+                damage: 5,
+                fireDelayMs: 100, // 0.1 ثانية
+                reloadTimeMs: 1100,
+                bulletSpeed: 920,
+                auto: true,
+                color: '#38bdf8'
+            },
+            sniper: {
+                key: 'sniper',
+                name: 'سنايبر (Sniper)',
+                magSize: 5,
+                damage: 100,
+                fireDelayMs: 3000, // 3 ثوانٍ
+                reloadTimeMs: 1500,
+                bulletSpeed: 1450,
+                auto: false,
+                color: '#34d399'
+            },
+            rpg: {
+                key: 'rpg',
+                name: 'آر بي جي (RPG)',
+                magSize: 1,
+                damage: 300,
+                fireDelayMs: 10000, // 10 ثوانٍ
+                reloadTimeMs: 1400,
+                bulletSpeed: 640,
+                explosionRadius: 120,
+                auto: false,
+                color: '#fbbf24'
+            }
+        };
+
+        // إعدادات العرض والتحكم
         let targetFpsLimit = 0;
         let showFps = false;
         let resolutionScale = 'auto';
-        // وضع تحكم الجوال: 'auto' (تلقائي للأجهزة اللمسية)، 'on' (إجباري مفعل)، 'off' (مخفي)
         let mobileControlsMode = 'auto';
 
         const isTouchDevice = () => {
-            return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || window.innerWidth <= 768;
+            return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || window.innerWidth <= 820;
         };
+
+        function showToast(msg) {
+            const el = document.getElementById('toastMessage');
+            if (!el) return;
+            el.innerText = msg;
+            el.classList.remove('hidden');
+            clearTimeout(showToast._timer);
+            showToast._timer = setTimeout(() => {
+                el.classList.add('hidden');
+            }, 2200);
+        }
 
         function syncMobileControlsUI() {
             const layer = document.getElementById('mobileControlsLayer');
             const toggleInput = document.getElementById('mobileControlsToggle');
             const hudBtn = document.getElementById('hudMobileToggleBtn');
+            const bottomStats = document.getElementById('hudBottomStats');
 
             const shouldShow = (mobileControlsMode === 'on') || (mobileControlsMode === 'auto' && isTouchDevice());
 
             if (layer) {
                 if (shouldShow && gameRunning) layer.classList.remove('hidden');
                 else layer.classList.add('hidden');
+            }
+            if (bottomStats) {
+                if (shouldShow && gameRunning) {
+                    bottomStats.classList.remove('bottom-4');
+                    bottomStats.classList.add('bottom-32', 'sm:bottom-36');
+                } else {
+                    bottomStats.classList.remove('bottom-32', 'sm:bottom-36');
+                    bottomStats.classList.add('bottom-4');
+                }
             }
             if (toggleInput) {
                 toggleInput.checked = shouldShow;
@@ -180,7 +804,6 @@
                 else if (mobileControlsMode === 'on') hudBtn.innerText = '📱 لمس: مفعل';
                 else hudBtn.innerText = '📱 لمس: مخفي';
             }
-
             const wRow = document.getElementById('mobileWeaponSwitchRow');
             if (wRow) {
                 if (currentMode === 'training') {
@@ -207,16 +830,356 @@
             else mobileControlsMode = 'auto';
             syncMobileControlsUI();
         }
-<!-- ... existing code ... -->
-            resizeCanvas();
-            initLevel();
-            gameRunning = true;
-            gamePaused = false;
+
+        // التنقل بين القوائم
+        const ALL_SCREENS = [
+            'mainMenuScreen',
+            'exitScreen',
+            'settingsMenuScreen',
+            'playMenuScreen',
+            'trainingMenuScreen',
+            'stagesMenuScreen',
+            'weaponSelectScreen',
+            'gameContainer'
+        ];
+
+        function navigateTo(screenId) {
+            ALL_SCREENS.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+            const target = document.getElementById(screenId);
+            if (target) target.classList.remove('hidden');
             syncMobileControlsUI();
         }
 
+        function openPlayMenu() {
+            sound.playUIClick(true);
+            navigateTo('playMenuScreen');
+        }
+
+        function exitPlayMenu() {
+            sound.playUIClick(true);
+            navigateTo('mainMenuScreen');
+        }
+
+        function exitMainMenu() {
+            sound.playUIClick(true);
+            navigateTo('exitScreen');
+        }
+
+        function openSettingsMenu() {
+            sound.playUIClick(true);
+            switchSettingsTab('display');
+            syncMobileControlsUI();
+            navigateTo('settingsMenuScreen');
+        }
+
+        function exitSettingsMenu() {
+            sound.playUIClick(true);
+            navigateTo('mainMenuScreen');
+        }
+
+        function switchSettingsTab(tabName) {
+            sound.playUIClick(true);
+            ['display', 'sound', 'controls'].forEach(name => {
+                const tabEl = document.getElementById('settingsTab' + name.charAt(0).toUpperCase() + name.slice(1));
+                const btnEl = document.getElementById('tabBtn' + name.charAt(0).toUpperCase() + name.slice(1));
+                if (tabEl) tabEl.classList.add('hidden');
+                if (btnEl) {
+                    btnEl.classList.remove('bg-sky-600', 'text-white', 'shadow');
+                    btnEl.classList.add('bg-slate-800', 'text-slate-300');
+                }
+            });
+            const activeTab = document.getElementById('settingsTab' + tabName.charAt(0).toUpperCase() + tabName.slice(1));
+            const activeBtn = document.getElementById('tabBtn' + tabName.charAt(0).toUpperCase() + tabName.slice(1));
+            if (activeTab) activeTab.classList.remove('hidden');
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
+                activeBtn.classList.add('bg-sky-600', 'text-white', 'shadow');
+            }
+        }
+
+        function updateDisplaySettings() {
+            sound.playUIClick(true);
+            resolutionScale = document.getElementById('resolutionSelect').value;
+            targetFpsLimit = parseInt(document.getElementById('fpsLimitSelect').value, 10) || 0;
+            showFps = document.getElementById('showFpsToggle').checked;
+            const fpsBadge = document.getElementById('hudFpsBadge');
+            if (fpsBadge) {
+                if (showFps) fpsBadge.classList.remove('hidden');
+                else fpsBadge.classList.add('hidden');
+            }
+            resizeCanvas();
+        }
+
+        function updateVolumeSettings() {
+            const slider = document.getElementById('masterVolumeSlider');
+            const val = parseInt(slider.value, 10) || 0;
+            sound.volume = val / 100;
+            if (val > 0) sound.muted = false;
+            document.getElementById('volumeValueLabel').innerText = val + '%';
+            updateMuteButtonText();
+        }
+
+        function testSoundEffect() {
+            sound.playUIClick(false);
+            showToast('تم تشغيل مؤثر الصوت');
+        }
+
+        function toggleMuteAudio() {
+            sound.muted = !sound.muted;
+            updateMuteButtonText();
+            if (!sound.muted) sound.playUIClick(true);
+        }
+
+        function updateMuteButtonText() {
+            const btn = document.getElementById('muteBtn');
+            if (!btn) return;
+            btn.innerText = sound.muted ? 'إلغاء الكتم' : 'كتم الصوت';
+        }
+
+        function openTrainingMenu() {
+            sound.playUIClick(true);
+            navigateTo('trainingMenuScreen');
+        }
+
+        function openStagesMenu() {
+            sound.playUIClick(true);
+            navigateTo('stagesMenuScreen');
+        }
+
+        let currentMode = 'training'; // 'training' | 'exam' | 'stage'
+        let currentStageNum = 1;
+        let selectedWeaponKey = 'm4';
+        let gameRunning = false;
+
+        function openWeaponSelect(mode) {
+            sound.playUIClick(true);
+            currentMode = mode;
+            const titleEl = document.getElementById('weaponScreenTitle');
+            const subEl = document.getElementById('weaponScreenSubtitle');
+            if (mode === 'training') {
+                titleEl.innerText = 'التدريب الحر — اختر سلاحك';
+                subEl.innerText = 'ستنزل في أرض خضراء ويمكنك تبديل الأسلحة بأي وقت';
+            } else {
+                titleEl.innerText = 'المرحلة ' + currentStageNum + ' — اختر سلاحك';
+                subEl.innerText = 'دمك 500 — استعد لمواجهة الخصوم';
+            }
+            navigateTo('weaponSelectScreen');
+        }
+
+        function backFromWeaponSelect() {
+            sound.playUIClick(true);
+            if (currentMode === 'training') navigateTo('trainingMenuScreen');
+            else navigateTo('stagesMenuScreen');
+        }
+
+        function selectStage(stageNum) {
+            sound.playUIClick(true);
+            currentStageNum = stageNum;
+            openWeaponSelect('stage');
+        }
+
+        function startExamMode() {
+            sound.playUIClick(true);
+            currentMode = 'exam';
+            selectedWeaponKey = 'm4';
+            launchGameplay();
+        }
+
+        function confirmWeaponAndStart(wKey) {
+            sound.playUIClick(true);
+            selectedWeaponKey = wKey;
+            launchGameplay();
+        }
+
+        function retryCurrentMode() {
+            sound.playUIClick(true);
+            document.getElementById('endModal').classList.add('hidden');
+            launchGameplay();
+        }
+
+        function exitGameplay() {
+            sound.playUIClick(true);
+            gameRunning = false;
+            document.getElementById('endModal').classList.add('hidden');
+            document.getElementById('reloadIndicator').classList.add('hidden');
+            if (currentMode === 'training' || currentMode === 'exam') {
+                navigateTo('trainingMenuScreen');
+            } else {
+                navigateTo('stagesMenuScreen');
+            }
+        }
+
+        // محرك اللعبة والكانفاس
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let worldWidth = 1700;
+        let worldHeight = 1200;
+        let camera = { x: 0, y: 0 };
+
+        let player = {
+            x: 400,
+            y: 600,
+            radius: 18,
+            hp: 500,
+            maxHp: 500,
+            aimAngle: 0,
+            crouching: false,
+            jumpZ: 0,
+            jumpVel: 0,
+            weapon: WEAPONS.m4,
+            ammo: 30,
+            reloading: false,
+            reloadEndTime: 0,
+            lastShotTime: -99999
+        };
+
+        let obstacles = [];
+        let bullets = [];
+        let enemies = [];
+        let targets = [];
+        let particles = [];
+
+        // بيانات وضع الاختبار
+        let examState = {
+            timeLeft: 45,
+            shotsFired: 0,
+            shotsHit: 0,
+            score: 0
+        };
+
+        function resizeCanvas() {
+            const dpr = window.devicePixelRatio || 1;
+            let scale = 1;
+            if (resolutionScale === 'high') scale = Math.min(dpr, 2);
+            else if (resolutionScale === 'medium') scale = 0.75;
+            else scale = Math.min(dpr, 1.5);
+
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            canvas.width = Math.max(1, Math.floor(w * scale));
+            canvas.height = Math.max(1, Math.floor(h * scale));
+            ctx.setTransform(scale, 0, 0, scale, 0, 0);
+            syncMobileControlsUI();
+        }
+
+        function launchGameplay() {
+            resizeCanvas();
+            document.getElementById('endModal').classList.add('hidden');
+            document.getElementById('reloadIndicator').classList.add('hidden');
+
+            const wStats = WEAPONS[selectedWeaponKey] || WEAPONS.m4;
+            player = {
+                x: 340,
+                y: worldHeight / 2,
+                radius: 18,
+                hp: 500,
+                maxHp: 500,
+                aimAngle: 0,
+                crouching: false,
+                jumpZ: 0,
+                jumpVel: 0,
+                weapon: wStats,
+                ammo: wStats.magSize,
+                reloading: false,
+                reloadEndTime: 0,
+                lastShotTime: -99999
+            };
+
+            bullets = [];
+            enemies = [];
+            targets = [];
+            particles = [];
+
+            const badge = document.getElementById('hudModeBadge');
+            const qWeapons = document.getElementById('hudQuickWeapons');
+            const healthBox = document.getElementById('hudHealthBox');
+            const extraStatus = document.getElementById('hudStatusExtra');
+
+            if (currentMode === 'training') {
+                badge.innerText = 'التدريب الحر — أرض خضراء';
+                qWeapons.classList.remove('hidden');
+                healthBox.classList.remove('hidden');
+                extraStatus.classList.add('hidden');
+                obstacles = [
+                    { x: 640, y: 420, w: 150, h: 42, low: true },
+                    { x: 920, y: 680, w: 170, h: 42, low: true },
+                    { x: 1180, y: 360, w: 60, h: 180, low: false }
+                ];
+                updateQuickWeaponButtons();
+            } else if (currentMode === 'exam') {
+                badge.innerText = 'التدريب بالاختبارات';
+                qWeapons.classList.add('hidden');
+                healthBox.classList.add('hidden');
+                extraStatus.classList.remove('hidden');
+                examState = { timeLeft: 45, shotsFired: 0, shotsHit: 0, score: 0 };
+                obstacles = [
+                    { x: 600, y: 460, w: 120, h: 36, low: true },
+                    { x: 880, y: 640, w: 120, h: 36, low: true }
+                ];
+                spawnExamTargets();
+            } else {
+                badge.innerText = 'المرحلة ' + currentStageNum;
+                qWeapons.classList.add('hidden');
+                healthBox.classList.remove('hidden');
+                extraStatus.classList.add('hidden');
+                obstacles = [
+                    { x: 580, y: 360, w: 140, h: 44, low: true },
+                    { x: 840, y: 660, w: 160, h: 44, low: true },
+                    { x: 1080, y: 430, w: 54, h: 210, low: false }
+                ];
+                spawnStageEnemies(currentStageNum);
+            }
+
+            gameRunning = true;
+            syncMobileControlsUI();
+            updateHUD();
+            navigateTo('gameContainer');
+        }
+
+        function spawnExamTargets() {
+            targets = [
+                { x: 760, y: 320, baseY: 320, r: 24, vx: 0, vy: 0, alive: true, respawnAt: 0 },
+                { x: 1050, y: 520, baseY: 520, r: 24, vx: 0, vy: 95, alive: true, respawnAt: 0 },
+                { x: 1280, y: 740, baseY: 740, r: 24, vx: 0, vy: -110, alive: true, respawnAt: 0 },
+                { x: 960, y: 860, baseY: 860, r: 24, vx: 0, vy: 0, alive: true, respawnAt: 0 }
+            ];
+        }
+
+        function spawnStageEnemies(stageNum) {
+            if (stageNum === 1) {
+                // خصمان بدم 200 لكل منهما
+                enemies = [
+                    { x: 1180, y: 430, radius: 18, hp: 200, maxHp: 200, speed: 95, fireCooldown: 1400, lastAttack: 0, damage: 12, isBoss: false, moveDir: 1 },
+                    { x: 1260, y: 760, radius: 18, hp: 200, maxHp: 200, speed: 95, fireCooldown: 1500, lastAttack: 0, damage: 12, isBoss: false, moveDir: -1 }
+                ];
+            } else if (stageNum === 2) {
+                for (let i = 0; i < 3; i++) {
+                    enemies.push({ x: 1120 + i * 110, y: 320 + i * 220, radius: 18, hp: 240, maxHp: 240, speed: 120, fireCooldown: 1150, lastAttack: 0, damage: 16, isBoss: false, moveDir: i % 2 === 0 ? 1 : -1 });
+                }
+            } else if (stageNum === 3) {
+                for (let i = 0; i < 4; i++) {
+                    enemies.push({ x: 1100 + (i % 2) * 160, y: 260 + i * 190, radius: 18, hp: 280, maxHp: 280, speed: 140, fireCooldown: 950, lastAttack: 0, damage: 20, isBoss: false, moveDir: i % 2 === 0 ? 1 : -1 });
+                }
+            } else if (stageNum === 4) {
+                for (let i = 0; i < 5; i++) {
+                    enemies.push({ x: 1080 + (i % 2) * 190, y: 230 + i * 175, radius: 19, hp: 320, maxHp: 320, speed: 155, fireCooldown: 850, lastAttack: 0, damage: 24, isBoss: false, moveDir: i % 2 === 0 ? 1 : -1 });
+                }
+            } else {
+                // المرحلة 5: زعيم بدم 1500 وحارسين
+                enemies = [
+                    { x: 1320, y: worldHeight / 2, radius: 34, hp: 1500, maxHp: 1500, speed: 125, fireCooldown: 750, lastAttack: 0, damage: 35, isBoss: true, moveDir: 1 },
+                    { x: 1140, y: 340, radius: 18, hp: 250, maxHp: 250, speed: 135, fireCooldown: 1050, lastAttack: 0, damage: 18, isBoss: false, moveDir: 1 },
+                    { x: 1140, y: 860, radius: 18, hp: 250, maxHp: 250, speed: 135, fireCooldown: 1050, lastAttack: 0, damage: 18, isBoss: false, moveDir: -1 }
+                ];
+            }
+        }
+
         function switchWeaponInTraining(wKey) {
-            if (currentMode !== 'training') return;
+            if (currentMode !== 'training' || !WEAPONS[wKey]) return;
             sound.playReload();
             selectedWeaponKey = wKey;
             const wStats = WEAPONS[wKey];
@@ -233,115 +1196,266 @@
             ['m4', 'sniper', 'rpg'].forEach(k => {
                 const btn = document.getElementById('qBtn' + k.charAt(0).toUpperCase() + k.slice(1));
                 if (btn) {
-                    if (k === selectedWeaponKey) {
-                        btn.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-sky-600 text-white shadow';
-                    } else {
-                        btn.className = 'px-2.5 py-1 rounded-lg text-xs font-bold text-slate-300 hover:bg-slate-800';
-                    }
+                    if (k === selectedWeaponKey) btn.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-sky-600 text-white';
+                    else btn.className = 'px-2.5 py-1 rounded-lg text-xs font-bold text-slate-300 hover:bg-slate-800';
                 }
                 const mBtn = document.getElementById('mWep' + k.charAt(0).toUpperCase() + k.slice(1));
                 if (mBtn) {
-                    if (k === selectedWeaponKey) {
-                        mBtn.className = 'touch-action-btn px-2.5 py-1.5 rounded-xl text-xs font-black bg-sky-600 text-white shadow';
-                    } else {
-                        mBtn.className = 'touch-action-btn px-2.5 py-1.5 rounded-xl text-xs font-black bg-slate-800 text-slate-300';
-                    }
+                    if (k === selectedWeaponKey) mBtn.className = 'touch-action-btn px-2 py-1 rounded-lg text-[11px] font-black bg-sky-600 text-white';
+                    else mBtn.className = 'touch-action-btn px-2 py-1 rounded-lg text-[11px] font-black bg-slate-800 text-slate-300';
                 }
             });
         }
-<!-- ... existing code ... -->
-        function exitGameplay() {
-            gameRunning = false;
-            document.getElementById('reloadIndicator').classList.add('hidden');
-            syncMobileControlsUI();
-            if (currentMode === 'training' || currentMode === 'exam') {
-                navigateTo('trainingMenuScreen');
-            } else {
-                navigateTo('stagesMenuScreen');
-            }
+
+        function triggerReload() {
+            if (!gameRunning || player.reloading) return;
+            if (player.ammo >= player.weapon.magSize) return;
+            player.reloading = true;
+            player.reloadEndTime = performance.now() + player.weapon.reloadTimeMs;
+            sound.playReload();
+            const ind = document.getElementById('reloadIndicator');
+            const txt = document.getElementById('reloadText');
+            if (txt) txt.innerText = player.weapon.key === 'sniper' ? 'جاري سحب الطلق...' : 'جاري إعادة التلقيم...';
+            if (ind) ind.classList.remove('hidden');
         }
-<!-- ... existing code ... -->
-        // مدخلات التحكم
-        const keys = {};
-        const touchKeys = {
-            up: false, down: false, left: false, right: false,
-            crouch: false, joyX: 0, joyY: 0,
-            aimActive: false, aimX: 0, aimY: 0, fireHeld: false
-        };
-        const mouse = { x: 0, y: 0, worldX: 0, worldY: 0, down: false };
-<!-- ... existing code ... -->
-        function toggleCrouchTouch() {
-            touchKeys.crouch = !touchKeys.crouch;
-            const btn = document.getElementById('mobileCrouchBtn');
-            if (btn) {
-                if (touchKeys.crouch) {
-                    btn.className = 'touch-action-btn px-4 py-3 rounded-2xl bg-amber-500 text-slate-950 border border-amber-200 font-black text-xs shadow-lg';
-                    btn.innerText = '🛡️ متخفٍ (مفعل)';
-                } else {
-                    btn.className = 'touch-action-btn px-4 py-3 rounded-2xl bg-amber-500/25 border border-amber-400/60 text-amber-200 font-black text-xs shadow-lg';
-                    btn.innerText = '🛡️ تخفي (C)';
+
+        function tryShoot() {
+            if (!gameRunning) return;
+            const now = performance.now();
+            if (player.reloading) return;
+            if (now - player.lastShotTime < player.weapon.fireDelayMs) return;
+
+            if (player.ammo <= 0) {
+                triggerReload();
+                return;
+            }
+
+            player.lastShotTime = now;
+            player.ammo -= 1;
+            if (currentMode === 'exam') examState.shotsFired += 1;
+
+            sound.playShoot(player.weapon.key);
+
+            const muzzleDist = player.radius + 14;
+            const bx = player.x + Math.cos(player.aimAngle) * muzzleDist;
+            const by = player.y + Math.sin(player.aimAngle) * muzzleDist;
+
+            bullets.push({
+                x: bx,
+                y: by,
+                vx: Math.cos(player.aimAngle) * player.weapon.bulletSpeed,
+                vy: Math.sin(player.aimAngle) * player.weapon.bulletSpeed,
+                damage: player.weapon.damage,
+                fromPlayer: true,
+                isRpg: player.weapon.key === 'rpg',
+                radius: player.weapon.key === 'rpg' ? 6 : 3.5,
+                color: player.weapon.color
+            });
+
+            if (player.ammo <= 0) {
+                triggerReload();
+            }
+            updateHUD();
+        }
+
+        function spawnExplosion(x, y, radius, damage, fromPlayer) {
+            sound.playExplosion();
+            for (let i = 0; i < 24; i++) {
+                const ang = (Math.PI * 2 * i) / 24 + Math.random() * 0.25;
+                const spd = 80 + Math.random() * 240;
+                particles.push({
+                    x, y,
+                    vx: Math.cos(ang) * spd,
+                    vy: Math.sin(ang) * spd,
+                    life: 0.45 + Math.random() * 0.25,
+                    maxLife: 0.7,
+                    color: i % 2 === 0 ? '#f97316' : '#facc15',
+                    size: 5 + Math.random() * 5
+                });
+            }
+
+            if (fromPlayer) {
+                enemies.forEach(en => {
+                    if (en.hp > 0 && Math.hypot(en.x - x, en.y - y) <= radius + en.radius) {
+                        en.hp = Math.max(0, en.hp - damage);
+                    }
+                });
+                targets.forEach(t => {
+                    if (t.alive && Math.hypot(t.x - x, t.y - y) <= radius + t.r) {
+                        t.alive = false;
+                        t.respawnAt = performance.now() + 1800;
+                        examState.shotsHit += 1;
+                        examState.score += 100;
+                    }
+                });
+            } else {
+                if (Math.hypot(player.x - x, player.y - y) <= radius + player.radius && player.jumpZ <= 4) {
+                    const dmgFactor = player.crouching ? 0.5 : 1;
+                    player.hp = Math.max(0, player.hp - Math.round(damage * dmgFactor));
                 }
             }
         }
 
-        // إعداد عصا الحركة، عصا التصويب، وزر الرمي لشاشات الجوال
+        function updateHUD() {
+            const hpTxt = document.getElementById('hudHealthText');
+            const wName = document.getElementById('hudWeaponName');
+            const ammoTxt = document.getElementById('hudAmmoText');
+            const extra = document.getElementById('hudStatusExtra');
+
+            if (hpTxt) hpTxt.innerText = `${Math.max(0, Math.round(player.hp))} / ${player.maxHp}`;
+            if (wName) wName.innerText = player.weapon.name;
+            if (ammoTxt) ammoTxt.innerText = `${player.ammo} / ${player.weapon.magSize}`;
+
+            if (currentMode === 'exam' && extra) {
+                extra.innerText = `⏱️ ${Math.ceil(examState.timeLeft)}ث | النقاط: ${examState.score}`;
+            } else if (currentMode === 'stage' && extra) {
+                const aliveCount = enemies.filter(e => e.hp > 0).length;
+                extra.classList.remove('hidden');
+                extra.innerText = `الأعداء: ${aliveCount}`;
+            }
+        }
+
+        function showEndModal(won, titleText, summaryText) {
+            gameRunning = false;
+            syncMobileControlsUI();
+            const modal = document.getElementById('endModal');
+            const icon = document.getElementById('endIcon');
+            const title = document.getElementById('endTitle');
+            const summary = document.getElementById('endSummary');
+            if (icon) icon.innerText = won ? '🏆' : '💀';
+            if (title) {
+                title.innerText = titleText;
+                title.className = won ? 'text-3xl font-black text-emerald-400' : 'text-3xl font-black text-rose-400';
+            }
+            if (summary) summary.innerText = summaryText;
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        // مدخلات الكيبورد والماوس
+        const keys = {};
+        const mouse = { x: 0, y: 0, down: false };
+
+        window.addEventListener('keydown', e => {
+            keys[e.code] = true;
+            if (!gameRunning) return;
+            if (e.code === 'Space' && player.jumpZ === 0) {
+                player.jumpVel = 290;
+                player.jumpZ = 1;
+            }
+            if (e.code === 'KeyC' || e.code === 'ControlLeft') {
+                player.crouching = !player.crouching;
+            }
+            if (e.code === 'KeyR') {
+                triggerReload();
+            }
+            if (currentMode === 'training') {
+                if (e.code === 'Digit1') switchWeaponInTraining('m4');
+                if (e.code === 'Digit2') switchWeaponInTraining('sniper');
+                if (e.code === 'Digit3') switchWeaponInTraining('rpg');
+            }
+        });
+
+        window.addEventListener('keyup', e => {
+            keys[e.code] = false;
+        });
+
+        window.addEventListener('mousemove', e => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        canvas.addEventListener('mousedown', e => {
+            if (e.button === 0 && gameRunning) {
+                mouse.down = true;
+                tryShoot();
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            mouse.down = false;
+        });
+
+        // تحكم الجوال واللمس
+        const touchState = {
+            joyX: 0,
+            joyY: 0,
+            aimActive: false,
+            aimX: 0,
+            aimY: 0,
+            fireHeld: false,
+            crouchToggle: false
+        };
+
+        function toggleCrouchTouch() {
+            touchState.crouchToggle = !touchState.crouchToggle;
+            player.crouching = touchState.crouchToggle;
+            const btn = document.getElementById('mobileCrouchBtn');
+            if (btn) {
+                if (touchState.crouchToggle) {
+                    btn.className = 'touch-action-btn px-3 py-2.5 rounded-xl bg-amber-500 text-slate-950 border border-amber-200 font-black text-xs';
+                    btn.innerText = '🛡️ متخفٍ';
+                } else {
+                    btn.className = 'touch-action-btn px-3 py-2.5 rounded-xl bg-amber-500/25 border border-amber-400/60 text-amber-200 font-black text-xs';
+                    btn.innerText = '🛡️ تخفي';
+                }
+            }
+        }
+
         function initMobileTouchListeners() {
             const moveBase = document.getElementById('moveJoystick');
             const moveKnob = document.getElementById('moveJoystickKnob');
             const aimBase = document.getElementById('aimJoystick');
             const aimKnob = document.getElementById('aimJoystickKnob');
             const fireBtn = document.getElementById('mobileFireBtn');
-
-            let moveTouchId = null;
-            let aimTouchId = null;
-            const maxRadius = 38;
+            const maxRadius = 36;
+            let moveId = null;
+            let aimId = null;
 
             if (moveBase && moveKnob) {
                 moveBase.addEventListener('touchstart', e => {
                     e.preventDefault();
                     sound.init();
                     const t = e.changedTouches[0];
-                    moveTouchId = t.identifier;
-                    updateMoveStick(t.clientX, t.clientY);
+                    moveId = t.identifier;
+                    updateMove(t.clientX, t.clientY);
                 }, { passive: false });
 
                 moveBase.addEventListener('touchmove', e => {
                     e.preventDefault();
                     for (let i = 0; i < e.changedTouches.length; i++) {
-                        const t = e.changedTouches[i];
-                        if (t.identifier === moveTouchId) {
-                            updateMoveStick(t.clientX, t.clientY);
+                        if (e.changedTouches[i].identifier === moveId) {
+                            updateMove(e.changedTouches[i].clientX, e.changedTouches[i].clientY);
                         }
                     }
                 }, { passive: false });
 
-                const resetMove = e => {
+                const endMove = e => {
                     for (let i = 0; i < e.changedTouches.length; i++) {
-                        if (e.changedTouches[i].identifier === moveTouchId) {
-                            moveTouchId = null;
-                            touchKeys.joyX = 0;
-                            touchKeys.joyY = 0;
+                        if (e.changedTouches[i].identifier === moveId) {
+                            moveId = null;
+                            touchState.joyX = 0;
+                            touchState.joyY = 0;
                             moveKnob.style.transform = 'translate(-50%, -50%)';
                         }
                     }
                 };
-                moveBase.addEventListener('touchend', resetMove);
-                moveBase.addEventListener('touchcancel', resetMove);
+                moveBase.addEventListener('touchend', endMove);
+                moveBase.addEventListener('touchcancel', endMove);
 
-                function updateMoveStick(clientX, clientY) {
+                function updateMove(cxTouch, cyTouch) {
                     const rect = moveBase.getBoundingClientRect();
                     const cx = rect.left + rect.width / 2;
                     const cy = rect.top + rect.height / 2;
-                    let dx = clientX - cx;
-                    let dy = clientY - cy;
+                    let dx = cxTouch - cx;
+                    let dy = cyTouch - cy;
                     const dist = Math.hypot(dx, dy);
                     if (dist > maxRadius) {
                         dx = (dx / dist) * maxRadius;
                         dy = (dy / dist) * maxRadius;
                     }
                     moveKnob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
-                    touchKeys.joyX = dx / maxRadius;
-                    touchKeys.joyY = dy / maxRadius;
+                    touchState.joyX = dx / maxRadius;
+                    touchState.joyY = dy / maxRadius;
                 }
             }
 
@@ -350,48 +1464,47 @@
                     e.preventDefault();
                     sound.init();
                     const t = e.changedTouches[0];
-                    aimTouchId = t.identifier;
-                    touchKeys.aimActive = true;
-                    updateAimStick(t.clientX, t.clientY);
+                    aimId = t.identifier;
+                    touchState.aimActive = true;
+                    updateAim(t.clientX, t.clientY);
                 }, { passive: false });
 
                 aimBase.addEventListener('touchmove', e => {
                     e.preventDefault();
                     for (let i = 0; i < e.changedTouches.length; i++) {
-                        const t = e.changedTouches[i];
-                        if (t.identifier === aimTouchId) {
-                            updateAimStick(t.clientX, t.clientY);
+                        if (e.changedTouches[i].identifier === aimId) {
+                            updateAim(e.changedTouches[i].clientX, e.changedTouches[i].clientY);
                         }
                     }
                 }, { passive: false });
 
-                const resetAim = e => {
+                const endAim = e => {
                     for (let i = 0; i < e.changedTouches.length; i++) {
-                        if (e.changedTouches[i].identifier === aimTouchId) {
-                            aimTouchId = null;
-                            touchKeys.aimActive = false;
+                        if (e.changedTouches[i].identifier === aimId) {
+                            aimId = null;
+                            touchState.aimActive = false;
                             aimKnob.style.transform = 'translate(-50%, -50%)';
                         }
                     }
                 };
-                aimBase.addEventListener('touchend', resetAim);
-                aimBase.addEventListener('touchcancel', resetAim);
+                aimBase.addEventListener('touchend', endAim);
+                aimBase.addEventListener('touchcancel', endAim);
 
-                function updateAimStick(clientX, clientY) {
+                function updateAim(cxTouch, cyTouch) {
                     const rect = aimBase.getBoundingClientRect();
                     const cx = rect.left + rect.width / 2;
                     const cy = rect.top + rect.height / 2;
-                    let dx = clientX - cx;
-                    let dy = clientY - cy;
+                    let dx = cxTouch - cx;
+                    let dy = cyTouch - cy;
                     const dist = Math.hypot(dx, dy);
                     if (dist > maxRadius) {
                         dx = (dx / dist) * maxRadius;
                         dy = (dy / dist) * maxRadius;
                     }
                     aimKnob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
-                    if (dist > 6) {
-                        touchKeys.aimX = dx / maxRadius;
-                        touchKeys.aimY = dy / maxRadius;
+                    if (dist > 5) {
+                        touchState.aimX = dx / maxRadius;
+                        touchState.aimY = dy / maxRadius;
                     }
                 }
             }
@@ -400,54 +1513,386 @@
                 fireBtn.addEventListener('touchstart', e => {
                     e.preventDefault();
                     sound.init();
-                    touchKeys.fireHeld = true;
-                    if (gameRunning && !gamePaused) tryShoot();
+                    touchState.fireHeld = true;
+                    if (gameRunning) tryShoot();
                 }, { passive: false });
 
                 const stopFire = e => {
                     e.preventDefault();
-                    touchKeys.fireHeld = false;
+                    touchState.fireHeld = false;
                 };
                 fireBtn.addEventListener('touchend', stopFire, { passive: false });
                 fireBtn.addEventListener('touchcancel', stopFire, { passive: false });
             }
         }
-<!-- ... existing code ... -->
-            // الرمي المستمر لرشاش M4 (بالماوس أو زر لمس الجوال)
-            if ((mouse.down || touchKeys.fireHeld) && player.weapon.auto && !player.reloading) {
+
+        function collidesObstacle(x, y, r, isLowCover) {
+            for (let i = 0; i < obstacles.length; i++) {
+                const ob = obstacles[i];
+                if (ob.low && isLowCover && player.crouching) continue;
+                const closestX = Math.max(ob.x, Math.min(x, ob.x + ob.w));
+                const closestY = Math.max(ob.y, Math.min(y, ob.y + ob.h));
+                const dist = Math.hypot(x - closestX, y - closestY);
+                if (dist < r) return true;
+            }
+            return false;
+        }
+
+        function updateGame(dt, now) {
+            if (!gameRunning) return;
+
+            if (player.reloading && now >= player.reloadEndTime) {
+                player.reloading = false;
+                player.ammo = player.weapon.magSize;
+                document.getElementById('reloadIndicator').classList.add('hidden');
+                updateHUD();
+            }
+
+            if ((mouse.down || touchState.fireHeld) && player.weapon.auto && !player.reloading) {
                 tryShoot();
             }
 
-            // حركة اللاعب في 8 اتجاهات + عصا التحريك التناظرية للجوال (360°)
-            let ix = 0, iy = 0;
-            if (keys['KeyA'] || keys['ArrowLeft'] || touchKeys.left) ix -= 1;
-            if (keys['KeyD'] || keys['ArrowRight'] || touchKeys.right) ix += 1;
-            if (keys['KeyW'] || keys['ArrowUp'] || touchKeys.up) iy -= 1;
-            if (keys['KeyS'] || keys['ArrowDown'] || touchKeys.down) iy += 1;
+            let ix = 0;
+            let iy = 0;
+            if (keys['KeyA'] || keys['ArrowLeft']) ix -= 1;
+            if (keys['KeyD'] || keys['ArrowRight']) ix += 1;
+            if (keys['KeyW'] || keys['ArrowUp']) iy -= 1;
+            if (keys['KeyS'] || keys['ArrowDown']) iy += 1;
 
-            if (Math.hypot(touchKeys.joyX, touchKeys.joyY) > 0.12) {
-                ix = touchKeys.joyX;
-                iy = touchKeys.joyY;
-            }</
-
-            const moveMag = Math.hypot(ix, iy);
-            if (moveMag > 1) {
-                ix /= moveMag;
-                iy /= moveMag;
+            if (Math.hypot(touchState.joyX, touchState.joyY) > 0.12) {
+                ix = touchState.joyX;
+                iy = touchState.joyY;
             }
-<!-- ... existing code ... -->
-            // زاوية التصويب: عصا التصويب على الجوال أو مؤشر الماوس على الكمبيوتر
-            if (touchKeys.aimActive && Math.hypot(touchKeys.aimX, touchKeys.aimY) > 0.15) {
-                player.aimAngle = Math.atan2(touchKeys.aimY, touchKeys.aimX);
+
+            const mag = Math.hypot(ix, iy);
+            if (mag > 1) {
+                ix /= mag;
+                iy /= mag;
+            }
+
+            const speed = player.crouching ? 130 : 230;
+            const nextX = Math.max(player.radius, Math.min(worldWidth - player.radius, player.x + ix * speed * dt));
+            const nextY = Math.max(player.radius, Math.min(worldHeight - player.radius, player.y + iy * speed * dt));
+
+            if (!collidesObstacle(nextX, player.y, player.radius, true)) player.x = nextX;
+            if (!collidesObstacle(player.x, nextY, player.radius, true)) player.y = nextY;
+
+            if (player.jumpZ > 0) {
+                player.jumpZ += player.jumpVel * dt;
+                player.jumpVel -= 760 * dt;
+                if (player.jumpZ <= 0) {
+                    player.jumpZ = 0;
+                    player.jumpVel = 0;
+                }
+            }
+
+            // التصويب عبر عصا الجوال أو مؤشر الماوس
+            if (touchState.aimActive && Math.hypot(touchState.aimX, touchState.aimY) > 0.14) {
+                player.aimAngle = Math.atan2(touchState.aimY, touchState.aimX);
             } else if (!isTouchDevice() || mobileControlsMode === 'off') {
-                mouse.worldX = mouse.x + camera.x;
-                mouse.worldY = mouse.y + camera.y;
-                player.aimAngle = Math.atan2(mouse.worldY - player.y, mouse.worldX - player.x);
-            } else if (moveMag > 0.15) {
-                // اتجاه تلقائي سلس مع الحركة إذا لم يلمس عصا التصويب بعد
+                const worldMouseX = mouse.x + camera.x;
+                const worldMouseY = mouse.y + camera.y;
+                player.aimAngle = Math.atan2(worldMouseY - player.y, worldMouseX - player.x);
+            } else if (mag > 0.14) {
                 player.aimAngle = Math.atan2(iy, ix);
             }
-<!-- ... existing code ... -->
+
+            camera.x = Math.max(0, Math.min(worldWidth - window.innerWidth, player.x - window.innerWidth / 2));
+            camera.y = Math.max(0, Math.min(worldHeight - window.innerHeight, player.y - window.innerHeight / 2));
+
+            // تحديث المقذوفات
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                const b = bullets[i];
+                b.x += b.vx * dt;
+                b.y += b.vy * dt;
+
+                let hitWall = false;
+                for (let j = 0; j < obstacles.length; j++) {
+                    const ob = obstacles[j];
+                    if (b.x > ob.x && b.x < ob.x + ob.w && b.y > ob.y && b.y < ob.y + ob.h) {
+                        hitWall = true;
+                        break;
+                    }
+                }
+
+                if (hitWall || b.x < 0 || b.x > worldWidth || b.y < 0 || b.y > worldHeight) {
+                    if (b.isRpg) spawnExplosion(b.x, b.y, b.radius * 34, b.damage, b.fromPlayer);
+                    bullets.splice(i, 1);
+                    continue;
+                }
+
+                if (b.fromPlayer) {
+                    let consumed = false;
+                    for (let eIdx = 0; eIdx < enemies.length; eIdx++) {
+                        const en = enemies[eIdx];
+                        if (en.hp > 0 && Math.hypot(b.x - en.x, b.y - en.y) <= en.radius + b.radius) {
+                            if (b.isRpg) {
+                                spawnExplosion(b.x, b.y, 120, b.damage, true);
+                            } else {
+                                en.hp = Math.max(0, en.hp - b.damage);
+                            }
+                            consumed = true;
+                            break;
+                        }
+                    }
+
+                    if (!consumed && currentMode === 'exam') {
+                        for (let tIdx = 0; tIdx < targets.length; tIdx++) {
+                            const t = targets[tIdx];
+                            if (t.alive && Math.hypot(b.x - t.x, b.y - t.y) <= t.r + b.radius) {
+                                if (b.isRpg) {
+                                    spawnExplosion(b.x, b.y, 120, b.damage, true);
+                                } else {
+                                    t.alive = false;
+                                    t.respawnAt = now + 1800;
+                                    examState.shotsHit += 1;
+                                    examState.score += 100;
+                                }
+                                consumed = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (consumed) {
+                        bullets.splice(i, 1);
+                        continue;
+                    }
+                } else {
+                    if (Math.hypot(b.x - player.x, b.y - player.y) <= player.radius + b.radius && player.jumpZ <= 4) {
+                        const dmg = player.crouching ? Math.ceil(b.damage * 0.5) : b.damage;
+                        player.hp = Math.max(0, player.hp - dmg);
+                        bullets.splice(i, 1);
+                        updateHUD();
+                        if (player.hp <= 0) {
+                            showEndModal(false, 'لقد خسرت!!', 'نفد دمك في المعركة. يمكنك المحاولة مرة أخرى.');
+                            return;
+                        }
+                    }
+                }
+            }
+
+            // تحديث الأعداء في المراحل
+            if (currentMode === 'stage') {
+                let aliveEnemies = 0;
+                enemies.forEach(en => {
+                    if (en.hp <= 0) return;
+                    aliveEnemies += 1;
+
+                    const dx = player.x - en.x;
+                    const dy = player.y - en.y;
+                    const dist = Math.hypot(dx, dy) || 1;
+                    const ang = Math.atan2(dy, dx);
+
+                    // حركة مناورة بسيطة للأعداء
+                    const perpX = -Math.sin(ang) * en.moveDir;
+                    const perpY = Math.cos(ang) * en.moveDir;
+                    const approach = dist > 260 ? 0.65 : 0.1;
+                    const moveX = en.x + (dx / dist * approach + perpX * 0.5) * en.speed * dt;
+                    const moveY = en.y + (dy / dist * approach + perpY * 0.5) * en.speed * dt;
+
+                    if (!collidesObstacle(moveX, en.y, en.radius, false)) en.x = moveX;
+                    if (!collidesObstacle(en.x, moveY, en.radius, false)) en.y = moveY;
+
+                    if (now - en.lastAttack >= en.fireCooldown && dist < 760) {
+                        en.lastAttack = now;
+                        bullets.push({
+                            x: en.x + Math.cos(ang) * (en.radius + 8),
+                            y: en.y + Math.sin(ang) * (en.radius + 8),
+                            vx: Math.cos(ang) * 440,
+                            vy: Math.sin(ang) * 440,
+                            damage: en.damage,
+                            fromPlayer: false,
+                            isRpg: false,
+                            radius: 4,
+                            color: '#f87171'
+                        });
+                    }
+                });
+
+                updateHUD();
+                if (aliveEnemies === 0) {
+                    showEndModal(true, 'لقد فزت!!', 'تم القضاء على جميع الخصوم في المرحلة ' + currentStageNum + '!');
+                    return;
+                }
+            }
+
+            // تحديث وضع الاختبار
+            if (currentMode === 'exam') {
+                examState.timeLeft -= dt;
+                targets.forEach(t => {
+                    if (!t.alive && now >= t.respawnAt) {
+                        t.alive = true;
+                    }
+                    if (t.alive && t.vy !== 0) {
+                        t.y += t.vy * dt;
+                        if (Math.abs(t.y - t.baseY) > 130) t.vy *= -1;
+                    }
+                });
+                updateHUD();
+                if (examState.timeLeft <= 0) {
+                    const acc = examState.shotsFired > 0 ? Math.round((examState.shotsHit / examState.shotsFired) * 100) : 0;
+                    showEndModal(true, 'انتهى الاختبار!!', `النقاط: ${examState.score} — الدقة: ${acc}%`);
+                    return;
+                }
+            }
+
+            // تحديث الجسيمات
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx * dt;
+                p.y += p.vy * dt;
+                p.life -= dt;
+                if (p.life <= 0) particles.splice(i, 1);
+            }
+        }
+
+        function drawGame() {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            ctx.clearRect(0, 0, w, h);
+
+            ctx.save();
+            ctx.translate(-camera.x, -camera.y);
+
+            // أرضية التدريب الحر خضراء، وأرضية المراحل/الاختبار حربية داكنة
+            ctx.fillStyle = currentMode === 'training' ? '#14532d' : '#1e293b';
+            ctx.fillRect(0, 0, worldWidth, worldHeight);
+
+            ctx.strokeStyle = currentMode === 'training' ? 'rgba(134, 239, 172, 0.10)' : 'rgba(148, 163, 184, 0.08)';
+            ctx.lineWidth = 1;
+            for (let gx = 0; gx <= worldWidth; gx += 64) {
+                ctx.beginPath();
+                ctx.moveTo(gx, 0);
+                ctx.lineTo(gx, worldHeight);
+                ctx.stroke();
+            }
+            for (let gy = 0; gy <= worldHeight; gy += 64) {
+                ctx.beginPath();
+                ctx.moveTo(0, gy);
+                ctx.lineTo(worldWidth, gy);
+                ctx.stroke();
+            }
+
+            // العوائق والسواتر
+            obstacles.forEach(ob => {
+                ctx.fillStyle = ob.low ? '#475569' : '#334155';
+                ctx.fillRect(ob.x, ob.y, ob.w, ob.h);
+                ctx.strokeStyle = ob.low ? '#94a3b8' : '#64748b';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(ob.x, ob.y, ob.w, ob.h);
+            });
+
+            // أهداف الاختبار
+            targets.forEach(t => {
+                if (!t.alive) return;
+                ctx.beginPath();
+                ctx.arc(t.x, t.y, t.r, 0, Math.PI * 2);
+                ctx.fillStyle = '#f59e0b';
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(t.x, t.y, t.r * 0.45, 0, Math.PI * 2);
+                ctx.fillStyle = '#ef4444';
+                ctx.fill();
+            });
+
+            // الأعداء
+            enemies.forEach(en => {
+                if (en.hp <= 0) return;
+                ctx.beginPath();
+                ctx.arc(en.x, en.y, en.radius, 0, Math.PI * 2);
+                ctx.fillStyle = en.isBoss ? '#991b1b' : '#dc2626';
+                ctx.fill();
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = en.isBoss ? '#fbbf24' : '#fca5a5';
+                ctx.stroke();
+
+                // شريط دم العدو
+                const bw = en.isBoss ? 76 : 44;
+                const bh = 6;
+                const hpRatio = Math.max(0, en.hp / en.maxHp);
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+                ctx.fillRect(en.x - bw / 2, en.y - en.radius - 16, bw, bh);
+                ctx.fillStyle = '#ef4444';
+                ctx.fillRect(en.x - bw / 2, en.y - en.radius - 16, bw * hpRatio, bh);
+            });
+
+            // اللاعب
+            const py = player.y - player.jumpZ;
+            const pr = player.crouching ? player.radius * 0.82 : player.radius;
+
+            if (player.jumpZ > 0) {
+                ctx.beginPath();
+                ctx.ellipse(player.x, player.y + 6, pr * 0.9, pr * 0.55, 0, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+                ctx.fill();
+            }
+
+            ctx.beginPath();
+            ctx.arc(player.x, py, pr, 0, Math.PI * 2);
+            ctx.fillStyle = player.crouching ? '#0284c7' : '#38bdf8';
+            ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#e0f2fe';
+            ctx.stroke();
+
+            // فوهة السلاح
+            ctx.beginPath();
+            ctx.moveTo(player.x, py);
+            ctx.lineTo(player.x + Math.cos(player.aimAngle) * (pr + 16), py + Math.sin(player.aimAngle) * (pr + 16));
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = '#f8fafc';
+            ctx.stroke();
+
+            // الطلقات
+            bullets.forEach(b => {
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+                ctx.fillStyle = b.color;
+                ctx.fill();
+            });
+
+            // الجسيمات
+            particles.forEach(p => {
+                ctx.globalAlpha = Math.max(0, p.life / p.maxLife);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+            });
+            ctx.globalAlpha = 1;
+
+            ctx.restore();
+        }
+
+        let lastFrameTime = performance.now();
+        let fpsAccumulator = 0;
+        let fpsFrames = 0;
+
+        function mainLoop(now) {
+            const elapsed = now - lastFrameTime;
+            const minInterval = targetFpsLimit > 0 ? (1000 / targetFpsLimit) : 0;
+
+            if (elapsed >= minInterval) {
+                const dt = Math.min(0.05, elapsed / 1000);
+                lastFrameTime = now;
+
+                fpsAccumulator += elapsed;
+                fpsFrames += 1;
+                if (fpsAccumulator >= 500) {
+                    const currentFps = Math.round((fpsFrames * 1000) / fpsAccumulator);
+                    const fpsBadge = document.getElementById('hudFpsBadge');
+                    if (fpsBadge && showFps) fpsBadge.innerText = 'FPS: ' + currentFps;
+                    fpsAccumulator = 0;
+                    fpsFrames = 0;
+                }
+
+                updateGame(dt, now);
+                if (gameRunning) drawGame();
+            }
+
+            requestAnimationFrame(mainLoop);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
         window.onload = function () {
             resizeCanvas();
             initMobileTouchListeners();
@@ -456,4 +1901,5 @@
         };
     </script>
 </body>
-html>
+</html>
+<!-- ... existing code ... -->
