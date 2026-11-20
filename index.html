@@ -335,12 +335,12 @@
                     </div>
                     <div class="glass-card p-4 rounded-2xl flex justify-between items-center">
                         <span class="text-slate-300 font-bold">تبديل الأسلحة / القنابل</span>
-                        <span class="px-3 py-1 rounded-lg bg-slate-900 text-sky-300 font-mono font-bold">1-5 / عجلة الماوس / G</span>
+                        <span class="px-3 py-1 rounded-lg bg-slate-900 text-sky-300 font-mono font-bold">1-4 / عجلة الماوس / G</span>
                     </div>
                 </div>
                 <div class="glass-card p-4 rounded-2xl text-xs sm:text-sm text-emerald-200 leading-relaxed flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
-                        📱 <strong>تخصيص تحكم الجوال:</strong> رتّب أزرار وعصي التحكم بحرية على شاشة سوداء واحفظها.
+                        📱 <strong>تخصيص تحكم الجوال + سحب الكاميرا الحر:</strong> حرك الكاميرا بسحب الإصبع مباشرة في المساحات الفارغة، ورتّب الأزرار على شاشة سوداء واحفظها.
                     </div>
                     <button onclick="openControlCustomizer()" class="menu-btn shrink-0 px-5 py-3 rounded-2xl bg-gradient-to-l from-sky-500 to-emerald-500 hover:from-sky-400 hover:to-emerald-400 text-slate-950 font-black text-sm shadow-lg">
                         🎮 تخصيص التحكم
@@ -353,7 +353,7 @@
     <!-- قائمة اللعب: اللعب الفردي، أونلاين، التدريب، ومربع "ضبط اسلحتك" على اليمين -->
     <section id="playMenuScreen" class="hidden fixed inset-0 z-30 flex flex-col items-center justify-center p-4 bg-tactical-grid overflow-y-auto custom-scrollbar">
         <div class="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-12 gap-5 my-auto">
-            <!-- العمود الأيمن: مربع ضبط أسلحتك (كلاس كول أوف ديوتي) -->
+            <!-- العمود الأيمن: مربع ضبط أسلحتك -->
             <div class="lg:col-span-5 glass-panel rounded-3xl p-6 space-y-4 border border-amber-400/45 flex flex-col justify-between">
                 <div class="space-y-3">
                     <div class="flex items-center justify-between border-b border-slate-700/70 pb-3">
@@ -424,7 +424,7 @@
         </div>
     </section>
 
-    <!-- شاشة ضبط الأسلحة (الكلاس) -->
+    <!-- شاشة ضبط الأسلحة -->
     <section id="loadoutScreen" class="hidden fixed inset-0 z-30 flex flex-col items-center justify-center p-4 bg-tactical-grid overflow-y-auto custom-scrollbar">
         <div class="w-full max-w-4xl glass-panel rounded-3xl p-5 sm:p-7 space-y-6 my-auto">
             <div class="flex items-center justify-between border-b border-slate-700/70 pb-4">
@@ -438,7 +438,6 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <!-- السلاح الأساسي -->
                 <div class="glass-card p-4 rounded-2xl space-y-3 border border-sky-500/35">
                     <div class="text-sm font-black text-sky-300">1. السلاح الأساسي</div>
                     <div id="primaryWeaponChoices" class="space-y-2">
@@ -457,7 +456,6 @@
                     </div>
                 </div>
 
-                <!-- السلاح الثانوي -->
                 <div class="glass-card p-4 rounded-2xl space-y-3 border border-emerald-500/35">
                     <div class="text-sm font-black text-emerald-300">2. السلاح الثانوي</div>
                     <div id="secondaryWeaponChoices" class="space-y-2">
@@ -473,7 +471,6 @@
                     </div>
                 </div>
 
-                <!-- القنابل -->
                 <div class="glass-card p-4 rounded-2xl space-y-3 border border-amber-500/35">
                     <div class="text-sm font-black text-amber-300">3. القنابل والتكتيك</div>
                     <div id="throwableChoices" class="space-y-2">
@@ -596,7 +593,12 @@
 
                     <div class="space-y-1">
                         <label class="text-xs font-bold text-slate-300">رابط سيرفر WebSocket (اختياري)</label>
-                        <input id="wsServerUrlInput" type="text" placeholder="wss://your-server.example" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs font-mono text-sky-200">
+                        <div class="flex gap-2">
+                            <input id="wsServerUrlInput" type="text" placeholder="wss://your-server.example" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs font-mono text-sky-200">
+                            <button type="button" onclick="connectOptionalWebSocket(true)" class="px-3 py-2 rounded-xl bg-sky-700 hover:bg-sky-600 text-white text-xs font-bold whitespace-nowrap">
+                                اتصال
+                            </button>
+                        </div>
                     </div>
 
                     <button onclick="createOnlineRoom()" class="menu-btn w-full py-3.5 rounded-2xl bg-sky-600 hover:bg-sky-500 text-white font-black text-base shadow-lg">
@@ -812,8 +814,8 @@
             </div>
             <div class="h-4 w-px bg-slate-700"></div>
             <div class="flex items-center gap-1.5">
-                <span id="hudSlotBadge" class="px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 text-xs font-black">[1]</span>
-                <span id="hudWeaponName" class="text-white font-black">M4</span>
+                <span id="hudSlotBadge" class="px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 text-xs font-black">[1 أساسي]</span>
+                <span id="hudWeaponName" class="text-white font-black">أم فور (M4)</span>
                 <span id="hudAmmoText" class="text-amber-300 font-mono">30 / 30</span>
             </div>
             <div class="h-4 w-px bg-slate-700"></div>
@@ -833,7 +835,7 @@
             <span id="reloadText" class="text-xs sm:text-sm font-bold text-amber-200">جاري سحب الشاجور وإعادة التلقيم...</span>
         </div>
 
-        <!-- تحكم الجوال واللمس الكامل -->
+        <!-- تحكم الجوال واللمس الكامل (سحب حر للكاميرا في المساحات الفارغة بدون مؤشر قديم) -->
         <div id="mobileControlsLayer" class="hidden fixed inset-0 z-30 pointer-events-none select-none">
             <div id="moveJoystick" class="joystick-base pointer-events-auto" style="position: fixed; left: 22px; bottom: 26px;">
                 <div id="moveJoystickKnob" class="joystick-knob"></div>
@@ -865,16 +867,9 @@
                 🔄 تلقيم
             </button>
 
-            <button id="mobileAdsBtn" onclick="toggleMobileAds()" class="touch-action-btn px-3.5 py-2.5 rounded-xl bg-cyan-500/25 border border-cyan-400/60 text-cyan-200 font-black text-xs pointer-events-auto" style="position: fixed; right: 245px; bottom: 32px;">
+            <button id="mobileAdsBtn" onclick="toggleMobileAds()" class="touch-action-btn px-3.5 py-2.5 rounded-xl bg-cyan-500/25 border border-cyan-400/60 text-cyan-200 font-black text-xs pointer-events-auto" style="position: fixed; right: 108px; bottom: 32px;">
                 🔭 أيم
             </button>
-
-            <div id="aimJoystick" class="joystick-base border-rose-400/50 pointer-events-auto" style="position: fixed; right: 108px; bottom: 26px;">
-                <div id="aimJoystickKnob" class="joystick-knob" style="background: radial-gradient(circle at 35% 30%, #fda4af, #e11d48 70%, #9f1239); box-shadow: 0 6px 15px rgba(225, 29, 72, 0.55);"></div>
-                <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[11px] font-bold text-rose-200 bg-slate-950/85 px-2.5 py-0.5 rounded-full border border-rose-500/30 whitespace-nowrap pointer-events-none">
-                    التصويب
-                </span>
-            </div>
 
             <button id="mobileFireBtn" class="touch-action-btn w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-rose-500 to-red-700 border-2 border-rose-200/80 text-white font-black text-sm shadow-2xl flex flex-col items-center justify-center pointer-events-auto" style="position: fixed; right: 18px; bottom: 34px;">
                 <span>🔥</span>
@@ -1334,7 +1329,7 @@
 
         const sound = new SoundEngine();
 
-        const MOBILE_MODE_STORAGE_KEY = 'war_simple_abbas_mobile_controls_mode_v4';
+        const MOBILE_MODE_STORAGE_KEY = 'war_simple_abbas_mobile_controls_mode_v5';
         let targetFpsLimit = 0;
         let showFps = false;
         let resolutionScale = 'auto';
@@ -1406,7 +1401,7 @@
                     layer.style.display = 'none';
                     touchState.joyX = 0;
                     touchState.joyY = 0;
-                    touchState.aimActive = false;
+                    touchState.lookTouchId = null;
                     touchState.fireHeld = false;
                     touchState.sprintHeld = false;
                 }
@@ -1463,12 +1458,11 @@
         }
 
         // تخصيص التحكم على شاشة سوداء
-        const HUD_STORAGE_KEY = 'war_simple_abbas_hud_fps_v4';
+        const HUD_STORAGE_KEY = 'war_simple_abbas_hud_fps_v5';
         const HUD_ITEMS = [
             { id: 'moveJoystick', label: 'التحرك (عصا الحركة)', xPct: 3, yPct: 72, scale: 100, hide: 0 },
-            { id: 'aimJoystick', label: 'التصويب (عصا التصويب)', xPct: 71, yPct: 72, scale: 100, hide: 0 },
             { id: 'mobileFireBtn', label: 'الرمي (زر إطلاق النار)', xPct: 88, yPct: 75, scale: 100, hide: 0 },
-            { id: 'mobileAdsBtn', label: 'التصويب المقرب (ADS)', xPct: 60, yPct: 86, scale: 100, hide: 0 },
+            { id: 'mobileAdsBtn', label: 'التصويب المقرب (ADS)', xPct: 72, yPct: 84, scale: 100, hide: 0 },
             { id: 'mobileSprintBtn', label: 'الركض السريع', xPct: 28, yPct: 76, scale: 100, hide: 0 },
             { id: 'mobileJumpBtn', label: 'القفز', xPct: 40, yPct: 76, scale: 100, hide: 0 },
             { id: 'mobileCrouchBtn', label: 'التخفي / الانحناء', xPct: 32, yPct: 86, scale: 100, hide: 0 },
@@ -1563,8 +1557,6 @@
 
             if (item.id === 'moveJoystick') {
                 wrapper.innerHTML = `<div class="joystick-base border-sky-400"><div class="joystick-knob"></div><span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[11px] font-black text-sky-200 bg-slate-900 px-2.5 py-0.5 rounded-full border border-sky-400/50 whitespace-nowrap">التحرك</span></div>`;
-            } else if (item.id === 'aimJoystick') {
-                wrapper.innerHTML = `<div class="joystick-base border-rose-400"><div class="joystick-knob" style="background: radial-gradient(circle at 35% 30%, #fda4af, #e11d48 70%, #9f1239);"></div><span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[11px] font-black text-rose-200 bg-slate-900 px-2.5 py-0.5 rounded-full border border-rose-400/50 whitespace-nowrap">التصويب</span></div>`;
             } else if (item.id === 'mobileFireBtn') {
                 wrapper.innerHTML = `<div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-rose-500 to-red-700 border-2 border-white text-white font-black text-sm shadow-2xl flex flex-col items-center justify-center"><span>🔥</span><span class="text-[11px]">رمي</span></div>`;
             } else if (item.id === 'mobileAdsBtn') {
@@ -1725,14 +1717,15 @@
             window.addEventListener('pointercancel', stopDrag);
         }
 
-        // نظام الغرف والأونلاين
-        const ROOMS_STORAGE_KEY = 'war_simple_abbas_online_rooms_v2';
-        const onlineChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('war_simple_abbas_rooms_ch_v2') : null;
+        // نظام الغرف والأونلاين (BroadcastChannel + WebSocket)
+        const ROOMS_STORAGE_KEY = 'war_simple_abbas_online_rooms_v3';
+        const onlineChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('war_simple_abbas_rooms_ch_v3') : null;
         let activeRoom = null;
         let localPlayerId = 'p_' + Math.random().toString(36).slice(2, 8);
         let localPlayerReady = true;
         let wsSocket = null;
         let lastNetSyncAt = 0;
+        const remotePeersMap = new Map();
 
         function getDefaultRooms() {
             return [
@@ -1794,29 +1787,63 @@
 
         function openOnlineLobby() {
             sound.playUIClick(true);
-            connectOptionalWebSocket();
+            connectOptionalWebSocket(false);
             refreshRoomBrowser();
             syncRoomLobbyPanels();
             navigateTo('onlineLobbyScreen');
         }
 
-        function connectOptionalWebSocket() {
+        function connectOptionalWebSocket(notifyUser = true) {
             const urlInput = document.getElementById('wsServerUrlInput');
             const url = urlInput ? urlInput.value.trim() : '';
-            if (!url || (!url.startsWith('ws://') && !url.startsWith('wss://'))) return;
+            if (!url) {
+                if (notifyUser) showToast('أدخل رابط WebSocket مثل wss://... أولاً');
+                return;
+            }
+            if (!url.startsWith('ws://') && !url.startsWith('wss://')) {
+                if (notifyUser) showToast('يجب أن يبدأ رابط السيرفر بـ ws:// أو wss://');
+                return;
+            }
             try {
-                if (wsSocket) wsSocket.close();
+                if (wsSocket) {
+                    try { wsSocket.close(); } catch (_) {}
+                }
                 wsSocket = new WebSocket(url);
-                wsSocket.onopen = () => showToast('تم الاتصال بسيرفر WebSocket المباشر');
+                wsSocket.onopen = () => {
+                    showToast('تم الاتصال بسيرفر WebSocket المباشر');
+                    if (activeRoom) {
+                        wsSocket.send(JSON.stringify({
+                            type: 'join_room',
+                            room: activeRoom.code,
+                            name: getPlayerDisplayName()
+                        }));
+                    }
+                };
                 wsSocket.onmessage = ev => {
                     try {
                         const msg = JSON.parse(ev.data);
-                        if (msg.type === 'state_sync' && gameRunning && currentMode === 'online') {
-                            applyRemotePeerState(msg.peer);
+                        if (!gameRunning || currentMode !== 'online') return;
+                        if (msg.type === 'player_state' && msg.id && msg.id !== localPlayerId) {
+                            applyRemotePeerState(msg);
+                        } else if (msg.type === 'player_shoot' && msg.id && msg.id !== localPlayerId) {
+                            spawnRemoteTracer(msg);
+                        } else if (msg.type === 'player_hp' && msg.targetId === localPlayerId) {
+                            fpsPlayer.hp = Math.max(0, msg.hp);
+                            updateHUD();
+                            if (fpsPlayer.hp <= 0) {
+                                showEndModal(false, 'لقد خسرت!!', 'تم القضاء عليك في مباراة الأونلاين.');
+                            }
+                        } else if (msg.type === 'player_left' && msg.id) {
+                            removeRemotePeerMesh(msg.id);
                         }
                     } catch (_) {}
                 };
-            } catch (_) {}
+                wsSocket.onerror = () => {
+                    if (notifyUser) showToast('تعذر الاتصال بسيرفر WebSocket؛ يعمل الوضع المحلي عبر الروم');
+                };
+            } catch (_) {
+                if (notifyUser) showToast('رابط WebSocket غير صالح');
+            }
         }
 
         function refreshRoomBrowser() {
@@ -1855,7 +1882,7 @@
 
         function createOnlineRoom() {
             sound.playUIClick(false);
-            connectOptionalWebSocket();
+            connectOptionalWebSocket(false);
             const nameInput = document.getElementById('createRoomNameInput');
             const mapSelect = document.getElementById('createRoomMapSelect');
             const maxSelect = document.getElementById('createRoomMaxSelect');
@@ -1881,6 +1908,9 @@
             saveRoomsRegistry(list);
             activeRoom = newRoom;
             localPlayerReady = true;
+            if (wsSocket && wsSocket.readyState === WebSocket.OPEN) {
+                wsSocket.send(JSON.stringify({ type: 'join_room', room: newRoom.code, name: getPlayerDisplayName() }));
+            }
             syncRoomLobbyPanels();
             refreshRoomBrowser();
             showToast('تم إنشاء الروم برمز: ' + newRoom.code);
@@ -1888,7 +1918,7 @@
 
         function joinRoomByCode(explicitCode) {
             sound.playUIClick(false);
-            connectOptionalWebSocket();
+            connectOptionalWebSocket(false);
             const inp = document.getElementById('joinRoomCodeInput');
             const rawCode = (explicitCode || (inp ? inp.value : '') || '').trim().toUpperCase();
             if (!rawCode) {
@@ -1930,6 +1960,9 @@
 
             saveRoomsRegistry(list);
             activeRoom = target;
+            if (wsSocket && wsSocket.readyState === WebSocket.OPEN) {
+                wsSocket.send(JSON.stringify({ type: 'join_room', room: target.code, name: getPlayerDisplayName() }));
+            }
             syncRoomLobbyPanels();
             refreshRoomBrowser();
             showToast('تم الانضمام إلى الروم ' + target.code);
@@ -2033,8 +2066,16 @@
                             syncRoomLobbyPanels();
                         }
                     }
-                } else if (data.type === 'player_state' && gameRunning && currentMode === 'online' && data.senderId !== localPlayerId) {
+                } else if (data.type === 'player_state' && gameRunning && currentMode === 'online' && data.id && data.id !== localPlayerId) {
                     applyRemotePeerState(data);
+                } else if (data.type === 'player_shoot' && gameRunning && currentMode === 'online' && data.id && data.id !== localPlayerId) {
+                    spawnRemoteTracer(data);
+                } else if (data.type === 'player_hp' && gameRunning && currentMode === 'online' && data.targetId === localPlayerId) {
+                    fpsPlayer.hp = Math.max(0, data.hp);
+                    updateHUD();
+                    if (fpsPlayer.hp <= 0) {
+                        showEndModal(false, 'لقد خسرت!!', 'تم القضاء عليك في مباراة الأونلاين.');
+                    }
                 }
             };
         }
@@ -2422,7 +2463,6 @@
                 weaponViewGroup.add(boltMesh3D);
             }
 
-            // عدسة سكوب إضافية تركب عند التقاط السكوب من الصناديق
             if (wKey !== 'fist') {
                 scopeMesh3D = new THREE.Mesh(
                     new THREE.CylinderGeometry(0.036, 0.036, 0.24, 14),
@@ -2455,6 +2495,7 @@
 
             enemies3D.forEach(e => scene.remove(e.group));
             enemies3D = [];
+            remotePeersMap.clear();
 
             targets3D.forEach(t => scene.remove(t.group));
             targets3D = [];
@@ -2472,7 +2513,6 @@
             effects3D = [];
         }
 
-        // إضافة مبنى أو ساتر مع دعم تضرر وتصدع المباني بقذائف RPG
         function addBoxCover(x, z, w, d, h, isLowCover, colorHex = 0x475569, addWindows = false, destructibleByRpg = false) {
             const geo = new THREE.BoxGeometry(w, h, d);
             const mat = new THREE.MeshStandardMaterial({
@@ -2625,7 +2665,6 @@
             worldMeshes.push(floorMesh);
 
             if (isNightFactory) {
-                // مجمع المستودعات والمصنع الليلي: جسور وممرات علوية وحاويات وإضاءة كاشفة
                 const bridgeDeck = new THREE.Mesh(
                     new THREE.BoxGeometry(22, 0.55, 5.5),
                     new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.6, roughness: 0.4 })
@@ -2649,7 +2688,6 @@
                 addBoxCover(-14, 18, 12, 8, 7.0, false, 0x312e81, true, true);
                 addBoxCover(14, 18, 12, 8, 7.0, false, 0x1e293b, true, true);
 
-                // سواتر قابلة للكسر/التدمير
                 addBoxCover(-6, 0, 2.2, 6.0, 1.4, true, 0x475569, false, true);
                 addBoxCover(8, 0, 2.2, 6.0, 1.4, true, 0x475569, false, true);
 
@@ -2709,7 +2747,6 @@
                 addBreakableCrate(12, 8);
             }
 
-            // الأسوار المحيطية
             const wallH = 6.5;
             const wallThick = 2;
             addBoxCover(0, -ARENA_HALF, ARENA_HALF * 2 + wallThick, wallThick, wallH, false, 0x0f172a, false, false);
@@ -2722,7 +2759,6 @@
             if (!struct || !struct.destructibleByRpg || struct.destroyed) return;
             struct.hp -= dmg;
 
-            // إضافة علامة تصدع / حرق مرئية على المبنى أو الساتر
             if (struct.crackDecals.length < 6) {
                 const crack = new THREE.Mesh(
                     new THREE.BoxGeometry(0.9, 0.9, 0.16),
@@ -2738,7 +2774,6 @@
                 struct.crackDecals.push(crack);
             }
 
-            // نفث دخان على المبنى المصاب
             for (let s = 0; s < 3; s++) {
                 spawnSmokePuff(
                     struct.x + (Math.random() - 0.5) * 2.2,
@@ -2774,8 +2809,7 @@
             });
         }
 
-        // بناء مجسم العدو بأنواع متنوعة (Assault / Sniper / Armored / Boss) ووجه واضح (+Z)
-        function createEnemy3DMesh(x, z, hp, enemyType, aiAggression, labelText = 'عدو') {
+        function createEnemy3DMesh(x, z, hp, enemyType, aiAggression, labelText = 'عدو', peerId = null, isRemotePeer = false) {
             const isBoss = enemyType === 'boss';
             const isArmored = enemyType === 'armored' || isBoss;
             const isSniper = enemyType === 'sniper';
@@ -2784,8 +2818,8 @@
             group.position.set(x, 0, z);
 
             const scale = isBoss ? 1.55 : (isArmored ? 1.15 : 1.0);
-            const bodyColor = isBoss ? 0x991b1b : (isSniper ? 0x15803d : (isArmored ? 0x7c2d12 : 0xdc2626));
-            const armorColor = isBoss ? 0xf59e0b : (isArmored ? 0x475569 : 0x1e293b);
+            const bodyColor = isRemotePeer ? 0x0284c7 : (isBoss ? 0x991b1b : (isSniper ? 0x15803d : (isArmored ? 0x7c2d12 : 0xdc2626)));
+            const armorColor = isRemotePeer ? 0x38bdf8 : (isBoss ? 0xf59e0b : (isArmored ? 0x475569 : 0x1e293b));
 
             const bodyMat = new THREE.MeshStandardMaterial({ color: bodyColor, roughness: 0.45 });
             const armorMat = new THREE.MeshStandardMaterial({ color: armorColor, roughness: 0.35, metalness: 0.65 });
@@ -2811,7 +2845,7 @@
             helmet.position.y = 0.25 * scale;
             headGroup.add(helmet);
 
-            const eyeMat = new THREE.MeshBasicMaterial({ color: isBoss ? 0xfef08a : (isSniper ? 0x4ade80 : 0x38bdf8) });
+            const eyeMat = new THREE.MeshBasicMaterial({ color: isRemotePeer ? 0x7dd3fc : (isBoss ? 0xfef08a : (isSniper ? 0x4ade80 : 0x38bdf8)) });
             const leftEye = new THREE.Mesh(new THREE.BoxGeometry(0.16 * scale, 0.14 * scale, 0.08 * scale), eyeMat);
             leftEye.position.set(-0.18 * scale, 0.02 * scale, 0.39 * scale);
             headGroup.add(leftEye);
@@ -2840,7 +2874,7 @@
 
             const hpFill = new THREE.Mesh(
                 new THREE.PlaneGeometry(1.52 * scale, 0.14 * scale),
-                new THREE.MeshBasicMaterial({ color: isBoss ? 0xfbbf24 : (isSniper ? 0x22c55e : 0xef4444), side: THREE.DoubleSide })
+                new THREE.MeshBasicMaterial({ color: isRemotePeer ? 0x38bdf8 : (isBoss ? 0xfbbf24 : (isSniper ? 0x22c55e : 0xef4444)), side: THREE.DoubleSide })
             );
             hpFill.position.set(0, 3.05 * scale, 0.01);
             group.add(hpFill);
@@ -2856,6 +2890,8 @@
                 maxHp: hp,
                 isBoss,
                 enemyType,
+                peerId,
+                isRemotePeer,
                 radius: 0.95 * scale,
                 speed: isBoss ? 6.2 : (isArmored ? 3.8 + aiAggression * 0.45 : (isSniper ? 3.4 + aiAggression * 0.4 : 5.1 + aiAggression * 0.75)),
                 fireCooldown: Math.max(480, (isBoss ? 780 : (isSniper ? 1650 : 1220)) - aiAggression * 135),
@@ -2885,7 +2921,7 @@
                 const z = t === 'boss' ? 0 : angleSpread;
                 const hp = t === 'boss' ? 1850 : (t === 'armored' ? Math.round(hpBase * 1.25) : hpBase);
                 const lbl = t === 'boss' ? 'القائد' : (t === 'sniper' ? 'قناص' : (t === 'armored' ? 'مدرع' : 'مهاجم'));
-                enemies3D.push(createEnemy3DMesh(x, z, hp, t, stageNum, lbl));
+                enemies3D.push(createEnemy3DMesh(x, z, hp, t, stageNum, lbl, null, false));
             });
         }
 
@@ -2894,13 +2930,47 @@
                 ? activeRoom.players.filter(p => p.id !== localPlayerId)
                 : [];
             if (peers.length === 0) {
-                enemies3D.push(createEnemy3DMesh(24, -9, 320, 'assault', 2, 'منافس_1'));
-                enemies3D.push(createEnemy3DMesh(24, 9, 360, 'armored', 2, 'منافس_2'));
+                const bot1 = createEnemy3DMesh(24, -9, 320, 'assault', 2, 'منافس_1', 'bot_peer_1', true);
+                const bot2 = createEnemy3DMesh(24, 9, 360, 'armored', 2, 'منافس_2', 'bot_peer_2', true);
+                enemies3D.push(bot1, bot2);
+                remotePeersMap.set('bot_peer_1', bot1);
+                remotePeersMap.set('bot_peer_2', bot2);
             } else {
                 peers.forEach((p, idx) => {
-                    enemies3D.push(createEnemy3DMesh(p.x || 22, p.z || (idx * 7 - 4), 320, 'assault', 2, p.name || 'لاعب'));
+                    const peerMesh = createEnemy3DMesh(p.x || 22, p.z || (idx * 7 - 4), p.hp || 320, 'assault', 2, p.name || 'لاعب', p.id, true);
+                    enemies3D.push(peerMesh);
+                    remotePeersMap.set(p.id, peerMesh);
                 });
             }
+        }
+
+        function removeRemotePeerMesh(peerId) {
+            const peer = remotePeersMap.get(peerId);
+            if (!peer) return;
+            scene.remove(peer.group);
+            remotePeersMap.delete(peerId);
+            enemies3D = enemies3D.filter(e => e !== peer);
+        }
+
+        function spawnRemoteTracer(msg) {
+            if (!scene || !msg.origin || !msg.dir) return;
+            const origin = new THREE.Vector3(msg.origin.x || 0, msg.origin.y || 1.7, msg.origin.z || 0);
+            const dir = new THREE.Vector3(msg.dir.x || 0, msg.dir.y || 0, msg.dir.z || -1).normalize();
+            const tracer = new THREE.Mesh(
+                new THREE.SphereGeometry(0.11, 8, 8),
+                new THREE.MeshBasicMaterial({ color: 0x38bdf8 })
+            );
+            tracer.position.copy(origin);
+            scene.add(tracer);
+            projectiles3D.push({
+                mesh: tracer,
+                pos: origin,
+                vel: dir.multiplyScalar(170),
+                weapon: { baseDamage: 0, key: 'remote', color: 0x38bdf8 },
+                fromPlayer: false,
+                isRemoteTracer: true,
+                life: 0.45
+            });
         }
 
         function spawn3DExamTargets() {
@@ -3204,6 +3274,23 @@
                 const dir = getSpreadDirection3D(spread);
                 const startPos = new THREE.Vector3(fpsPlayer.x, fpsPlayer.y - 0.1, fpsPlayer.z).addScaledVector(dir, 1.0);
 
+                if (currentMode === 'online' && p === 0) {
+                    const shootMsg = {
+                        type: 'player_shoot',
+                        id: localPlayerId,
+                        roomCode: activeRoom ? activeRoom.code : 'LIVE',
+                        weapon: w.key,
+                        origin: { x: startPos.x, y: startPos.y, z: startPos.z },
+                        dir: { x: dir.x, y: dir.y, z: dir.z }
+                    };
+                    if (onlineChannel) {
+                        try { onlineChannel.postMessage(shootMsg); } catch (_) {}
+                    }
+                    if (wsSocket && wsSocket.readyState === WebSocket.OPEN) {
+                        try { wsSocket.send(JSON.stringify({ type: 'shoot', ...shootMsg })); } catch (_) {}
+                    }
+                }
+
                 const bulletMesh = new THREE.Mesh(
                     new THREE.SphereGeometry(w.key === 'rpg' ? 0.22 : 0.085, 8, 8),
                     new THREE.MeshBasicMaterial({ color: w.color })
@@ -3241,7 +3328,6 @@
             scene.add(ringMesh);
             effects3D.push({ mesh: ringMesh, maxScale: radius * 0.45, age: 0, duration: 0.35 });
 
-            // إتلاف وتصدع المباني والسواتر القريبة بقذيفة RPG
             coverBoxes3D.forEach(c => {
                 if (!c.destructibleByRpg || c.destroyed) return;
                 const cx = Math.max(c.minX, Math.min(pos.x, c.maxX));
@@ -3251,7 +3337,6 @@
                 }
             });
 
-            // كسر الصناديق القريبة وإسقاط سكوب
             breakableCrates3D.forEach(cr => {
                 if (cr.broken) return;
                 if (Math.hypot(cr.x - pos.x, cr.z - pos.z) <= radius * 0.65 + cr.size) {
@@ -3267,6 +3352,9 @@
                         en.hp = Math.max(0, en.hp - damage);
                         updateEnemyBar3D(en);
                         sound.playHit(en.hp <= 0, false);
+                        if (currentMode === 'online' && en.isRemotePeer && en.peerId) {
+                            syncOnlineDamage(en.peerId, damage, 'torso');
+                        }
                     }
                 });
                 targets3D.forEach(t => {
@@ -3285,6 +3373,27 @@
                     const mult = fpsPlayer.crouching ? 0.45 : 1;
                     fpsPlayer.hp = Math.max(0, fpsPlayer.hp - Math.round(damage * mult));
                 }
+            }
+        }
+
+        function syncOnlineDamage(targetId, damage, zone) {
+            const dmgPayload = {
+                type: 'player_hp',
+                targetId,
+                attackerId: localPlayerId,
+                damage,
+                zone,
+                hp: 0
+            };
+            const targetObj = remotePeersMap.get(targetId);
+            if (targetObj) dmgPayload.hp = targetObj.hp;
+            if (onlineChannel) {
+                try { onlineChannel.postMessage(dmgPayload); } catch (_) {}
+            }
+            if (wsSocket && wsSocket.readyState === WebSocket.OPEN) {
+                try {
+                    wsSocket.send(JSON.stringify({ type: 'damage_player', targetId, damage, zone }));
+                } catch (_) {}
             }
         }
 
@@ -3329,31 +3438,42 @@
         }
 
         function applyRemotePeerState(peer) {
-            if (!peer || !enemies3D.length) return;
-            const slot = enemies3D[0];
-            if (slot && slot.hp > 0 && typeof peer.x === 'number' && typeof peer.z === 'number') {
-                slot.group.position.x = peer.x;
-                slot.group.position.z = peer.z;
+            if (!peer || !peer.id || peer.id === localPlayerId) return;
+            let target = remotePeersMap.get(peer.id);
+            if (!target && scene) {
+                target = createEnemy3DMesh(peer.x || 20, peer.z || 0, peer.hp || 320, 'assault', 2, peer.name || 'لاعب', peer.id, true);
+                enemies3D.push(target);
+                remotePeersMap.set(peer.id, target);
+            }
+            if (target && target.hp > 0 && typeof peer.x === 'number' && typeof peer.z === 'number') {
+                target.group.position.x = peer.x;
+                target.group.position.z = peer.z;
+                if (typeof peer.yaw === 'number') target.group.rotation.y = peer.yaw;
+                target.group.scale.y = peer.crouching ? 0.65 : 1.0;
             }
         }
 
         function broadcastLocalPeerState(now) {
-            if (currentMode !== 'online' || now - lastNetSyncAt < 80) return;
+            if (currentMode !== 'online' || now - lastNetSyncAt < 65) return;
             lastNetSyncAt = now;
+            const curSlot = getCurrentWeaponSlot();
             const payload = {
                 type: 'player_state',
-                senderId: localPlayerId,
+                id: localPlayerId,
                 roomCode: activeRoom ? activeRoom.code : 'LIVE',
                 x: fpsPlayer.x,
+                y: fpsPlayer.y,
                 z: fpsPlayer.z,
                 yaw: fpsPlayer.yaw,
+                crouching: fpsPlayer.crouching,
+                weapon: curSlot && curSlot.weapon ? curSlot.weapon.key : 'm4',
                 hp: fpsPlayer.hp
             };
             if (onlineChannel) {
                 try { onlineChannel.postMessage(payload); } catch (_) {}
             }
             if (wsSocket && wsSocket.readyState === WebSocket.OPEN) {
-                try { wsSocket.send(JSON.stringify({ type: 'state_sync', peer: payload })); } catch (_) {}
+                try { wsSocket.send(JSON.stringify({ type: 'state_update', ...payload })); } catch (_) {}
             }
         }
 
@@ -3508,13 +3628,13 @@
             if (gameRunning) e.preventDefault();
         });
 
-        // تحكم الجوال واللمس
+        // تحكم الجوال واللمس: سحب حر للكاميرا في المساحات الفارغة بدون أي مؤشر قديم
         const touchState = {
             joyX: 0,
             joyY: 0,
-            aimActive: false,
-            aimX: 0,
-            aimY: 0,
+            lookTouchId: null,
+            lastLookX: 0,
+            lastLookY: 0,
             fireHeld: false,
             sprintHeld: false
         };
@@ -3524,21 +3644,24 @@
             syncCrouchButtonUI();
         }
 
+        function isTouchOnInteractiveControl(target) {
+            if (!target) return false;
+            return Boolean(target.closest('#moveJoystick, .touch-action-btn, button, a, input, select, .glass-panel'));
+        }
+
         function initMobileTouchListeners() {
             const moveBase = document.getElementById('moveJoystick');
             const moveKnob = document.getElementById('moveJoystickKnob');
-            const aimBase = document.getElementById('aimJoystick');
-            const aimKnob = document.getElementById('aimJoystickKnob');
             const fireBtn = document.getElementById('mobileFireBtn');
             const sprintBtn = document.getElementById('mobileSprintBtn');
             const maxRadius = 36;
             let moveId = null;
-            let aimId = null;
 
             if (moveBase && moveKnob) {
                 moveBase.addEventListener('touchstart', e => {
                     if (hudEditMode) return;
                     e.preventDefault();
+                    e.stopPropagation();
                     sound.init();
                     const t = e.changedTouches[0];
                     moveId = t.identifier;
@@ -3548,6 +3671,7 @@
                 moveBase.addEventListener('touchmove', e => {
                     if (hudEditMode) return;
                     e.preventDefault();
+                    e.stopPropagation();
                     for (let i = 0; i < e.changedTouches.length; i++) {
                         if (e.changedTouches[i].identifier === moveId) {
                             updateMove(e.changedTouches[i].clientX, e.changedTouches[i].clientY);
@@ -3585,62 +3709,56 @@
                 }
             }
 
-            if (aimBase && aimKnob) {
-                aimBase.addEventListener('touchstart', e => {
-                    if (hudEditMode) return;
-                    e.preventDefault();
-                    sound.init();
-                    const t = e.changedTouches[0];
-                    aimId = t.identifier;
-                    touchState.aimActive = true;
-                    updateAim(t.clientX, t.clientY);
-                }, { passive: false });
-
-                aimBase.addEventListener('touchmove', e => {
-                    if (hudEditMode) return;
-                    e.preventDefault();
-                    for (let i = 0; i < e.changedTouches.length; i++) {
-                        if (e.changedTouches[i].identifier === aimId) {
-                            updateAim(e.changedTouches[i].clientX, e.changedTouches[i].clientY);
-                        }
+            // تحريك الكاميرا مباشرة باللمس والسحب في أي مساحة فارغة على الشاشة
+            window.addEventListener('touchstart', e => {
+                if (!gameRunning || hudEditMode || !isMobileControlsVisibleNow()) return;
+                sound.init();
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    const t = e.changedTouches[i];
+                    if (t.identifier === moveId) continue;
+                    if (isTouchOnInteractiveControl(t.target)) continue;
+                    if (touchState.lookTouchId === null) {
+                        touchState.lookTouchId = t.identifier;
+                        touchState.lastLookX = t.clientX;
+                        touchState.lastLookY = t.clientY;
                     }
-                }, { passive: false });
-
-                const endAim = e => {
-                    for (let i = 0; i < e.changedTouches.length; i++) {
-                        if (e.changedTouches[i].identifier === aimId) {
-                            aimId = null;
-                            touchState.aimActive = false;
-                            touchState.aimX = 0;
-                            touchState.aimY = 0;
-                            aimKnob.style.transform = 'translate(-50%, -50%)';
-                        }
-                    }
-                };
-                aimBase.addEventListener('touchend', endAim);
-                aimBase.addEventListener('touchcancel', endAim);
-
-                function updateAim(cxTouch, cyTouch) {
-                    const rect = aimBase.getBoundingClientRect();
-                    const cx = rect.left + rect.width / 2;
-                    const cy = rect.top + rect.height / 2;
-                    let dx = cxTouch - cx;
-                    let dy = cyTouch - cy;
-                    const dist = Math.hypot(dx, dy);
-                    if (dist > maxRadius) {
-                        dx = (dx / dist) * maxRadius;
-                        dy = (dy / dist) * maxRadius;
-                    }
-                    aimKnob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
-                    touchState.aimX = dx / maxRadius;
-                    touchState.aimY = dy / maxRadius;
                 }
-            }
+            }, { passive: true });
+
+            window.addEventListener('touchmove', e => {
+                if (!gameRunning || hudEditMode || touchState.lookTouchId === null) return;
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    const t = e.changedTouches[i];
+                    if (t.identifier === touchState.lookTouchId) {
+                        const dx = t.clientX - touchState.lastLookX;
+                        const dy = t.clientY - touchState.lastLookY;
+                        touchState.lastLookX = t.clientX;
+                        touchState.lastLookY = t.clientY;
+
+                        const scopeSens = fpsPlayer.hasScope ? 0.72 : 1.0;
+                        const lookSpeed = (adsActive ? 0.0032 : 0.0056) * scopeSens;
+                        fpsPlayer.yaw -= dx * lookSpeed;
+                        fpsPlayer.pitch = Math.max(-1.35, Math.min(1.35, fpsPlayer.pitch - dy * lookSpeed));
+                    }
+                }
+            }, { passive: true });
+
+            const releaseLookTouch = e => {
+                if (touchState.lookTouchId === null) return;
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    if (e.changedTouches[i].identifier === touchState.lookTouchId) {
+                        touchState.lookTouchId = null;
+                    }
+                }
+            };
+            window.addEventListener('touchend', releaseLookTouch, { passive: true });
+            window.addEventListener('touchcancel', releaseLookTouch, { passive: true });
 
             if (fireBtn) {
                 fireBtn.addEventListener('touchstart', e => {
                     if (hudEditMode) return;
                     e.preventDefault();
+                    e.stopPropagation();
                     sound.init();
                     touchState.fireHeld = true;
                     if (gameRunning) tryShoot3D();
@@ -3648,6 +3766,7 @@
 
                 const stopFire = e => {
                     e.preventDefault();
+                    e.stopPropagation();
                     touchState.fireHeld = false;
                 };
                 fireBtn.addEventListener('touchend', stopFire, { passive: false });
@@ -3658,6 +3777,7 @@
                 sprintBtn.addEventListener('touchstart', e => {
                     if (hudEditMode) return;
                     e.preventDefault();
+                    e.stopPropagation();
                     touchState.sprintHeld = true;
                     fpsPlayer.crouching = false;
                     syncCrouchButtonUI();
@@ -3665,6 +3785,7 @@
 
                 const stopSprint = e => {
                     e.preventDefault();
+                    e.stopPropagation();
                     touchState.sprintHeld = false;
                 };
                 sprintBtn.addEventListener('touchend', stopSprint, { passive: false });
@@ -3723,18 +3844,11 @@
                 tryShoot3D();
             }
 
-            // زووم التصويب المقرب ADS مع تعزيز إضافي عند تركيب السكوب
             const adsTarget = fpsPlayer.hasScope ? activeW.scopedAdsFov : activeW.baseAdsFov;
             const targetFov = adsActive ? adsTarget : 76;
             if (Math.abs(camera3D.fov - targetFov) > 0.15) {
                 camera3D.fov += (targetFov - camera3D.fov) * Math.min(1, dt * 16);
                 camera3D.updateProjectionMatrix();
-            }
-
-            if (touchState.aimActive) {
-                const aimSpeed = adsActive ? 1.5 : 2.4;
-                fpsPlayer.yaw -= touchState.aimX * aimSpeed * dt;
-                fpsPlayer.pitch = Math.max(-1.25, Math.min(1.25, fpsPlayer.pitch - touchState.aimY * (aimSpeed * 0.8) * dt));
             }
 
             let forwardInput = 0;
@@ -3790,7 +3904,6 @@
             }
             fpsPlayer.recoilOffset = Math.max(0, fpsPlayer.recoilOffset - dt * 0.48);
 
-            // التقاط السكوب الذي يقع من الصناديق المكسورة
             scopePickups3D.forEach(sp => {
                 if (sp.collected) return;
                 sp.phase += dt * 3.5;
@@ -3844,12 +3957,19 @@
                 boltMesh3D.position.z = 0.02 + boltPullOffset;
             }
 
-            // تحديث المقذوفات ثلاثية الأبعاد مع حساب دمج أجزاء الجسم (الرأس / البطن / الرجل) وكسر الصناديق
             for (let i = projectiles3D.length - 1; i >= 0; i--) {
                 const pr = projectiles3D[i];
                 pr.life -= dt;
                 pr.pos.addScaledVector(pr.vel, dt);
                 pr.mesh.position.copy(pr.pos);
+
+                if (pr.isRemoteTracer) {
+                    if (pr.life <= 0) {
+                        scene.remove(pr.mesh);
+                        projectiles3D.splice(i, 1);
+                    }
+                    continue;
+                }
 
                 let hitStructure = null;
                 let hitSolid = pr.pos.y <= 0.1 || Math.abs(pr.pos.x) >= ARENA_HALF || Math.abs(pr.pos.z) >= ARENA_HALF;
@@ -3865,7 +3985,6 @@
                     }
                 }
 
-                // فحص إصابة الصناديق القابلة للكسر
                 let hitCrate = false;
                 if (pr.fromPlayer) {
                     for (let crIdx = 0; crIdx < breakableCrates3D.length; crIdx++) {
@@ -3893,17 +4012,19 @@
                             if (pr.isRpg) {
                                 spawnExplosion3D(pr.pos.clone(), 8.5, pr.weapon.baseDamage, true);
                             } else {
-                                // تحديد جزء الجسم: أعلى الرأس = رأس (دمج عالٍ)، منتصف الجذع = بطن/صدر (دمج متوسط)، أسفل = رجل (دمج أضعف)
                                 let zoneMult = pr.weapon.bodyMult;
                                 let zoneLabel = 'إصابة بالبطن';
+                                let zoneKey = 'torso';
                                 let isHead = false;
                                 if (pr.pos.y >= 1.95 * sc) {
                                     zoneMult = pr.weapon.headMult;
                                     zoneLabel = 'إصابة بالرأس! (دمج عالٍ)';
+                                    zoneKey = 'head';
                                     isHead = true;
                                 } else if (pr.pos.y < 1.05 * sc) {
                                     zoneMult = pr.weapon.legMult;
                                     zoneLabel = 'إصابة بالرجل (دمج أضعف)';
+                                    zoneKey = 'legs';
                                 }
 
                                 const finalDmg = Math.max(12, Math.round(pr.weapon.baseDamage * zoneMult));
@@ -3911,6 +4032,9 @@
                                 updateEnemyBar3D(en);
                                 sound.playHit(en.hp <= 0, isHead);
                                 showHitBanner(`${zoneLabel} -${finalDmg}`, isHead ? 'text-rose-300' : (zoneMult < 0.8 ? 'text-slate-300' : 'text-amber-300'));
+                                if (currentMode === 'online' && en.isRemotePeer && en.peerId) {
+                                    syncOnlineDamage(en.peerId, finalDmg, zoneKey);
+                                }
                             }
                             hitTarget = true;
                             break;
@@ -3964,7 +4088,6 @@
                 }
             }
 
-            // تحديث القنابل الشظية والدخانية
             for (let gIdx = grenades3D.length - 1; gIdx >= 0; gIdx--) {
                 const gr = grenades3D[gIdx];
                 gr.fuse -= dt;
@@ -3992,7 +4115,6 @@
                 }
             }
 
-            // تحديث سحب الدخان
             for (let smIdx = smokeClouds3D.length - 1; smIdx >= 0; smIdx--) {
                 const sm = smokeClouds3D[smIdx];
                 sm.age += dt;
@@ -4007,7 +4129,6 @@
                 }
             }
 
-            // ذكاء الأعداء المتصاعد مع كل مرحلة
             if (currentMode === 'stage' || currentMode === 'online') {
                 let aliveCount = 0;
                 enemies3D.forEach(en => {
