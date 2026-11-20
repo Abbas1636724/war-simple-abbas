@@ -551,118 +551,137 @@
             <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-700/70 pb-4">
                 <div>
                     <span class="text-xs font-black px-3 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
-                        نظام الغرف الفوري (BroadcastChannel + WebSocket)
+                        أونلاين متعدد اللاعبين (WebSocket + BroadcastChannel)
                     </span>
-                    <h2 class="text-2xl font-black text-white mt-1">🌐 اللعب أونلاين — نظام الروم</h2>
+                    <h2 class="text-2xl font-black text-white mt-1">🌐 اللعب أونلاين</h2>
                 </div>
                 <div class="flex items-center gap-2">
-                    <input id="onlinePlayerNameInput" type="text" maxlength="16" value="لاعب عباس" placeholder="اسم اللاعب" class="bg-slate-900 border border-slate-600 rounded-xl px-3 py-2 text-xs sm:text-sm font-bold text-white w-32 sm:w-40">
-                    <button onclick="navigateTo('playMenuScreen')" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200">
+                    <input id="onlinePlayerNameInput" type="text" maxlength="16" value="لاعب عباس" placeholder="اكتب اسمك هنا" class="bg-slate-900 border border-slate-600 rounded-xl px-3.5 py-2 text-xs sm:text-sm font-bold text-white w-36 sm:w-44">
+                    <button onclick="exitOnlineLobbyScreen()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200">
                         رجوع
                     </button>
                 </div>
             </div>
 
-            <div id="roomBrowserPanel" class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                <div class="glass-card p-5 rounded-2xl space-y-4 border border-sky-500/35">
-                    <div class="text-lg font-black text-sky-300">➕ إنشاء روم جديد</div>
+            <!-- الخطوة 1: خياران فقط (إنشاء روم أو انضمام برمز الدخول) -->
+            <div id="roomBrowserPanel" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- الخيار الأول: إنشاء روم -->
+                <div class="glass-card p-5 sm:p-6 rounded-2xl space-y-4 border-2 border-sky-500/45 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-black text-sky-300">➕ إنشاء روم</h3>
+                            <span class="text-xs px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-200 font-bold">للمضيف</span>
+                        </div>
 
-                    <div class="space-y-1">
-                        <label class="text-xs font-bold text-slate-300">اسم الروم</label>
-                        <input id="createRoomNameInput" type="text" maxlength="24" placeholder="مثال: روم المصنع الليلي" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm font-bold text-white">
-                    </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-slate-300">اسم الروم</label>
+                            <input id="createRoomNameInput" type="text" maxlength="24" placeholder="مثال: روم الأصدقاء" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm font-bold text-white">
+                        </div>
 
-                    <div class="grid grid-cols-2 gap-3">
                         <div class="space-y-1">
                             <label class="text-xs font-bold text-slate-300">الماب</label>
-                            <select id="createRoomMapSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs sm:text-sm font-bold text-white">
-                                <option value="night_factory">مجمع المستودعات والمصنع الليلي</option>
-                                <option value="street_houses">الشارع والبيوت</option>
+                            <select id="createRoomMapSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-bold text-white">
                                 <option value="tactical_arena">ساحة المعركة التكتيكية</option>
+                                <option value="street_houses">الشارع والبيوت</option>
+                                <option value="night_factory">مجمع المستودعات والمصنع الليلي</option>
                             </select>
                         </div>
+
                         <div class="space-y-1">
-                            <label class="text-xs font-bold text-slate-300">الحد الأقصى للاعبين</label>
-                            <select id="createRoomMaxSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs sm:text-sm font-bold text-white">
-                                <option value="2">2 لاعبين (1v1)</option>
-                                <option value="4" selected>4 لاعبين (2v2)</option>
-                                <option value="6">6 لاعبين (Squad)</option>
+                            <label class="text-xs font-bold text-slate-300">عدد اللاعبين</label>
+                            <select id="createRoomMaxSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-bold text-white">
+                                <option value="2">2 لاعبين (1 ضد 1)</option>
+                                <option value="4" selected>4 لاعبين (2 ضد 2)</option>
+                                <option value="6">6 لاعبين (3 ضد 3)</option>
+                                <option value="8">8 لاعبين (4 ضد 4)</option>
                             </select>
                         </div>
-                    </div>
 
-                    <div class="space-y-1">
-                        <label class="text-xs font-bold text-slate-300">رابط سيرفر WebSocket (اختياري)</label>
-                        <div class="flex gap-2">
-                            <input id="wsServerUrlInput" type="text" placeholder="wss://your-server.example" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs font-mono text-sky-200">
-                            <button type="button" onclick="connectOptionalWebSocket(true)" class="px-3 py-2 rounded-xl bg-sky-700 hover:bg-sky-600 text-white text-xs font-bold whitespace-nowrap">
-                                اتصال
-                            </button>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-slate-400">رابط السيرفر (WebSocket)</label>
+                            <div class="flex gap-2">
+                                <input id="wsServerUrlInput" type="text" value="ws://localhost:8080" placeholder="ws://localhost:8080" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs font-mono text-sky-200">
+                                <button type="button" onclick="connectOptionalWebSocket(true)" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sky-300 text-xs font-bold border border-sky-500/35 whitespace-nowrap">
+                                    اتصال
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    <button onclick="createOnlineRoom()" class="menu-btn w-full py-3.5 rounded-2xl bg-sky-600 hover:bg-sky-500 text-white font-black text-base shadow-lg">
-                        🚀 إنشاء الروم والدخول
+                    <button onclick="createOnlineRoom()" class="menu-btn w-full py-3.5 rounded-2xl bg-gradient-to-l from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-black text-base shadow-lg">
+                        🚀 إنشاء الروم
                     </button>
                 </div>
 
-                <div class="glass-card p-5 rounded-2xl space-y-4 border border-emerald-500/35 flex flex-col justify-between">
+                <!-- الخيار الثاني: انضمام إلى روم -->
+                <div class="glass-card p-5 sm:p-6 rounded-2xl space-y-4 border-2 border-emerald-500/45 flex flex-col justify-between">
                     <div class="space-y-4">
-                        <div class="text-lg font-black text-emerald-300">🔑 انضمام برمز الروم أو اختيار روم</div>
-
-                        <div class="flex gap-2">
-                            <input id="joinRoomCodeInput" type="text" maxlength="8" placeholder="أدخل رمز الروم (مثال: ABBS01)" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm font-mono font-black uppercase text-white tracking-wider">
-                            <button onclick="joinRoomByCode()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm whitespace-nowrap">
-                                انضمام
-                            </button>
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-black text-emerald-300">🔑 انضمام إلى روم</h3>
+                            <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-200 font-bold">للأصدقاء</span>
                         </div>
 
-                        <div class="space-y-2">
-                            <div class="flex items-center justify-between text-xs text-slate-400">
-                                <span>الرومات النشطة حالياً:</span>
-                                <button onclick="refreshRoomBrowser()" class="text-sky-300 hover:underline font-bold">تحديث القائمة</button>
-                            </div>
-                            <div id="roomListContainer" class="space-y-2 max-h-52 overflow-y-auto pr-1 custom-scrollbar"></div>
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            اطلب <span class="text-amber-300 font-black">رمز الدخول</span> من صديقك الذي أنشأ الروم، واكتبه في المربع أدناه للدخول إلى غرفة الانتظار.
+                        </p>
+
+                        <div class="space-y-2 pt-2">
+                            <label for="joinRoomCodeInput" class="text-xs font-black text-amber-300">مربع كتابة رمز الدخول</label>
+                            <input id="joinRoomCodeInput" type="text" maxlength="8" placeholder="اكتب رمز الدخول هنا (مثال: ABBS12)" class="w-full bg-slate-950 border-2 border-emerald-500/60 focus:border-emerald-400 rounded-2xl px-4 py-4 text-center text-xl font-mono font-black uppercase text-amber-300 tracking-[0.25em] outline-none">
+                        </div>
+
+                        <div id="lobbyLiveStatusBanner" class="bg-slate-900/90 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-slate-300 font-bold flex items-center justify-between">
+                            <span id="lobbyConnectionTransportText">حالة الاتصال: جاهز للربط الفوري</span>
+                            <span class="text-emerald-400 font-black">● متصل</span>
                         </div>
                     </div>
+
+                    <button onclick="joinRoomByCode()" class="menu-btn w-full py-3.5 rounded-2xl bg-gradient-to-l from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black text-base shadow-lg">
+                        ✅ انضمام للروم
+                    </button>
                 </div>
             </div>
 
-            <div id="activeRoomLobbyPanel" class="hidden glass-card p-5 sm:p-6 rounded-2xl space-y-5 border border-sky-400/50">
+            <!-- الخطوة 2: مربع الروم واللاعبين قبل بدء المباراة -->
+            <div id="activeRoomLobbyPanel" class="hidden glass-card p-5 sm:p-6 rounded-2xl space-y-5 border-2 border-sky-400/60">
                 <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-700/70 pb-4">
                     <div>
-                        <div class="text-xs text-slate-400">اسم الروم والماب</div>
-                        <div class="flex items-center gap-2.5 mt-0.5">
-                            <h3 id="lobbyRoomTitle" class="text-xl font-black text-white">روم الأصدقاء</h3>
-                            <span id="lobbyRoomMapBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300">الشارع والبيوت</span>
+                        <div class="text-xs text-slate-400 font-bold">غرفة الانتظار قبل بدء المباراة</div>
+                        <div class="flex flex-wrap items-center gap-2.5 mt-1">
+                            <h3 id="lobbyRoomTitle" class="text-xl sm:text-2xl font-black text-white">روم الأصدقاء</h3>
+                            <span id="lobbyRoomMapBadge" class="text-xs font-bold px-3 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30">ساحة المعركة التكتيكية</span>
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-2 bg-slate-900/95 px-3.5 py-2 rounded-2xl border border-amber-400/40">
-                        <span class="text-xs text-slate-400 font-bold">رمز الروم:</span>
-                        <span id="lobbyRoomCodeText" class="text-base font-mono font-black text-amber-300 tracking-widest">------</span>
-                        <button onclick="copyCurrentRoomCode()" class="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 text-amber-200 text-xs font-black">
+                    <div class="flex items-center gap-2.5 bg-slate-950 px-4 py-2.5 rounded-2xl border-2 border-amber-400/60 shadow-lg">
+                        <span class="text-xs text-slate-400 font-bold">رمز الدخول:</span>
+                        <span id="lobbyRoomCodeText" class="text-lg sm:text-xl font-mono font-black text-amber-300 tracking-widest">------</span>
+                        <button onclick="copyCurrentRoomCode()" class="px-3 py-1 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black">
                             نسخ
                         </button>
                     </div>
                 </div>
 
-                <div class="space-y-2">
-                    <div class="text-xs font-black text-slate-300">اللاعبون داخل الروم (<span id="lobbyPlayerCount">1/4</span>):</div>
-                    <div id="lobbyPlayersList" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"></div>
+                <!-- مربع أسماء اللاعبين في الروم -->
+                <div class="bg-slate-950/90 border-2 border-slate-700/90 rounded-2xl p-4 sm:p-5 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm sm:text-base font-black text-sky-300">👥 مربع اللاعبين داخل الروم (<span id="lobbyPlayerCount">1/4</span>)</div>
+                        <span class="text-[11px] text-emerald-300 font-bold animate-pulse">● تحديث مباشر عند دخول أي صديق</span>
+                    </div>
+                    <div id="lobbyPlayersList" class="grid grid-cols-1 sm:grid-cols-2 gap-3 min-h-[96px]"></div>
                 </div>
 
-                <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
-                    <button onclick="togglePlayerReadyInRoom()" id="lobbyReadyBtn" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-300 font-black text-sm border border-emerald-500/40">
-                        ✓ جاهز للقتال
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+                    <button onclick="leaveCurrentRoom()" class="px-4 py-3 rounded-2xl bg-rose-950/80 hover:bg-rose-900 text-rose-200 font-black text-sm border border-rose-500/40">
+                        🚪 مغادرة الروم
                     </button>
 
-                    <div class="flex items-center gap-2.5">
-                        <button onclick="leaveCurrentRoom()" class="px-4 py-2.5 rounded-xl bg-rose-950/80 hover:bg-rose-900 text-rose-200 font-bold text-sm border border-rose-500/40">
-                            مغادرة الروم
-                        </button>
-                        <button onclick="startOnlineMatchWithClass()" class="menu-btn px-6 py-3 rounded-2xl bg-gradient-to-l from-emerald-500 to-sky-500 hover:from-emerald-400 hover:to-sky-400 text-slate-950 font-black text-sm sm:text-base shadow-lg">
-                            ⚔️ بدء المباراة بكلاسي الحالي
+                    <div class="flex items-center gap-3">
+                        <span id="waitingForHostHint" class="hidden text-xs sm:text-sm font-black text-amber-300 bg-amber-500/15 border border-amber-400/35 px-4 py-2.5 rounded-2xl">
+                            ⏳ في انتظار صاحب الروم يضغط (ابدأ)...
+                        </span>
+                        <button id="hostStartMatchBtn" onclick="startOnlineMatchWithClass()" class="menu-btn px-8 py-3.5 rounded-2xl bg-gradient-to-l from-emerald-500 to-sky-500 hover:from-emerald-400 hover:to-sky-400 text-slate-950 font-black text-base sm:text-lg shadow-xl">
+                            🚀 ابدأ
                         </button>
                     </div>
                 </div>
@@ -1718,53 +1737,30 @@
         }
 
         // نظام الغرف والأونلاين (BroadcastChannel + WebSocket)
-        const ROOMS_STORAGE_KEY = 'war_simple_abbas_online_rooms_v3';
-        const onlineChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('war_simple_abbas_rooms_ch_v3') : null;
+        const ROOMS_STORAGE_KEY = 'war_simple_abbas_online_rooms_v4';
+        const onlineChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('war_simple_abbas_rooms_ch_v4') : null;
         let activeRoom = null;
         let localPlayerId = 'p_' + Math.random().toString(36).slice(2, 8);
         let localPlayerReady = true;
         let wsSocket = null;
+        let wsConnected = false;
         let lastNetSyncAt = 0;
+        let lastLobbyRosterSyncAt = 0;
         const remotePeersMap = new Map();
+        const pendingRemoteAttacks = [];
 
         function getDefaultRooms() {
-            return [
-                {
-                    code: 'FACT09',
-                    name: 'روم المصنع الليلي',
-                    map: 'night_factory',
-                    mapLabel: MAP_LABELS.night_factory,
-                    maxPlayers: 4,
-                    players: [
-                        { id: 'bot_1', name: 'عباس القائد', ready: true, hp: 500, x: 20, z: -10, yaw: 3.14 },
-                        { id: 'bot_2', name: 'حيدر_3D', ready: true, hp: 500, x: 22, z: 10, yaw: 2.8 }
-                    ]
-                },
-                {
-                    code: 'ABBS01',
-                    name: 'روم الشارع والبيوت',
-                    map: 'street_houses',
-                    mapLabel: MAP_LABELS.street_houses,
-                    maxPlayers: 4,
-                    players: [
-                        { id: 'bot_3', name: 'قناص_الشمال', ready: true, hp: 500, x: 24, z: 0, yaw: 3.14 }
-                    ]
-                }
-            ];
+            return [];
         }
 
         function loadRoomsRegistry() {
             try {
                 const raw = localStorage.getItem(ROOMS_STORAGE_KEY);
-                if (!raw) {
-                    const def = getDefaultRooms();
-                    localStorage.setItem(ROOMS_STORAGE_KEY, JSON.stringify(def));
-                    return def;
-                }
+                if (!raw) return [];
                 const list = JSON.parse(raw);
-                return Array.isArray(list) && list.length ? list : getDefaultRooms();
+                return Array.isArray(list) ? list : [];
             } catch (_) {
-                return getDefaultRooms();
+                return [];
             }
         }
 
@@ -1785,90 +1781,59 @@
             return val || 'مقاتل عباس';
         }
 
+        function getCurrentEquippedWeaponName() {
+            const pKey = (playerLoadout && playerLoadout.primary) || 'm4';
+            return (WEAPONS[pKey] && WEAPONS[pKey].name) || 'أم فور (M4)';
+        }
+
+        function getDefaultSpawnForPlayerIndex(idx) {
+            const spawns = [
+                { x: -24, z: -6, yaw: 0.2 },
+                { x: 24, z: 6, yaw: -2.9 },
+                { x: -24, z: 8, yaw: -0.2 },
+                { x: 24, z: -8, yaw: 2.9 },
+                { x: 0, z: -24, yaw: 1.57 },
+                { x: 0, z: 24, yaw: -1.57 }
+            ];
+            return spawns[idx % spawns.length];
+        }
+
+        function sendRoomProtocolMessage(payload) {
+            if (!payload || typeof payload !== 'object') return;
+            const enriched = Object.assign({}, payload, {
+                senderId: localPlayerId,
+                roomCode: activeRoom ? activeRoom.code : (payload.roomCode || null)
+            });
+
+            if (onlineChannel) {
+                try {
+                    onlineChannel.postMessage(enriched);
+                } catch (_) {}
+            }
+
+            if (wsSocket && wsSocket.readyState === WebSocket.OPEN) {
+                try {
+                    wsSocket.send(JSON.stringify(enriched));
+                } catch (_) {}
+            }
+        }
+
         function openOnlineLobby() {
             sound.playUIClick(true);
             connectOptionalWebSocket(false);
-            refreshRoomBrowser();
             syncRoomLobbyPanels();
             navigateTo('onlineLobbyScreen');
         }
 
-        function connectOptionalWebSocket(notifyUser = true) {
-            const urlInput = document.getElementById('wsServerUrlInput');
-            const url = urlInput ? urlInput.value.trim() : '';
-            if (!url) {
-                if (notifyUser) showToast('أدخل رابط WebSocket مثل wss://... أولاً');
-                return;
+        function exitOnlineLobbyScreen() {
+            sound.playUIClick(true);
+            if (activeRoom) {
+                leaveCurrentRoom();
             }
-            if (!url.startsWith('ws://') && !url.startsWith('wss://')) {
-                if (notifyUser) showToast('يجب أن يبدأ رابط السيرفر بـ ws:// أو wss://');
-                return;
-            }
-            try {
-                if (wsSocket) {
-                    try { wsSocket.close(); } catch (_) {}
-                }
-                wsSocket = new WebSocket(url);
-                wsSocket.onopen = () => {
-                    showToast('تم الاتصال بسيرفر WebSocket المباشر');
-                    if (activeRoom) {
-                        wsSocket.send(JSON.stringify({
-                            type: 'join_room',
-                            room: activeRoom.code,
-                            name: getPlayerDisplayName()
-                        }));
-                    }
-                };
-                wsSocket.onmessage = ev => {
-                    try {
-                        const msg = JSON.parse(ev.data);
-                        if (!gameRunning || currentMode !== 'online') return;
-                        if (msg.type === 'player_state' && msg.id && msg.id !== localPlayerId) {
-                            applyRemotePeerState(msg);
-                        } else if (msg.type === 'player_shoot' && msg.id && msg.id !== localPlayerId) {
-                            spawnRemoteTracer(msg);
-                        } else if (msg.type === 'player_hp' && msg.targetId === localPlayerId) {
-                            fpsPlayer.hp = Math.max(0, msg.hp);
-                            updateHUD();
-                            if (fpsPlayer.hp <= 0) {
-                                showEndModal(false, 'لقد خسرت!!', 'تم القضاء عليك في مباراة الأونلاين.');
-                            }
-                        } else if (msg.type === 'player_left' && msg.id) {
-                            removeRemotePeerMesh(msg.id);
-                        }
-                    } catch (_) {}
-                };
-                wsSocket.onerror = () => {
-                    if (notifyUser) showToast('تعذر الاتصال بسيرفر WebSocket؛ يعمل الوضع المحلي عبر الروم');
-                };
-            } catch (_) {
-                if (notifyUser) showToast('رابط WebSocket غير صالح');
-            }
+            navigateTo('playMenuScreen');
         }
-
         function refreshRoomBrowser() {
-            const list = loadRoomsRegistry();
-            const container = document.getElementById('roomListContainer');
-            if (!container) return;
-            container.innerHTML = '';
-
-            list.forEach(room => {
-                const card = document.createElement('div');
-                card.className = 'bg-slate-900/90 border border-slate-700/80 rounded-xl p-3 flex items-center justify-between gap-2';
-                card.innerHTML = `
-                    <div class="space-y-0.5">
-                        <div class="flex items-center gap-2">
-                            <span class="font-black text-sm text-white">${room.name}</span>
-                            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">${room.code}</span>
-                        </div>
-                        <div class="text-[11px] text-slate-400">${room.mapLabel || MAP_LABELS[room.map] || MAP_LABELS.street_houses} • اللاعبون: ${room.players.length}/${room.maxPlayers}</div>
-                    </div>
-                    <button onclick="joinRoomByCode('${room.code}')" class="px-3.5 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-black">
-                        دخول
-                    </button>
-                `;
-                container.appendChild(card);
-            });
+            syncRoomLobbyPanels();
         }
 
         function generateRoomCode() {
@@ -1888,32 +1853,67 @@
             const maxSelect = document.getElementById('createRoomMaxSelect');
 
             const roomName = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : ('روم ' + getPlayerDisplayName());
-            const mapKey = mapSelect ? mapSelect.value : 'night_factory';
-            const mapLabel = MAP_LABELS[mapKey] || MAP_LABELS.night_factory;
+            const mapKey = mapSelect ? mapSelect.value : 'tactical_arena';
+            const mapLabel = MAP_LABELS[mapKey] || MAP_LABELS.tactical_arena;
             const maxPlayers = maxSelect ? parseInt(maxSelect.value, 10) : 4;
+            const code = generateRoomCode();
+            const spawn = getDefaultSpawnForPlayerIndex(0);
 
             const newRoom = {
-                code: generateRoomCode(),
+                code,
                 name: roomName,
+                hostId: localPlayerId,
                 map: mapKey,
                 mapLabel,
                 maxPlayers,
+                started: false,
                 players: [
-                    { id: localPlayerId, name: getPlayerDisplayName() + ' (المضيف)', ready: true, hp: 500, x: -24, z: 0, yaw: 0 }
+                    {
+                        id: localPlayerId,
+                        name: getPlayerDisplayName(),
+                        isHost: true,
+                        ready: true,
+                        hp: 500,
+                        maxHp: 500,
+                        kills: 0,
+                        deaths: 0,
+                        weapon: getCurrentEquippedWeaponName(),
+                        x: spawn.x,
+                        y: STAND_EYE_Y,
+                        z: spawn.z,
+                        yaw: spawn.yaw,
+                        crouching: false,
+                        lastSeen: Date.now()
+                    }
                 ]
             };
 
-            const list = loadRoomsRegistry();
+            const list = loadRoomsRegistry().filter(r => r.code !== code);
             list.unshift(newRoom);
             saveRoomsRegistry(list);
             activeRoom = newRoom;
+            selectedMapKey = mapKey;
             localPlayerReady = true;
+
+            sendRoomProtocolMessage({
+                type: 'room_created',
+                roomCode: code,
+                room: newRoom,
+                player: newRoom.players[0]
+            });
+
             if (wsSocket && wsSocket.readyState === WebSocket.OPEN) {
-                wsSocket.send(JSON.stringify({ type: 'join_room', room: newRoom.code, name: getPlayerDisplayName() }));
+                wsSocket.send(JSON.stringify({
+                    type: 'join',
+                    join_room: true,
+                    room: code,
+                    name: getPlayerDisplayName(),
+                    weapon: getCurrentEquippedWeaponName()
+                }));
             }
+
             syncRoomLobbyPanels();
-            refreshRoomBrowser();
-            showToast('تم إنشاء الروم برمز: ' + newRoom.code);
+            showToast('تم إنشاء الروم! رمز الدخول: ' + code);
         }
 
         function joinRoomByCode(explicitCode) {
@@ -1922,7 +1922,7 @@
             const inp = document.getElementById('joinRoomCodeInput');
             const rawCode = (explicitCode || (inp ? inp.value : '') || '').trim().toUpperCase();
             if (!rawCode) {
-                showToast('أدخل رمز الروم أولاً أو اختر روم من القائمة');
+                showToast('اكتب رمز الدخول في المربع أولاً');
                 return;
             }
 
@@ -1932,93 +1932,74 @@
                 target = {
                     code: rawCode,
                     name: 'روم #' + rawCode,
-                    map: 'night_factory',
-                    mapLabel: MAP_LABELS.night_factory,
-                    maxPlayers: 4,
-                    players: [
-                        { id: 'host_' + rawCode, name: 'قائد_الروم', ready: true, hp: 500, x: 22, z: 0, yaw: 3.14 }
-                    ]
+                    hostId: null,
+                    map: 'tactical_arena',
+                    mapLabel: MAP_LABELS.tactical_arena,
+                    maxPlayers: 8,
+                    started: false,
+                    players: []
                 };
                 list.unshift(target);
+                saveRoomsRegistry(list);
             }
 
-            if (!target.players.some(p => p.id === localPlayerId)) {
-                if (target.players.length >= target.maxPlayers) {
-                    showToast('الروم ممتلئ حالياً');
-                    return;
-                }
-                target.players.push({
-                    id: localPlayerId,
-                    name: getPlayerDisplayName(),
-                    ready: localPlayerReady,
-                    hp: 500,
-                    x: -24,
-                    z: (target.players.length - 1) * 5,
-                    yaw: 0
-                });
+            const existingIdx = target.players.findIndex(p => p.id === localPlayerId);
+            if (existingIdx < 0 && target.players.length >= (target.maxPlayers || 8)) {
+                showToast('عذراً، هذا الروم ممتلئ حالياً');
+                return;
             }
 
-            saveRoomsRegistry(list);
-            activeRoom = target;
+            const spawn = getDefaultSpawnForPlayerIndex(existingIdx >= 0 ? existingIdx : target.players.length);
+            const meObj = {
+                id: localPlayerId,
+                name: getPlayerDisplayName(),
+                isHost: target.hostId === localPlayerId,
+                ready: true,
+                hp: 500,
+                maxHp: 500,
+                kills: 0,
+                deaths: 0,
+                weapon: getCurrentEquippedWeaponName(),
+                x: spawn.x,
+                y: STAND_EYE_Y,
+                z: spawn.z,
+                yaw: spawn.yaw,
+                crouching: false,
+                lastSeen: Date.now()
+            };
+
+            const updatedRoom = upsertPlayerInRoomRegistry(rawCode, meObj, target);
+            activeRoom = updatedRoom || target;
+            if (activeRoom && activeRoom.map) {
+                selectedMapKey = activeRoom.map;
+            }
+
+            sendRoomProtocolMessage({
+                type: 'player_join',
+                roomCode: rawCode,
+                room: activeRoom,
+                player: meObj
+            });
+
             if (wsSocket && wsSocket.readyState === WebSocket.OPEN) {
-                wsSocket.send(JSON.stringify({ type: 'join_room', room: target.code, name: getPlayerDisplayName() }));
+                wsSocket.send(JSON.stringify({
+                    type: 'join',
+                    join_room: true,
+                    room: rawCode,
+                    name: getPlayerDisplayName(),
+                    weapon: getCurrentEquippedWeaponName()
+                }));
             }
+
             syncRoomLobbyPanels();
-            refreshRoomBrowser();
-            showToast('تم الانضمام إلى الروم ' + target.code);
+            showToast('دخلت إلى الروم ' + rawCode + ' — اسمك ظاهر الآن في المربع!');
         }
-
-        function leaveCurrentRoom() {
-            sound.playUIClick(true);
-            if (activeRoom) {
-                const list = loadRoomsRegistry();
-                const found = list.find(r => r.code === activeRoom.code);
-                if (found) {
-                    found.players = found.players.filter(p => p.id !== localPlayerId);
-                    saveRoomsRegistry(list);
-                }
-            }
-            activeRoom = null;
-            syncRoomLobbyPanels();
-            refreshRoomBrowser();
-        }
-
-        function togglePlayerReadyInRoom() {
-            sound.playUIClick(true);
-            localPlayerReady = !localPlayerReady;
-            if (activeRoom) {
-                const list = loadRoomsRegistry();
-                const found = list.find(r => r.code === activeRoom.code);
-                if (found) {
-                    const me = found.players.find(p => p.id === localPlayerId);
-                    if (me) me.ready = localPlayerReady;
-                    saveRoomsRegistry(list);
-                    activeRoom = found;
-                }
-            }
-            syncRoomLobbyPanels();
-        }
-
-        function copyCurrentRoomCode() {
-            if (!activeRoom) return;
-            const code = activeRoom.code;
-            try {
-                const ta = document.createElement('textarea');
-                ta.value = code;
-                document.body.appendChild(ta);
-                ta.select();
-                document.execCommand('copy');
-                document.body.removeChild(ta);
-                showToast('تم نسخ رمز الروم: ' + code);
-            } catch (_) {
-                showToast('رمز الروم: ' + code);
-            }
-        }
-
         function syncRoomLobbyPanels() {
             const browserEl = document.getElementById('roomBrowserPanel');
             const lobbyEl = document.getElementById('activeRoomLobbyPanel');
             if (!browserEl || !lobbyEl) return;
+
+            updateLobbyTransportBadge();
 
             if (!activeRoom) {
                 browserEl.classList.remove('hidden');
@@ -2029,58 +2010,378 @@
             browserEl.classList.add('hidden');
             lobbyEl.classList.remove('hidden');
 
-            document.getElementById('lobbyRoomTitle').innerText = activeRoom.name;
-            document.getElementById('lobbyRoomMapBadge').innerText = activeRoom.mapLabel || MAP_LABELS[activeRoom.map] || MAP_LABELS.street_houses;
-            document.getElementById('lobbyRoomCodeText').innerText = activeRoom.code;
-            document.getElementById('lobbyPlayerCount').innerText = `${activeRoom.players.length}/${activeRoom.maxPlayers}`;
+            const roster = Array.isArray(activeRoom.players) ? activeRoom.players : [];
+            const maxCap = activeRoom.maxPlayers || 4;
+            const amIHost = !activeRoom.hostId || activeRoom.hostId === localPlayerId || (roster[0] && roster[0].id === localPlayerId);
 
-            const readyBtn = document.getElementById('lobbyReadyBtn');
-            if (readyBtn) {
-                readyBtn.innerText = localPlayerReady ? '✓ جاهز للقتال' : '⏳ غير جاهز';
+            document.getElementById('lobbyRoomTitle').innerText = activeRoom.name;
+            document.getElementById('lobbyRoomMapBadge').innerText = activeRoom.mapLabel || MAP_LABELS[activeRoom.map] || MAP_LABELS.tactical_arena;
+            document.getElementById('lobbyRoomCodeText').innerText = activeRoom.code;
+            document.getElementById('lobbyPlayerCount').innerText = `${roster.length}/${maxCap}`;
+
+            const startBtn = document.getElementById('hostStartMatchBtn');
+            const waitHint = document.getElementById('waitingForHostHint');
+            if (startBtn && waitHint) {
+                if (amIHost) {
+                    startBtn.classList.remove('hidden');
+                    waitHint.classList.add('hidden');
+                } else {
+                    startBtn.classList.add('hidden');
+                    waitHint.classList.remove('hidden');
+                }
             }
 
             const pList = document.getElementById('lobbyPlayersList');
             if (pList) {
                 pList.innerHTML = '';
-                activeRoom.players.forEach(p => {
+                roster.forEach((p, idx) => {
+                    const isMe = p.id === localPlayerId;
+                    const isHostPlayer = p.isHost || idx === 0;
                     const row = document.createElement('div');
-                    row.className = 'bg-slate-900/90 border border-slate-700/70 rounded-xl px-3.5 py-2.5 flex items-center justify-between text-xs sm:text-sm';
+                    row.className = isMe
+                        ? 'bg-sky-950/60 border-2 border-sky-400/70 rounded-2xl px-4 py-3 flex items-center justify-between text-xs sm:text-sm shadow'
+                        : 'bg-slate-900 border border-slate-700 rounded-2xl px-4 py-3 flex items-center justify-between text-xs sm:text-sm';
                     row.innerHTML = `
-                        <span class="font-bold text-white">🎮 ${p.name}</span>
-                        <span class="font-black ${p.ready ? 'text-emerald-400' : 'text-amber-400'}">${p.ready ? 'جاهز' : 'بانتظار'}</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-base">🪖</span>
+                            <div>
+                                <div class="font-black text-white">${p.name}${isMe ? ' (أنت)' : ''}</div>
+                                <div class="text-[11px] text-slate-400">${p.weapon || 'أم فور (M4)'}</div>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-lg text-[11px] font-black ${isHostPlayer ? 'bg-amber-500/20 text-amber-300 border border-amber-400/40' : 'bg-emerald-500/20 text-emerald-300'}">
+                            ${isHostPlayer ? '👑 المضيف' : '✓ في الروم'}
+                        </span>
                     `;
                     pList.appendChild(row);
                 });
             }
         }
 
-        if (onlineChannel) {
-            onlineChannel.onmessage = ev => {
-                const data = ev.data || {};
-                if (data.type === 'rooms_updated') {
-                    refreshRoomBrowser();
-                    if (activeRoom && Array.isArray(data.rooms)) {
-                        const updated = data.rooms.find(r => r.code === activeRoom.code);
-                        if (updated) {
-                            activeRoom = updated;
-                            syncRoomLobbyPanels();
-                        }
-                    }
-                } else if (data.type === 'player_state' && gameRunning && currentMode === 'online' && data.id && data.id !== localPlayerId) {
-                    applyRemotePeerState(data);
-                } else if (data.type === 'player_shoot' && gameRunning && currentMode === 'online' && data.id && data.id !== localPlayerId) {
-                    spawnRemoteTracer(data);
-                } else if (data.type === 'player_hp' && gameRunning && currentMode === 'online' && data.targetId === localPlayerId) {
-                    fpsPlayer.hp = Math.max(0, data.hp);
-                    updateHUD();
-                    if (fpsPlayer.hp <= 0) {
-                        showEndModal(false, 'لقد خسرت!!', 'تم القضاء عليك في مباراة الأونلاين.');
+        function handleIncomingMultiplayerMessage(data, source = 'bc') {
+            if (!data || typeof data !== 'object') return;
+            const msgRoomCode = data.roomCode || data.room || (activeRoom ? activeRoom.code : null);
+            const peerId = data.id || data.senderId || data.from;
+
+            if (data.type === 'rooms_updated') {
+                if (activeRoom && Array.isArray(data.rooms)) {
+                    const updated = data.rooms.find(r => r.code === activeRoom.code);
+                    if (updated) {
+                        activeRoom = updated;
+                        syncRoomLobbyPanels();
                     }
                 }
+                return;
+            }
+
+            if (activeRoom && msgRoomCode && String(msgRoomCode).toUpperCase() !== String(activeRoom.code).toUpperCase()) {
+                return;
+            }
+
+            if (data.type === 'start_match') {
+                if (activeRoom) {
+                    if (data.map) {
+                        activeRoom.map = data.map;
+                        activeRoom.mapLabel = MAP_LABELS[data.map] || activeRoom.mapLabel;
+                        selectedMapKey = data.map;
+                    }
+                    activeRoom.started = true;
+                    if (!gameRunning) {
+                        showToast('صاحب الروم بدأ المباراة — جاري النزول إلى الخريطة!');
+                        currentMode = 'online';
+                        launch3DGameplay();
+                    }
+                }
+                return;
+            }
+
+            if (data.type === 'room_created' || data.type === 'player_join' || data.type === 'player_joined') {
+                const incomingPlayer = data.player || {
+                    id: peerId,
+                    name: data.name || 'مقاتل أونلاين',
+                    weapon: data.weapon || 'أم فور (M4)',
+                    hp: 500
+                };
+                if (incomingPlayer.id && incomingPlayer.id !== localPlayerId && msgRoomCode) {
+                    const updatedRoom = upsertPlayerInRoomRegistry(msgRoomCode, incomingPlayer, data.room);
+                    if (updatedRoom) activeRoom = updatedRoom;
+                    syncRoomLobbyPanels();
+                    showToast(`دخل ${incomingPlayer.name} إلى الروم!`);
+                    // إرسال بياناتي لصديقي الجديد حتى يظهر اسمي عنده فوراً في مربع اللاعبين
+                    if (activeRoom) {
+                        const myEntry = (activeRoom.players || []).find(p => p.id === localPlayerId);
+                        if (myEntry) {
+                            sendRoomProtocolMessage({
+                                type: 'room_sync_reply',
+                                roomCode: activeRoom.code,
+                                room: activeRoom,
+                                player: myEntry
+                            });
+                        }
+                    }
+                    if (gameRunning && currentMode === 'online') {
+                        ensureRemotePeerMesh(incomingPlayer);
+                    }
+                }
+                return;
+            }
+
+            if (data.type === 'room_sync_reply') {
+                if (activeRoom && data.player && data.player.id && data.player.id !== localPlayerId) {
+                    const updatedRoom = upsertPlayerInRoomRegistry(activeRoom.code, data.player, data.room);
+                    if (updatedRoom) {
+                        if (data.room && data.room.hostId) updatedRoom.hostId = data.room.hostId;
+                        if (data.room && data.room.map) {
+                            updatedRoom.map = data.room.map;
+                            updatedRoom.mapLabel = data.room.mapLabel || MAP_LABELS[data.room.map];
+                            selectedMapKey = data.room.map;
+                        }
+                        activeRoom = updatedRoom;
+                    }
+                    syncRoomLobbyPanels();
+                }
+                return;
+            }
+
+            if (data.type === 'player_left') {
+                if (peerId && peerId !== localPlayerId) {
+                    removePlayerFromRoomRegistry(activeRoom ? activeRoom.code : msgRoomCode, peerId);
+                    removeRemotePeerMesh(peerId);
+                    syncRoomLobbyPanels();
+                }
+                return;
+            }
+
+            if (data.type === 'player_state' || data.type === 'move') {
+                if (peerId && peerId !== localPlayerId) {
+                    applyRemotePeerState({
+                        id: peerId,
+                        name: data.name || 'منافس_أونلاين',
+                        x: data.x,
+                        y: data.y,
+                        z: data.z,
+                        yaw: data.yaw,
+                        crouching: data.crouching,
+                        weapon: data.weapon,
+                        hp: data.hp
+                    });
+                }
+                return;
+            }
+
+            if (data.type === 'player_shoot' || data.type === 'shoot') {
+                if (peerId && peerId !== localPlayerId) {
+                    spawnRemoteTracer(data);
+                }
+                return;
+            }
+
+            if (data.type === 'rpg_blast') {
+                if (peerId && peerId !== localPlayerId && gameRunning && currentMode === 'online') {
+                    pendingRemoteAttacks.push({
+                        kind: 'rpg',
+                        pos: data.pos,
+                        radius: data.radius,
+                        damage: data.damage
+                    });
+                }
+                return;
+            }
+
+            if (data.type === 'player_hp' || data.type === 'hit' || data.type === 'damage_player') {
+                const targetId = data.targetId;
+                if (targetId === localPlayerId && gameRunning && currentMode === 'online') {
+                    const dmg = Math.max(0, Number(data.damage) || 0);
+                    if (typeof data.hp === 'number') {
+                        fpsPlayer.hp = Math.max(0, Math.min(fpsPlayer.hp, data.hp));
+                    } else if (dmg > 0) {
+                        fpsPlayer.hp = Math.max(0, fpsPlayer.hp - dmg);
+                    }
+                    screenShakeIntensity = Math.max(screenShakeIntensity, 0.18);
+                    showHitBanner(data.zone === 'head' ? 'تلقيت إصابة بالرأس!' : 'تلقيت إصابة!', 'text-rose-400');
+                    updateHUD();
+                    if (fpsPlayer.hp <= 0) {
+                        onlineMatchStats.deaths += 1;
+                        showEndModal(false, 'لقد خسرت!!', 'تم القضاء عليك في مباراة الأونلاين. يمكنك إعادة المحاولة.');
+                    }
+                } else if (targetId && targetId !== localPlayerId) {
+                    const peerMesh = remotePeersMap.get(targetId);
+                    if (peerMesh) {
+                        if (typeof data.hp === 'number') peerMesh.hp = Math.max(0, data.hp);
+                        else if (data.damage) peerMesh.hp = Math.max(0, peerMesh.hp - Number(data.damage));
+                        updateEnemyBar3D(peerMesh);
+                    }
+                }
+                return;
+            }
+
+            if (data.type === 'player_eliminated') {
+                if (data.victimId === localPlayerId && gameRunning && currentMode === 'online') {
+                    fpsPlayer.hp = 0;
+                    onlineMatchStats.deaths += 1;
+                    updateHUD();
+                    showEndModal(false, 'لقد خسرت!!', 'تم القضاء عليك في مباراة الأونلاين.');
+                } else if (data.attackerId === localPlayerId && gameRunning && currentMode === 'online') {
+                    showHitBanner('قضيت على منافسك! +1 قتل', 'text-emerald-300');
+                }
+            }
+        }
+
+        function upsertPlayerInRoomRegistry(roomCode, playerObj, fallbackRoom = null) {
+            if (!roomCode || !playerObj || !playerObj.id) return activeRoom;
+            const code = String(roomCode).toUpperCase();
+            const list = loadRoomsRegistry();
+            let room = list.find(r => r.code.toUpperCase() === code);
+            if (!room) {
+                room = fallbackRoom ? Object.assign({}, fallbackRoom, { code, players: [] }) : {
+                    code,
+                    name: 'روم #' + code,
+                    hostId: playerObj.id,
+                    map: 'tactical_arena',
+                    mapLabel: MAP_LABELS.tactical_arena,
+                    maxPlayers: 8,
+                    started: false,
+                    players: []
+                };
+                list.unshift(room);
+            }
+            if (!Array.isArray(room.players)) room.players = [];
+            const idx = room.players.findIndex(p => p.id === playerObj.id);
+            const merged = Object.assign({}, idx >= 0 ? room.players[idx] : {}, playerObj, { lastSeen: Date.now() });
+            if (idx >= 0) room.players[idx] = merged;
+            else room.players.push(merged);
+            if (!room.hostId && room.players.length > 0) room.hostId = room.players[0].id;
+            saveRoomsRegistry(list);
+            return room;
+        }
+
+        function removePlayerFromRoomRegistry(roomCode, playerId) {
+            if (!roomCode || !playerId) return;
+            const code = String(roomCode).toUpperCase();
+            const list = loadRoomsRegistry();
+            const idx = list.findIndex(r => r.code.toUpperCase() === code);
+            if (idx < 0) return;
+            const room = list[idx];
+            room.players = (room.players || []).filter(p => p.id !== playerId);
+            if (room.players.length === 0) {
+                list.splice(idx, 1);
+            } else if (room.hostId === playerId) {
+                room.hostId = room.players[0].id;
+                room.players[0].isHost = true;
+            }
+            saveRoomsRegistry(list);
+            if (activeRoom && activeRoom.code.toUpperCase() === code) {
+                activeRoom = room.players.length > 0 ? room : null;
+            }
+        }
+
+        function copyCurrentRoomCode() {
+            if (!activeRoom || !activeRoom.code) return;
+            const tempInput = document.createElement('input');
+            tempInput.value = activeRoom.code;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            try { document.execCommand('copy'); } catch (_) {}
+            document.body.removeChild(tempInput);
+            showToast('تم نسخ رمز الدخول: ' + activeRoom.code);
+        }
+
+        function leaveCurrentRoom() {
+            sound.playUIClick(true);
+            if (activeRoom) {
+                const code = activeRoom.code;
+                sendRoomProtocolMessage({ type: 'player_left', roomCode: code, id: localPlayerId });
+                removePlayerFromRoomRegistry(code, localPlayerId);
+                activeRoom = null;
+            }
+            syncRoomLobbyPanels();
+        }
+
+        function updateLobbyTransportBadge() {
+            const el = document.getElementById('lobbyConnectionTransportText');
+            if (!el) return;
+            el.innerText = wsConnected
+                ? 'حالة الاتصال: سيرفر WebSocket + بث مباشر'
+                : 'حالة الاتصال: بث مباشر بين التبويبات والأصدقاء';
+        }
+
+        function connectOptionalWebSocket(showFeedback = false) {
+            const urlInput = document.getElementById('wsServerUrlInput');
+            const url = urlInput ? urlInput.value.trim() : '';
+            if (!url) {
+                if (showFeedback) showToast('أدخل رابط WebSocket أولاً');
+                return;
+            }
+            if (wsSocket && (wsSocket.readyState === WebSocket.OPEN || wsSocket.readyState === WebSocket.CONNECTING)) {
+                if (showFeedback) showToast(wsConnected ? 'متصل بالسيرفر بالفعل' : 'جاري الاتصال بالسيرفر...');
+                return;
+            }
+            try {
+                wsSocket = new WebSocket(url);
+                wsSocket.onopen = () => {
+                    wsConnected = true;
+                    updateLobbyTransportBadge();
+                    if (showFeedback) showToast('تم الاتصال بسيرفر WebSocket بنجاح!');
+                    if (activeRoom) {
+                        wsSocket.send(JSON.stringify({
+                            type: 'join',
+                            join_room: true,
+                            room: activeRoom.code,
+                            name: getPlayerDisplayName(),
+                            weapon: getCurrentEquippedWeaponName()
+                        }));
+                    }
+                };
+                wsSocket.onmessage = (ev) => {
+                    try {
+                        const msg = JSON.parse(ev.data);
+                        handleIncomingMultiplayerMessage(msg, 'ws');
+                    } catch (_) {}
+                };
+                wsSocket.onclose = () => {
+                    wsConnected = false;
+                    wsSocket = null;
+                    updateLobbyTransportBadge();
+                };
+                wsSocket.onerror = () => {
+                    wsConnected = false;
+                    updateLobbyTransportBadge();
+                    if (showFeedback) showToast('تعذر الوصول للسيرفر — سيعمل البث المحلي المباشر');
+                };
+            } catch (_) {
+                wsConnected = false;
+                updateLobbyTransportBadge();
+            }
+        }
+
+        if (onlineChannel) {
+            onlineChannel.onmessage = (ev) => {
+                handleIncomingMultiplayerMessage(ev.data, 'bc');
             };
         }
 
-        // التنقل بين القوائم
+        window.addEventListener('storage', (ev) => {
+            if (ev.key === ROOMS_STORAGE_KEY && activeRoom) {
+                const list = loadRoomsRegistry();
+                const updated = list.find(r => r.code === activeRoom.code);
+                if (updated) {
+                    activeRoom = updated;
+                    syncRoomLobbyPanels();
+                    if (updated.started && !gameRunning) {
+                        selectedMapKey = updated.map || selectedMapKey;
+                        currentMode = 'online';
+                        launch3DGameplay();
+                    }
+                }
+            }
+        });
+
+        let currentMode = 'stage';
+        let selectedMapKey = 'street_houses';
+        let currentStageNum = 1;
+        let gameRunning = false;
+        let onlineMatchStats = { kills: 0, deaths: 0 };
+
         const ALL_SCREENS = [
             'mainMenuScreen',
             'exitScreen',
@@ -2098,21 +2399,10 @@
             ALL_SCREENS.forEach(id => {
                 const el = document.getElementById(id);
                 if (!el) return;
-                if (id === screenId) {
-                    el.classList.remove('hidden');
-                    el.style.pointerEvents = 'auto';
-                } else {
-                    el.classList.add('hidden');
-                    el.style.pointerEvents = 'none';
-                }
+                if (id === screenId) el.classList.remove('hidden');
+                else el.classList.add('hidden');
             });
-
-            gameRunning = (screenId === 'gameContainer');
-            if (!gameRunning && document.pointerLockElement) {
-                try { document.exitPointerLock(); } catch (_) {}
-            }
             syncMobileControlsUI();
-            applyCustomHudStyles();
         }
 
         function openPlayMenu() {
@@ -2121,37 +2411,19 @@
             navigateTo('playMenuScreen');
         }
 
-        function openSinglePlayerMapSelect() {
-            sound.playUIClick(true);
-            navigateTo('mapSelectScreen');
-        }
-
-        let selectedMapKey = 'street_houses';
-
-        function chooseSinglePlayerMap(mapKey) {
-            sound.playUIClick(true);
-            selectedMapKey = mapKey;
-            const titleEl = document.getElementById('stagesScreenTitle');
-            const subEl = document.getElementById('stagesScreenSubtitle');
-            if (titleEl) titleEl.innerText = '⚔️ المراحل — ' + (MAP_LABELS[mapKey] || '');
-            if (subEl) subEl.innerText = 'كل مرحلة ترفع هيلث الأعداء وذكاءهم التكتيكي ومناوراتهم';
-            navigateTo('stagesMenuScreen');
-        }
-
         function exitPlayMenu() {
             sound.playUIClick(true);
             navigateTo('mainMenuScreen');
         }
 
         function exitMainMenu() {
-            sound.playUIClick(true);
+            sound.playUIClick(false);
             navigateTo('exitScreen');
         }
 
         function openSettingsMenu() {
             sound.playUIClick(true);
             switchSettingsTab('display');
-            syncMobileControlsUI();
             navigateTo('settingsMenuScreen');
         }
 
@@ -2160,63 +2432,72 @@
             navigateTo('mainMenuScreen');
         }
 
-        function switchSettingsTab(tabName) {
+        function switchSettingsTab(tab) {
             sound.playUIClick(true);
-            ['display', 'sound', 'controls'].forEach(name => {
-                const tabEl = document.getElementById('settingsTab' + name.charAt(0).toUpperCase() + name.slice(1));
-                const btnEl = document.getElementById('tabBtn' + name.charAt(0).toUpperCase() + name.slice(1));
-                if (tabEl) tabEl.classList.add('hidden');
-                if (btnEl) {
-                    btnEl.classList.remove('bg-sky-600', 'text-white', 'shadow');
-                    btnEl.classList.add('bg-slate-800', 'text-slate-300');
+            const tabs = { display: 'settingsTabDisplay', sound: 'settingsTabSound', controls: 'settingsTabControls' };
+            const btns = { display: 'tabBtnDisplay', sound: 'tabBtnSound', controls: 'tabBtnControls' };
+            Object.keys(tabs).forEach(k => {
+                const panel = document.getElementById(tabs[k]);
+                const btn = document.getElementById(btns[k]);
+                if (panel) panel.classList.toggle('hidden', k !== tab);
+                if (btn) {
+                    btn.className = k === tab
+                        ? 'py-3 px-3 rounded-2xl font-extrabold text-sm bg-sky-600 text-white shadow'
+                        : 'py-3 px-3 rounded-2xl font-extrabold text-sm bg-slate-800 text-slate-300 hover:bg-slate-700';
                 }
             });
-            const activeTab = document.getElementById('settingsTab' + tabName.charAt(0).toUpperCase() + tabName.slice(1));
-            const activeBtn = document.getElementById('tabBtn' + tabName.charAt(0).toUpperCase() + tabName.slice(1));
-            if (activeTab) activeTab.classList.remove('hidden');
-            if (activeBtn) {
-                activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
-                activeBtn.classList.add('bg-sky-600', 'text-white', 'shadow');
-            }
         }
 
         function updateDisplaySettings() {
-            sound.playUIClick(true);
-            resolutionScale = document.getElementById('resolutionSelect').value;
-            targetFpsLimit = parseInt(document.getElementById('fpsLimitSelect').value, 10) || 0;
-            showFps = document.getElementById('showFpsToggle').checked;
+            const resEl = document.getElementById('resolutionSelect');
+            const fpsEl = document.getElementById('fpsLimitSelect');
+            const showFpsEl = document.getElementById('showFpsToggle');
             const fpsBadge = document.getElementById('hudFpsBadge');
-            if (fpsBadge) {
-                if (showFps) fpsBadge.classList.remove('hidden');
-                else fpsBadge.classList.add('hidden');
-            }
+            if (resEl) resolutionScale = resEl.value;
+            if (fpsEl) targetFpsLimit = parseInt(fpsEl.value, 10) || 0;
+            if (showFpsEl) showFps = showFpsEl.checked;
+            if (fpsBadge) fpsBadge.classList.toggle('hidden', !showFps);
             resizeThreeRenderer();
         }
 
         function updateVolumeSettings() {
             const slider = document.getElementById('masterVolumeSlider');
+            const label = document.getElementById('volumeValueLabel');
+            if (!slider) return;
             const val = parseInt(slider.value, 10) || 0;
             sound.volume = val / 100;
-            if (val > 0) sound.muted = false;
-            document.getElementById('volumeValueLabel').innerText = val + '%';
-            updateMuteButtonText();
+            if (label) label.innerText = val + '%';
         }
 
         function testSoundEffect() {
-            sound.playUIClick(false);
-            showToast('تم تشغيل مؤثر الصوت');
+            sound.playShoot('m4');
         }
 
         function toggleMuteAudio() {
             sound.muted = !sound.muted;
-            updateMuteButtonText();
-            if (!sound.muted) sound.playUIClick(true);
+            const btn = document.getElementById('muteBtn');
+            if (btn) btn.innerText = sound.muted ? 'إلغاء الكتم' : 'كتم الصوت';
+            showToast(sound.muted ? 'تم كتم الصوت' : 'تم تفعيل الصوت');
         }
 
-        function updateMuteButtonText() {
-            const btn = document.getElementById('muteBtn');
-            if (!btn) return;
-            btn.innerText = sound.muted ? 'إلغاء الكتم' : 'كتم الصوت';
+        function openSinglePlayerMapSelect() {
+            sound.playUIClick(true);
+            navigateTo('mapSelectScreen');
+        }
+
+        function chooseSinglePlayerMap(mapKey) {
+            sound.playUIClick(true);
+            selectedMapKey = mapKey;
+            const titleEl = document.getElementById('stagesScreenTitle');
+            if (titleEl) titleEl.innerText = `⚔️ مراحل: ${MAP_LABELS[mapKey] || ''}`;
+            navigateTo('stagesMenuScreen');
+        }
+
+        function selectStage(stageNum) {
+            sound.playUIClick(false);
+            currentMode = 'stage';
+            currentStageNum = stageNum;
+            launch3DGameplay();
         }
 
         function openTrainingMenu() {
@@ -2224,19 +2505,25 @@
             navigateTo('trainingMenuScreen');
         }
 
-        let currentMode = 'stage';
-        let currentStageNum = 1;
-        let gameRunning = false;
-
-        function selectStage(stageNum) {
-            sound.playUIClick(true);
-            currentMode = 'stage';
-            currentStageNum = stageNum;
-            launch3DGameplay();
-        }
-
         function startOnlineMatchWithClass() {
             sound.playUIClick(true);
+            if (!activeRoom) {
+                createOnlineRoom();
+                return;
+            }
+            activeRoom.started = true;
+            onlineMatchStats = { kills: 0, deaths: 0 };
+            const list = loadRoomsRegistry();
+            const found = list.find(r => r.code === activeRoom.code);
+            if (found) {
+                found.started = true;
+                saveRoomsRegistry(list);
+            }
+            sendRoomProtocolMessage({
+                type: 'start_match',
+                roomCode: activeRoom.code,
+                map: activeRoom.map || selectedMapKey
+            });
             currentMode = 'online';
             launch3DGameplay();
         }
@@ -2262,9 +2549,15 @@
             }
             document.getElementById('endModal').classList.add('hidden');
             document.getElementById('reloadIndicator').classList.add('hidden');
-            if (currentMode === 'online') navigateTo('onlineLobbyScreen');
-            else if (currentMode === 'training' || currentMode === 'exam') navigateTo('trainingMenuScreen');
-            else navigateTo('stagesMenuScreen');
+            if (currentMode === 'online') {
+                syncRoomLobbyPanels();
+                refreshRoomBrowser();
+                navigateTo('onlineLobbyScreen');
+            } else if (currentMode === 'training' || currentMode === 'exam') {
+                navigateTo('trainingMenuScreen');
+            } else {
+                navigateTo('stagesMenuScreen');
+            }
         }
 
         // محرك Three.js ثلاثي الأبعاد (3D FPS)
@@ -2865,6 +3158,34 @@
             gun.position.set(0.55 * scale, 1.3 * scale, 0.55 * scale);
             group.add(gun);
 
+            // شارة اسم اللاعب فوق المجسم في الأونلاين
+            let nameTag = null;
+            if (isRemotePeer) {
+                const canvas = document.createElement('canvas');
+                canvas.width = 256;
+                canvas.height = 64;
+                const ctx = canvas.getContext('2d');
+                if (ctx) {
+                    ctx.fillStyle = 'rgba(2, 6, 23, 0.82)';
+                    ctx.fillRect(8, 8, 240, 48);
+                    ctx.strokeStyle = '#38bdf8';
+                    ctx.lineWidth = 3;
+                    ctx.strokeRect(8, 8, 240, 48);
+                    ctx.fillStyle = '#e0f2fe';
+                    ctx.font = 'bold 24px Cairo, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(String(labelText || 'لاعب').slice(0, 14), 128, 33);
+                }
+                const tex = new THREE.CanvasTexture(canvas);
+                nameTag = new THREE.Mesh(
+                    new THREE.PlaneGeometry(2.1 * scale, 0.52 * scale),
+                    new THREE.MeshBasicMaterial({ map: tex, transparent: true, side: THREE.DoubleSide })
+                );
+                nameTag.position.set(0, 3.45 * scale, 0);
+                group.add(nameTag);
+            }
+
             const hpBg = new THREE.Mesh(
                 new THREE.PlaneGeometry(1.6 * scale, 0.2 * scale),
                 new THREE.MeshBasicMaterial({ color: 0x0f172a, side: THREE.DoubleSide })
@@ -2883,6 +3204,7 @@
             return {
                 group,
                 headGroup,
+                nameTag,
                 hpBg,
                 hpFill,
                 fullBarWidth: 1.52 * scale,
@@ -2900,7 +3222,9 @@
                 aiAggression,
                 strafeTimer: 0,
                 strafeDir: Math.random() > 0.5 ? 1 : -1,
-                label: labelText
+                label: labelText,
+                targetPos: new THREE.Vector3(x, 0, z),
+                targetYaw: 0
             };
         }
 
@@ -2925,23 +3249,69 @@
             });
         }
 
-        function spawn3DOnlinePeers() {
-            const peers = (activeRoom && Array.isArray(activeRoom.players))
-                ? activeRoom.players.filter(p => p.id !== localPlayerId)
-                : [];
-            if (peers.length === 0) {
-                const bot1 = createEnemy3DMesh(24, -9, 320, 'assault', 2, 'منافس_1', 'bot_peer_1', true);
-                const bot2 = createEnemy3DMesh(24, 9, 360, 'armored', 2, 'منافس_2', 'bot_peer_2', true);
-                enemies3D.push(bot1, bot2);
-                remotePeersMap.set('bot_peer_1', bot1);
-                remotePeersMap.set('bot_peer_2', bot2);
-            } else {
-                peers.forEach((p, idx) => {
-                    const peerMesh = createEnemy3DMesh(p.x || 22, p.z || (idx * 7 - 4), p.hp || 320, 'assault', 2, p.name || 'لاعب', p.id, true);
-                    enemies3D.push(peerMesh);
-                    remotePeersMap.set(p.id, peerMesh);
-                });
+        function ensureRemotePeerMesh(peerData) {
+            if (!peerData || !peerData.id || peerData.id === localPlayerId || !scene) return null;
+            let existing = remotePeersMap.get(peerData.id);
+            if (existing) return existing;
+
+            const idx = remotePeersMap.size + 1;
+            const spawn = getDefaultSpawnForPlayerIndex(idx);
+            const px = typeof peerData.x === 'number' ? peerData.x : spawn.x;
+            const pz = typeof peerData.z === 'number' ? peerData.z : spawn.z;
+            const php = typeof peerData.hp === 'number' && peerData.hp > 0 ? peerData.hp : 500;
+
+            existing = createEnemy3DMesh(
+                px,
+                pz,
+                php,
+                'assault',
+                2,
+                peerData.name || 'منافس_أونلاين',
+                peerData.id,
+                true
+            );
+            if (typeof peerData.yaw === 'number') {
+                existing.group.rotation.y = peerData.yaw;
+                existing.targetYaw = peerData.yaw;
             }
+            enemies3D.push(existing);
+            remotePeersMap.set(peerData.id, existing);
+            return existing;
+        }
+
+        function spawn3DOnlinePeers() {
+            const roomList = loadRoomsRegistry();
+            const syncedRoom = activeRoom
+                ? (roomList.find(r => r.code === activeRoom.code) || activeRoom)
+                : null;
+            if (syncedRoom) activeRoom = syncedRoom;
+
+            const peers = (activeRoom && Array.isArray(activeRoom.players))
+                ? activeRoom.players.filter(p => p && p.id && p.id !== localPlayerId)
+                : [];
+
+            peers.forEach(p => {
+                ensureRemotePeerMesh(p);
+            });
+
+            sendRoomProtocolMessage({
+                type: 'player_join',
+                roomCode: activeRoom ? activeRoom.code : 'LIVE',
+                room: activeRoom,
+                player: {
+                    id: localPlayerId,
+                    name: getPlayerDisplayName(),
+                    ready: true,
+                    hp: fpsPlayer.hp,
+                    maxHp: fpsPlayer.maxHp,
+                    weapon: getCurrentEquippedWeaponName(),
+                    x: fpsPlayer.x,
+                    y: fpsPlayer.y,
+                    z: fpsPlayer.z,
+                    yaw: fpsPlayer.yaw,
+                    crouching: fpsPlayer.crouching
+                }
+            });
         }
 
         function removeRemotePeerMesh(peerId) {
@@ -3088,16 +3458,22 @@
 
             const pWeapon = WEAPONS[playerLoadout.primary] || WEAPONS.m4;
             const sWeapon = WEAPONS[playerLoadout.secondary] || WEAPONS.pistol;
+            const roomRosterIndex = (activeRoom && Array.isArray(activeRoom.players))
+                ? Math.max(0, activeRoom.players.findIndex(p => p.id === localPlayerId))
+                : 0;
+            const initialSpawn = (currentMode === 'online')
+                ? getDefaultSpawnForPlayerIndex(roomRosterIndex)
+                : { x: -28, z: 0, yaw: 0 };
 
             fpsPlayer = {
-                x: -28,
+                x: initialSpawn.x,
                 y: STAND_EYE_Y,
-                z: 0,
+                z: initialSpawn.z,
                 vy: 0,
                 grounded: true,
                 crouching: false,
                 sprinting: false,
-                yaw: 0,
+                yaw: initialSpawn.yaw,
                 pitch: 0,
                 hp: 500,
                 maxHp: 500,
@@ -3136,7 +3512,8 @@
                 exam3DState = { timeLeft: 45, shotsFired: 0, shotsHit: 0, score: 0 };
                 spawn3DExamTargets();
             } else if (currentMode === 'online') {
-                badge.innerText = 'أونلاين • ' + (MAP_LABELS[activeMap] || '');
+                const rCode = activeRoom ? activeRoom.code : 'LIVE';
+                badge.innerText = `أونلاين [${rCode}] • ${MAP_LABELS[activeMap] || ''}`;
                 healthBox.classList.remove('hidden');
                 extraStatus.classList.remove('hidden');
                 spawn3DOnlinePeers();
@@ -3345,15 +3722,35 @@
             });
 
             if (fromPlayer) {
+                if (currentMode === 'online') {
+                    sendRoomProtocolMessage({
+                        type: 'rpg_blast',
+                        roomCode: activeRoom ? activeRoom.code : 'LIVE',
+                        pos: { x: pos.x, y: pos.y, z: pos.z },
+                        radius,
+                        damage
+                    });
+                }
                 enemies3D.forEach(en => {
                     if (en.hp <= 0) return;
                     const dist = Math.hypot(en.group.position.x - pos.x, en.group.position.z - pos.z);
                     if (dist <= radius * 0.5 + en.radius) {
+                        const prevHp = en.hp;
                         en.hp = Math.max(0, en.hp - damage);
                         updateEnemyBar3D(en);
                         sound.playHit(en.hp <= 0, false);
                         if (currentMode === 'online' && en.isRemotePeer && en.peerId) {
-                            syncOnlineDamage(en.peerId, damage, 'torso');
+                            syncOnlineDamage(en.peerId, damage, 'torso', en.hp);
+                            if (prevHp > 0 && en.hp <= 0) {
+                                onlineMatchStats.kills += 1;
+                                sendRoomProtocolMessage({
+                                    type: 'player_eliminated',
+                                    roomCode: activeRoom ? activeRoom.code : 'LIVE',
+                                    victimId: en.peerId,
+                                    attackerId: localPlayerId,
+                                    kills: onlineMatchStats.kills
+                                });
+                            }
                         }
                     }
                 });
@@ -3376,25 +3773,21 @@
             }
         }
 
-        function syncOnlineDamage(targetId, damage, zone) {
-            const dmgPayload = {
+        function syncOnlineDamage(targetId, damage, zone, remainingHp = null) {
+            const targetObj = remotePeersMap.get(targetId);
+            const computedHp = typeof remainingHp === 'number'
+                ? remainingHp
+                : (targetObj ? Math.max(0, targetObj.hp) : 0);
+
+            sendRoomProtocolMessage({
                 type: 'player_hp',
+                roomCode: activeRoom ? activeRoom.code : 'LIVE',
                 targetId,
                 attackerId: localPlayerId,
                 damage,
                 zone,
-                hp: 0
-            };
-            const targetObj = remotePeersMap.get(targetId);
-            if (targetObj) dmgPayload.hp = targetObj.hp;
-            if (onlineChannel) {
-                try { onlineChannel.postMessage(dmgPayload); } catch (_) {}
-            }
-            if (wsSocket && wsSocket.readyState === WebSocket.OPEN) {
-                try {
-                    wsSocket.send(JSON.stringify({ type: 'damage_player', targetId, damage, zone }));
-                } catch (_) {}
-            }
+                hp: computedHp
+            });
         }
 
         function breakCrateNow(cr) {
@@ -3439,42 +3832,67 @@
 
         function applyRemotePeerState(peer) {
             if (!peer || !peer.id || peer.id === localPlayerId) return;
-            let target = remotePeersMap.get(peer.id);
-            if (!target && scene) {
-                target = createEnemy3DMesh(peer.x || 20, peer.z || 0, peer.hp || 320, 'assault', 2, peer.name || 'لاعب', peer.id, true);
-                enemies3D.push(target);
-                remotePeersMap.set(peer.id, target);
+            const target = ensureRemotePeerMesh(peer);
+            if (!target) return;
+
+            if (typeof peer.hp === 'number') {
+                target.hp = Math.max(0, peer.hp);
+                updateEnemyBar3D(target);
             }
-            if (target && target.hp > 0 && typeof peer.x === 'number' && typeof peer.z === 'number') {
-                target.group.position.x = peer.x;
-                target.group.position.z = peer.z;
-                if (typeof peer.yaw === 'number') target.group.rotation.y = peer.yaw;
-                target.group.scale.y = peer.crouching ? 0.65 : 1.0;
+            if (target.hp > 0) {
+                target.group.visible = true;
+                if (typeof peer.x === 'number' && typeof peer.z === 'number') {
+                    target.targetPos = new THREE.Vector3(peer.x, 0, peer.z);
+                }
+                if (typeof peer.yaw === 'number') {
+                    target.targetYaw = peer.yaw;
+                }
+                target.group.scale.y = peer.crouching ? 0.68 : 1.0;
             }
         }
 
         function broadcastLocalPeerState(now) {
-            if (currentMode !== 'online' || now - lastNetSyncAt < 65) return;
+            if (currentMode !== 'online' || !activeRoom) return;
+            if (now - lastNetSyncAt < 65) return;
             lastNetSyncAt = now;
+
             const curSlot = getCurrentWeaponSlot();
+            const weaponLabel = curSlot && curSlot.weapon ? curSlot.weapon.name : 'أم فور (M4)';
+
+            if (now - lastLobbyRosterSyncAt > 1200) {
+                lastLobbyRosterSyncAt = now;
+                upsertPlayerInRoomRegistry(activeRoom.code, {
+                    id: localPlayerId,
+                    name: getPlayerDisplayName(),
+                    ready: true,
+                    hp: fpsPlayer.hp,
+                    maxHp: fpsPlayer.maxHp,
+                    kills: onlineMatchStats.kills,
+                    deaths: onlineMatchStats.deaths,
+                    weapon: weaponLabel,
+                    x: fpsPlayer.x,
+                    y: fpsPlayer.y,
+                    z: fpsPlayer.z,
+                    yaw: fpsPlayer.yaw,
+                    crouching: fpsPlayer.crouching
+                }, activeRoom);
+                syncRoomLobbyPanels();
+            }
+
             const payload = {
                 type: 'player_state',
                 id: localPlayerId,
-                roomCode: activeRoom ? activeRoom.code : 'LIVE',
+                name: getPlayerDisplayName(),
+                roomCode: activeRoom.code,
                 x: fpsPlayer.x,
                 y: fpsPlayer.y,
                 z: fpsPlayer.z,
                 yaw: fpsPlayer.yaw,
                 crouching: fpsPlayer.crouching,
-                weapon: curSlot && curSlot.weapon ? curSlot.weapon.key : 'm4',
+                weapon: weaponLabel,
                 hp: fpsPlayer.hp
             };
-            if (onlineChannel) {
-                try { onlineChannel.postMessage(payload); } catch (_) {}
-            }
-            if (wsSocket && wsSocket.readyState === WebSocket.OPEN) {
-                try { wsSocket.send(JSON.stringify({ type: 'state_update', ...payload })); } catch (_) {}
-            }
+            sendRoomProtocolMessage(payload);
         }
 
         function updateHUD() {
@@ -3510,7 +3928,13 @@
 
             if (currentMode === 'exam' && extra) {
                 extra.innerText = `⏱️ ${Math.ceil(exam3DState.timeLeft)}ث | النقاط: ${exam3DState.score}`;
-            } else if ((currentMode === 'stage' || currentMode === 'online') && extra) {
+            } else if (currentMode === 'online' && extra) {
+                const peersAlive = enemies3D.filter(e => e.isRemotePeer && e.hp > 0).length;
+                const totalInRoom = (activeRoom && Array.isArray(activeRoom.players))
+                    ? Math.max(1, activeRoom.players.length)
+                    : (peersAlive + 1);
+                extra.innerText = `بالروم: ${totalInRoom} | قتلي: ${onlineMatchStats.kills}`;
+            } else if (currentMode === 'stage' && extra) {
                 const aliveCount = enemies3D.filter(e => e.hp > 0).length;
                 extra.innerText = `الخصوم: ${aliveCount}`;
             }
@@ -3796,6 +4220,24 @@
         function update3DGame(dt, now) {
             if (!gameRunning || !renderer || !scene || !camera3D) return;
 
+            while (pendingRemoteAttacks.length > 0) {
+                const atk = pendingRemoteAttacks.shift();
+                if (!atk || atk.kind !== 'rpg' || !atk.pos) continue;
+                const distToMe = Math.hypot(fpsPlayer.x - atk.pos.x, fpsPlayer.z - atk.pos.z);
+                if (distToMe <= (atk.radius || 8.5) * 0.65 + PLAYER_RADIUS) {
+                    const blastDmg = Math.max(25, Math.round((atk.damage || 180) * 0.45 * (fpsPlayer.crouching ? 0.5 : 1)));
+                    fpsPlayer.hp = Math.max(0, fpsPlayer.hp - blastDmg);
+                    screenShakeIntensity = Math.max(screenShakeIntensity, 0.24);
+                    showHitBanner(`انفجار RPG قريب -${blastDmg}`, 'text-orange-300');
+                    updateHUD();
+                    if (fpsPlayer.hp <= 0) {
+                        onlineMatchStats.deaths += 1;
+                        showEndModal(false, 'لقد خسرت!!', 'تم القضاء عليك في مباراة الأونلاين. يمكنك إعادة المحاولة.');
+                        return;
+                    }
+                }
+            }
+
             const activeSlot = getCurrentWeaponSlot();
             const activeW = activeSlot ? activeSlot.weapon : WEAPONS.m4;
 
@@ -4028,12 +4470,23 @@
                                 }
 
                                 const finalDmg = Math.max(12, Math.round(pr.weapon.baseDamage * zoneMult));
+                                const prevHp = en.hp;
                                 en.hp = Math.max(0, en.hp - finalDmg);
                                 updateEnemyBar3D(en);
                                 sound.playHit(en.hp <= 0, isHead);
                                 showHitBanner(`${zoneLabel} -${finalDmg}`, isHead ? 'text-rose-300' : (zoneMult < 0.8 ? 'text-slate-300' : 'text-amber-300'));
                                 if (currentMode === 'online' && en.isRemotePeer && en.peerId) {
-                                    syncOnlineDamage(en.peerId, finalDmg, zoneKey);
+                                    syncOnlineDamage(en.peerId, finalDmg, zoneKey, en.hp);
+                                    if (prevHp > 0 && en.hp <= 0) {
+                                        onlineMatchStats.kills += 1;
+                                        sendRoomProtocolMessage({
+                                            type: 'player_eliminated',
+                                            roomCode: activeRoom ? activeRoom.code : 'LIVE',
+                                            victimId: en.peerId,
+                                            attackerId: localPlayerId,
+                                            kills: onlineMatchStats.kills
+                                        });
+                                    }
                                 }
                             }
                             hitTarget = true;
@@ -4118,10 +4571,11 @@
             for (let smIdx = smokeClouds3D.length - 1; smIdx >= 0; smIdx--) {
                 const sm = smokeClouds3D[smIdx];
                 sm.age += dt;
-                const prog = Math.min(1, sm.age / sm.duration);
-                sm.mesh.scale.setScalar(0.7 + sm.maxScale * Math.min(1, prog * 3));
+                const progress = Math.min(1, sm.age / sm.duration);
+                const curScale = 0.7 + sm.maxScale * Math.sin(Math.min(1, progress * 1.4) * (Math.PI / 2));
+                sm.mesh.scale.setScalar(curScale);
                 if (sm.mesh.material) {
-                    sm.mesh.material.opacity = 0.62 * (1 - Math.pow(prog, 1.5));
+                    sm.mesh.material.opacity = 0.62 * (1 - progress);
                 }
                 if (sm.age >= sm.duration) {
                     scene.remove(sm.mesh);
@@ -4129,7 +4583,19 @@
                 }
             }
 
-            if (currentMode === 'stage' || currentMode === 'online') {
+            if (currentMode === 'online') {
+                enemies3D.forEach(en => {
+                    if (!en.isRemotePeer || en.hp <= 0) return;
+                    if (en.targetPos) {
+                        en.group.position.x += (en.targetPos.x - en.group.position.x) * Math.min(1, dt * 14);
+                        en.group.position.z += (en.targetPos.z - en.group.position.z) * Math.min(1, dt * 14);
+                    }
+                    if (typeof en.targetYaw === 'number') {
+                        en.group.rotation.y = en.targetYaw;
+                    }
+                });
+                updateHUD();
+            } else if (currentMode === 'stage') {
                 let aliveCount = 0;
                 enemies3D.forEach(en => {
                     if (en.hp <= 0) return;
